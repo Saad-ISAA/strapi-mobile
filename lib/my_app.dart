@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strapi_flutter_cms/pages/login.dart';
 import 'package:strapi_flutter_cms/pages/splash_screen.dart';
 
 class MyApp extends StatefulWidget {

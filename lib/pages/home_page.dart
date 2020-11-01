@@ -20,25 +20,53 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Container(
                   color: blue,
-                  padding: EdgeInsets.only(top: 24, left: 32, bottom: 8),
-                  child: Row(
+                  //padding: EdgeInsets.only(top: 16, left: 32, bottom: 8),
+
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        'assets/images/logo_white.png',
-                        height: 30,
+                      SizedBox(
+                        width: double.infinity,
+                        height: 8,
                       ),
-                      SizedBox(width: 8),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 13.0),
-                        child: Text(
-                          'strapi',
-                          style: TextStyle(
-                            fontSize: 33,
-                            fontWeight: FontWeight.w600,
-                            color: white,
-                          ),
+                      SizedBox(
+                        width: 140,
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/logo_white.png',
+                              height: 30,
+                            ),
+                            SizedBox(width: 8),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 13.0),
+                              child: Text(
+                                'strapi',
+                                style: TextStyle(
+                                  fontSize: 33,
+                                  fontWeight: FontWeight.w600,
+                                  color: white,
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                      )
+                      ),
+                      SizedBox(height: 8),
+                      CircleAvatar(
+                        backgroundImage: AssetImage('assets/images/user.png'),
+                        minRadius: 40,
+                        maxRadius: 41,
+                      ),
+                      SizedBox(height: 8),
+                      Text('John Doe',
+                          style: TextStyle(
+                              color: white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600)),
+                      SizedBox(height: 5),
+                      Text('johndoe@gmail.com', style: TextStyle(color: white)),
+                      SizedBox(height: 16)
                     ],
                   ),
                 ),
@@ -109,6 +137,9 @@ class _HomePageState extends State<HomePage> {
                           title: 'Settings',
                           onTap: () {},
                           icon: Icons.settings),
+                      buildDrawerRowEntryWithCustomIcon(
+                          title: 'Logout', onTap: () {}, icon: Icons.logout),
+                      SizedBox(height: 32),
                     ],
                   ),
                 ),

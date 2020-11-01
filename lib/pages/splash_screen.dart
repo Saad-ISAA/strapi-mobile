@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
+import 'package:strapi_flutter_cms/pages/login.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -11,7 +12,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     Future.delayed(const Duration(milliseconds: 1500), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     });
     super.initState();
   }
