@@ -13,66 +13,68 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         drawer: Drawer(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  color: blue,
-                  //padding: EdgeInsets.only(top: 16, left: 32, bottom: 8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                color: blue,
+                height: 210,
+                //padding: EdgeInsets.only(top: 16, left: 32, bottom: 8),
 
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: 8,
-                      ),
-                      SizedBox(
-                        width: 140,
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              'assets/images/logo_white.png',
-                              height: 30,
-                            ),
-                            SizedBox(width: 8),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 13.0),
-                              child: Text(
-                                'strapi',
-                                style: TextStyle(
-                                  fontSize: 33,
-                                  fontWeight: FontWeight.w600,
-                                  color: white,
-                                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      height: 8,
+                    ),
+                    SizedBox(
+                      width: 140,
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/logo_white.png',
+                            height: 30,
+                          ),
+                          SizedBox(width: 8),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 13.0),
+                            child: Text(
+                              'strapi',
+                              style: TextStyle(
+                                fontSize: 33,
+                                fontWeight: FontWeight.w600,
+                                color: white,
                               ),
-                            )
-                          ],
-                        ),
+                            ),
+                          )
+                        ],
                       ),
-                      SizedBox(height: 8),
-                      CircleAvatar(
-                        backgroundImage: AssetImage('assets/images/user.png'),
-                        minRadius: 40,
-                        maxRadius: 41,
-                      ),
-                      SizedBox(height: 8),
-                      Text('John Doe',
-                          style: TextStyle(
-                              color: white,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600)),
-                      SizedBox(height: 5),
-                      Text('johndoe@gmail.com', style: TextStyle(color: white)),
-                      SizedBox(height: 16)
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: 0),
+                    CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/user.png'),
+                      minRadius: 40,
+                      maxRadius: 41,
+                    ),
+                    SizedBox(height: 8),
+                    Text('John Doe',
+                        style: TextStyle(
+                            color: white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600)),
+                    SizedBox(height: 5),
+                    Text('johndoe@gmail.com', style: TextStyle(color: white)),
+                    SizedBox(height: 16)
+                  ],
                 ),
-                Container(
-                  padding: EdgeInsets.all(24),
-                  color: darkNavyBlue,
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height - 234,
+                padding: EdgeInsets.all(24),
+                color: darkNavyBlue,
+                child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.max,
@@ -143,8 +145,8 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         body: Center(
