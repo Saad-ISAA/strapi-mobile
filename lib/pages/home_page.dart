@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:strapi_flutter_cms/pages/bookings_list.dart';
+import 'package:strapi_flutter_cms/pages/training_videos_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 
 class HomePage extends StatefulWidget {
@@ -97,7 +99,14 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       buildDrawerRowEntry(
-                          title: 'Chauffeur Bookings', onTap: () {}),
+                        title: 'Chauffeur Bookings',
+                        onTap: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookingsList(),
+                          ),
+                        ),
+                      ),
                       buildDrawerRowEntry(title: 'Form Fields', onTap: () {}),
                       buildDrawerRowEntry(
                           title: 'Housekeeper Bookings', onTap: () {}),
@@ -119,6 +128,15 @@ class _HomePageState extends State<HomePage> {
                       buildDrawerRowEntryWithCustomIcon(
                           title: 'Media Library',
                           onTap: () {},
+                          icon: Icons.cloud_upload),
+                      buildDrawerRowEntryWithCustomIcon(
+                          title: 'Training',
+                          onTap: () => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TrainingVIdeosPage(),
+                                ),
+                              ),
                           icon: Icons.cloud_upload),
                       SizedBox(height: 48),
                       Text(

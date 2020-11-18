@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
             color: buttonColor,
           )),
       debugShowCheckedModeBanner: false,
-      home: TrainingVIdeosPage(),
+      home: SplashScreen(),
     );
   }
 }
