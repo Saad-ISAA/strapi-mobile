@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/models/booking_entry.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
+import 'package:strapi_flutter_cms/shared/drawer.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 TextEditingController _searchQueryController = TextEditingController();
@@ -35,11 +36,12 @@ class _BookingsListState extends State<BookingsList> {
         backgroundColor: darkNavyBlue,
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: buttonColor,
-          leading: _isSearching ? const BackButton() : Container(),
+          backgroundColor: strapiColor,
+          // leading: _isSearching ? const BackButton() : Container(),
           title: _isSearching ? _buildSearchField() : _buildTitle(),
           actions: _buildActions(),
         ),
+        drawer: getDrawer(context),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {},
@@ -308,7 +310,7 @@ class _BookingsListState extends State<BookingsList> {
                   ),
                   SizedBox(height: 16),
                   CheckboxListTile(
-                      activeColor: buttonColor,
+                      activeColor: strapiColor,
                       title: Text(
                         'Content',
                         style: dialogText,
@@ -320,7 +322,7 @@ class _BookingsListState extends State<BookingsList> {
                         });
                       }),
                   CheckboxListTile(
-                      activeColor: buttonColor,
+                      activeColor: strapiColor,
                       title: Text(
                         'Created At',
                         style: dialogText,
@@ -332,7 +334,7 @@ class _BookingsListState extends State<BookingsList> {
                         });
                       }),
                   CheckboxListTile(
-                      activeColor: buttonColor,
+                      activeColor: strapiColor,
                       title: Text(
                         'ID',
                         style: dialogText,
@@ -344,7 +346,7 @@ class _BookingsListState extends State<BookingsList> {
                         });
                       }),
                   CheckboxListTile(
-                      activeColor: buttonColor,
+                      activeColor: strapiColor,
                       title: Text(
                         'Published At',
                         style: dialogText,
@@ -356,7 +358,7 @@ class _BookingsListState extends State<BookingsList> {
                         });
                       }),
                   CheckboxListTile(
-                      activeColor: buttonColor,
+                      activeColor: strapiColor,
                       title: Text(
                         'Testing',
                         style: dialogText,
@@ -368,7 +370,7 @@ class _BookingsListState extends State<BookingsList> {
                         });
                       }),
                   CheckboxListTile(
-                      activeColor: buttonColor,
+                      activeColor: strapiColor,
                       title: Text(
                         'Testing Again',
                         style: dialogText,
@@ -380,7 +382,7 @@ class _BookingsListState extends State<BookingsList> {
                         });
                       }),
                   CheckboxListTile(
-                      activeColor: buttonColor,
+                      activeColor: strapiColor,
                       title: Text(
                         'Text Field',
                         style: dialogText,
@@ -392,7 +394,7 @@ class _BookingsListState extends State<BookingsList> {
                         });
                       }),
                   CheckboxListTile(
-                      activeColor: buttonColor,
+                      activeColor: strapiColor,
                       title: Text(
                         'Updated At',
                         style: dialogText,

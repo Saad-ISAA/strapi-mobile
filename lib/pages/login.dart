@@ -209,7 +209,7 @@ final labelStyle = TextStyle(
 );
 
 final boxDecorationStyle = BoxDecoration(
-  color: buttonColor,
+  color: strapiColor,
   borderRadius: BorderRadius.circular(10.0),
   boxShadow: [
     BoxShadow(
