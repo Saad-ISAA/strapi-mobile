@@ -1,34 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strapi_flutter_cms/models/booking_entry.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
-import 'package:strapi_flutter_cms/shared/drawer.dart';
-import 'package:velocity_x/velocity_x.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 TextEditingController _searchQueryController = TextEditingController();
 bool _isSearching = false;
 String searchQuery = "Search query";
 
 class BookingsList extends StatefulWidget {
+  BookingsList({this.drawerData, this.user, this.data});
+  final List drawerData;
+  final Map user;
+  final Map data;
+
   @override
   _BookingsListState createState() => _BookingsListState();
 }
 
 class _BookingsListState extends State<BookingsList> {
-  static final BookingEnrty firstEntry = BookingEnrty(
-      id: 1,
-      content: "Some Content",
-      publishedAt: "Friday, October 23rd 2020 15:37",
-      createdAt: "Friday, October 23rd 2020 15:37",
-      isPublished: true);
+  List contentTypes = [];
+  List<String> keys = [];
+  bool loading = false;
 
-  static final BookingEnrty secondEntry = BookingEnrty(
-      id: 2,
-      content: "Some Content",
-      publishedAt: "N/A",
-      createdAt: "Friday, October 23rd 2020 15:37",
-      isPublished: false);
+  void initState() {
+    super.initState();
+    setState(() {
+      loading = true;
+    });
+    _getContentTypeData();
+  }
 
-  List<BookingEnrty> bookingEntries = [firstEntry, secondEntry];
+  void _getContentTypeData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String adminURL = prefs.getString('adminURL');
+    String token = prefs.getString('token');
+
+    print('http://${adminURL}/${widget.data['url']}');
+    var response = await http.get('http://${adminURL}/${widget.data['url']}',
+        headers: {'Authorization': 'Bearer $token'});
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      Map anyContentType = jsonResponse[0];
+
+      setState(() {
+        contentTypes = jsonResponse;
+        keys = anyContentType.keys.toList();
+        loading = false;
+      });
+    } else {
+      print('data fetch failed');
+    }
+
+    setState(() {
+      loading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +67,11 @@ class _BookingsListState extends State<BookingsList> {
           centerTitle: true,
           backgroundColor: strapiColor,
           // leading: _isSearching ? const BackButton() : Container(),
-          title: _isSearching ? _buildSearchField() : _buildTitle(),
+          title: _isSearching
+              ? _buildSearchField()
+              : _buildTitle(widget.data['title']),
           actions: _buildActions(),
         ),
-        drawer: getDrawer(context),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {},
@@ -51,147 +81,137 @@ class _BookingsListState extends State<BookingsList> {
           //mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 16),
-            // Padding(
-            //   padding: EdgeInsets.only(left: 16.0, right: 16.0),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     children: [
-            //       Text(
-            //         'Id',
-            //         style: legendStyle,
+            SizedBox(
+              height: 20,
+            ),
+            loading
+                ? (Center(
+                    child: CircularProgressIndicator(),
+                  ))
+                : (Expanded(
+                    child: contentTypes.length > 0
+                        ? (renderCollectionTypes())
+                        : (Text(
+                            'No content found',
+                            style: TextStyle(color: white),
+                          )),
+                  ))
+
+            // ListView.builder(
+            //     itemCount: bookingEntries.length,
+            //     shrinkWrap: true,
+            //     itemBuilder: (context, index) {
+            // return Padding(
+            //   padding: const EdgeInsets.only(bottom: 4.0),
+            //   child: SizedBox(
+            //     child: Card(
+            //       elevation: 5,
+            //       child: Padding(
+            //         padding: EdgeInsets.only(left: 6.0, right: 0.0),
+            //         child: ExpansionTile(
+            //           trailing: PopupMenuButton<String>(
+            //             onSelected: (String choice) {
+            //               if (choice == 'Delete') {
+            //                 setState(() {
+            //                   bookingEntries.removeAt(index);
+            //                 });
+            //               }
+            //             },
+            //             itemBuilder: (context) {
+            //               return DropDownItem.choices
+            //                   .map((String choice) {
+            //                 return PopupMenuItem<String>(
+            //                   value: choice,
+            //                   child: Row(
+            //                     children: [
+            //                       Icon((choice == 'Edit')
+            //                           ? Icons.edit
+            //                           : Icons.delete),
+            //                       SizedBox(width: 8),
+            //                       Text(choice),
+            //                     ],
+            //                   ),
+            //                 );
+            //               }).toList();
+            //             },
+            //           ),
+            //           title: Row(
+            //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //             children: [
+            //               Text('${bookingEntries[index].id}'),
+            //               Text('${bookingEntries[index].content}'),
+            //               Container(
+            //                 height: 25,
+            //                 width: 75,
+            //                 padding: EdgeInsets.all(2),
+            //                 decoration: bookingEntries[index].isPublished
+            //                     ? BoxDecoration(
+            //                         color: Colors.green[50],
+            //                         border: Border.all(
+            //                             width: 1, color: Colors.green))
+            //                     : BoxDecoration(
+            //                         color: Colors.red[100],
+            //                         border: Border.all(
+            //                             width: 1,
+            //                             color: Colors.redAccent),
+            //                       ),
+            //                 child: Center(
+            //                   child: bookingEntries[index].isPublished
+            //                       ? Text(
+            //                           'Published',
+            //                           style: TextStyle(
+            //                               color: Colors.green,
+            //                               fontSize: 12),
+            //                         )
+            //                       : Text(
+            //                           'Unpublished',
+            //                           style: TextStyle(
+            //                               color: Colors.redAccent,
+            //                               fontSize: 12),
+            //                         ),
+            //                 ),
+            //               ),
+            //             ],
+            //           ),
+            //           children: <Widget>[
+            //             Text(
+            //               'Published at:  ${bookingEntries[index].publishedAt}',
+            //               style: TextStyle(
+            //                 color: darkNavyBlue,
+            //                 fontSize: 16,
+            //               ),
+            //             ),
+            //             SizedBox(height: 5),
+            //             Text(
+            //               'Created at:  ${bookingEntries[index].createdAt}',
+            //               style: TextStyle(
+            //                 color: Colors.grey,
+            //                 fontSize: 16,
+            //               ),
+            //             ),
+            //             SizedBox(height: 16),
+            //             SizedBox(height: 8),
+            //           ],
+            //         ),
             //       ),
-            //       Text(
-            //         'Content',
-            //         style: legendStyle,
-            //       ),
-            //       Text(
-            //         'Status',
-            //         style: legendStyle,
-            //       ),
-            //       Text(
-            //         'More',
-            //         style: legendStyle,
-            //       ),
-            //     ],
+            //     ),
             //   ),
-            // ),
-            // SizedBox(height: 8),
-            ListView.builder(
-                itemCount: bookingEntries.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 4.0),
-                    child: SizedBox(
-                      child: Card(
-                        elevation: 5,
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 6.0, right: 0.0),
-                          child: ExpansionTile(
-                            trailing: PopupMenuButton<String>(
-                              onSelected: (String choice) {
-                                if (choice == 'Delete') {
-                                  setState(() {
-                                    bookingEntries.removeAt(index);
-                                  });
-                                }
-                              },
-                              itemBuilder: (context) {
-                                return DropDownItem.choices
-                                    .map((String choice) {
-                                  return PopupMenuItem<String>(
-                                    value: choice,
-                                    child: Row(
-                                      children: [
-                                        Icon((choice == 'Edit')
-                                            ? Icons.edit
-                                            : Icons.delete),
-                                        SizedBox(width: 8),
-                                        Text(choice),
-                                      ],
-                                    ),
-                                  );
-                                }).toList();
-                              },
-                            ),
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('${bookingEntries[index].id}'),
-                                Text('${bookingEntries[index].content}'),
-                                Container(
-                                  height: 25,
-                                  width: 75,
-                                  padding: EdgeInsets.all(2),
-                                  decoration: bookingEntries[index].isPublished
-                                      ? BoxDecoration(
-                                          color: Colors.green[50],
-                                          border: Border.all(
-                                              width: 1, color: Colors.green))
-                                      : BoxDecoration(
-                                          color: Colors.red[100],
-                                          border: Border.all(
-                                              width: 1,
-                                              color: Colors.redAccent),
-                                        ),
-                                  child: Center(
-                                    child: bookingEntries[index].isPublished
-                                        ? Text(
-                                            'Published',
-                                            style: TextStyle(
-                                                color: Colors.green,
-                                                fontSize: 12),
-                                          )
-                                        : Text(
-                                            'Unpublished',
-                                            style: TextStyle(
-                                                color: Colors.redAccent,
-                                                fontSize: 12),
-                                          ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            children: <Widget>[
-                              Text(
-                                'Published at:  ${bookingEntries[index].publishedAt}',
-                                style: TextStyle(
-                                  color: darkNavyBlue,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                'Created at:  ${bookingEntries[index].createdAt}',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              SizedBox(height: 8),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                })
+            // );
+            //     })
           ],
         ));
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(String title) {
     return Column(
       children: [
         Text(
-          'Bookings',
+          title,
           style: TextStyle(color: Colors.white),
         ),
         SizedBox(height: 4),
         Text(
-          '${bookingEntries.length} Entries found',
+          '${contentTypes.length} Entries found',
           style: TextStyle(color: Colors.white, fontSize: 10),
         ),
       ],
@@ -410,6 +430,42 @@ class _BookingsListState extends State<BookingsList> {
             );
           },
         );
+      },
+    );
+  }
+
+  ListView renderCollectionTypes() {
+    return ListView.builder(
+      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
+      itemCount: contentTypes.length,
+      itemBuilder: (context, index) {
+        Map item = contentTypes[index];
+        var randomField = item[keys[1]];
+        return Container(
+            child: Padding(
+          padding: EdgeInsets.all(10),
+          child: Card(
+            child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    Text(
+                      'key: ${keys[1]}',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'value: $randomField',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ],
+                )),
+          ),
+        ));
       },
     );
   }

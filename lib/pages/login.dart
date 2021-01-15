@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,6 +13,60 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
+  String adminURL = '';
+  String email = '';
+  String password = '';
+
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _loginUser() async {
+    var response = await http.post('http://${this.adminURL}/admin/login',
+        body: {'email': email, 'password': password});
+    if (response.statusCode == 200) {
+      Map jsonResponse = jsonDecode(response.body);
+
+      String token = jsonResponse['data']['token'];
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', token);
+      prefs.setString('adminURL', adminURL);
+      prefs.setString('user', json.encode(jsonResponse['data']['user']));
+
+      List<dynamic> drawerData = await _getDrawerData(token);
+
+      print(drawerData);
+
+      if (drawerData != null) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePage(
+                      drawerData: drawerData,
+                      user: jsonResponse['data']['user'],
+                    )));
+      } else {
+        print('login failed');
+      }
+    } else {
+      print('Login failed');
+    }
+  }
+
+  Future<List> _getDrawerData(String token) async {
+    var response = await http.get(
+      'http://$adminURL/content-manager/content-types',
+      headers: {"Authorization": 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      return jsonResponse['data'];
+    } else {
+      return null;
+    }
+  }
 
   Widget _buildForgotPasswordBtn() {
     return Container(
@@ -58,8 +115,9 @@ class _LoginScreenState extends State<LoginScreen> {
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomePage())),
+        onPressed: () {
+          _loginUser();
+        },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
@@ -105,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   physics: AlwaysScrollableScrollPhysics(),
                   padding: EdgeInsets.symmetric(
                     horizontal: 40.0,
-                    vertical: 120,
+                    vertical: 70,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -113,6 +171,44 @@ class _LoginScreenState extends State<LoginScreen> {
                       Image.asset(
                         'assets/images/logo.png',
                         height: 100,
+                      ),
+                      SizedBox(height: 30.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Admin URL',
+                            style: labelStyle,
+                          ),
+                          SizedBox(height: 10.0),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            decoration: boxDecorationStyle,
+                            height: 60.0,
+                            child: TextField(
+                              onChanged: (value) {
+                                setState(() {
+                                  adminURL = value;
+                                });
+                              },
+                              keyboardType: TextInputType.emailAddress,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'OpenSans',
+                              ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.only(top: 14.0),
+                                prefixIcon: Icon(
+                                  Icons.link,
+                                  color: Colors.white,
+                                ),
+                                hintText: 'Enter Admin URL',
+                                hintStyle: hintTextStyle,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 30.0),
                       Column(
@@ -128,6 +224,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             decoration: boxDecorationStyle,
                             height: 60.0,
                             child: TextField(
+                              onChanged: (value) {
+                                setState(() {
+                                  email = value;
+                                });
+                              },
                               keyboardType: TextInputType.emailAddress,
                               style: TextStyle(
                                 color: Colors.white,
@@ -163,6 +264,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             decoration: boxDecorationStyle,
                             height: 60.0,
                             child: TextField(
+                              onChanged: (value) {
+                                password = value;
+                              },
                               obscureText: true,
                               style: TextStyle(
                                 color: Colors.white,
