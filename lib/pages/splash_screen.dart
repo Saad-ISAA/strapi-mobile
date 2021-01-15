@@ -13,17 +13,19 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    _checkUserIsLoggedIn();
     super.initState();
+
+    _checkUserIsLoggedIn();
   }
 
   void _checkUserIsLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token');
-    String adminURL = prefs.getString('adminURL');
-    Map user = json.decode(prefs.getString('user'));
 
     if (token != null) {
+      String adminURL = prefs.getString('adminURL');
+      Map user = json.decode(prefs.getString('user'));
+
       List<dynamic> drawerData = await _getDrawerData(token, adminURL);
 
       if (drawerData != null) {
