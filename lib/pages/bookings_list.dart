@@ -434,40 +434,81 @@ class _BookingsListState extends State<BookingsList> {
     );
   }
 
-  ListView renderCollectionTypes() {
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: contentTypes.length,
-      itemBuilder: (context, index) {
-        Map item = contentTypes[index];
-        var randomField = item[keys[1]];
-        return Container(
-            child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Card(
-            child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Text(
-                      'key: ${keys[1]}',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      'value: $randomField',
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ],
-                )),
-          ),
+  Widget renderCollectionTypes() {
+    List<String> onlyStringIntFieldsKeys = [];
+    Map anyContentType = contentTypes[0];
+
+    keys.forEach((key) {
+      if (anyContentType[key].runtimeType == String ||
+          anyContentType[key].runtimeType == int ||
+          anyContentType[key].runtimeType == double) {
+        onlyStringIntFieldsKeys.add(key);
+      }
+    });
+
+    print(onlyStringIntFieldsKeys);
+    return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: DataTable(
+              columns: onlyStringIntFieldsKeys.map((key) {
+                return DataColumn(
+                    label: Text(
+                  key,
+                  style: dialogText,
+                ));
+              }).toList(),
+              rows: contentTypes.map((content) {
+                return DataRow(
+                  cells: onlyStringIntFieldsKeys
+                      .map(
+                        (key) => DataCell(
+                          Text(
+                            content[key].toString(),
+                            style: legendStyle,
+                          ),
+                        ),
+                      )
+                      .toList(),
+                );
+              }).toList()),
         ));
-      },
-    );
+
+    // return ListView.builder(
+    //   shrinkWrap: true,
+    //   scrollDirection: Axis.vertical,
+    //   itemCount: contentTypes.length,
+    //   itemBuilder: (context, index) {
+    //     Map item = contentTypes[index];
+    //     var randomField = item[keys[1]];
+
+    //     // return Container(
+    //     //     child: Padding(
+    //     //   padding: EdgeInsets.all(10),
+    //     //   child: Card(
+    //     //     child: Padding(
+    //     //         padding: EdgeInsets.all(10),
+    //     //         child: Column(
+    //     //           children: [
+    //     //             Text(
+    //     //               'key: ${keys[1]}',
+    //     //               style:
+    //     //                   TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+    //     //             ),
+    //     //             SizedBox(
+    //     //               height: 5,
+    //     //             ),
+    //     //             Text(
+    //     //               'value: $randomField',
+    //     //               style: TextStyle(fontSize: 15),
+    //     //             ),
+    //     //           ],
+    //     //         )),
+    //     //   ),
+    //     // ));
+    //   },
+    // );
   }
 
   TextStyle legendStyle = TextStyle(color: white, fontSize: 16);

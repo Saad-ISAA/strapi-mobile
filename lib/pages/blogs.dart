@@ -1,15 +1,28 @@
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:strapi_flutter_cms/shared/colors.dart';
 
-class BlogPage extends StatelessWidget {
+class BlogsPage extends StatefulWidget {
+  @override
+  _BlogsPageState createState() => _BlogsPageState();
+}
+
+class _BlogsPageState extends State<BlogsPage> {
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: darkNavyBlue,
-      child: Center(
-        child: Text(
-          'Main Entry Page',
-          style: TextStyle(color: white),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Blogs'),
+        centerTitle: true,
+      ),
+      body: Container(
+        child: ListView(
+          scrollDirection: Axis.vertical,
+          children: [Text('hello')],
         ),
       ),
     );

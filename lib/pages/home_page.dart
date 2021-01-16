@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:strapi_flutter_cms/pages/blogs.dart';
+import 'package:strapi_flutter_cms/pages/IntroductryPage.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/drawer.dart';
 
@@ -20,8 +20,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        // backgroundColor: darkNavyBlue,
         appBar: AppBar(
-          title: Text('Main Page'),
+          title: Text('Welcome'),
           backgroundColor: strapiColor,
           centerTitle: true,
         ),
@@ -29,7 +30,7 @@ class _HomePageState extends State<HomePage> {
           drawerData: widget.drawerData,
           user: widget.user,
         ),
-        body: BlogPage(),
+        body: IntroductoryPage(user: widget.user),
       ),
     );
   }
