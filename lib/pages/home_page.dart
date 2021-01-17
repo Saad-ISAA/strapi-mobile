@@ -22,7 +22,26 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         // backgroundColor: darkNavyBlue,
         appBar: AppBar(
-          title: Text('Welcome'),
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/logo_white.png',
+                height: 15,
+              ),
+              SizedBox(width: 8),
+              Text(
+                'strapi',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: white,
+                ),
+              ),
+            ],
+          ),
           backgroundColor: strapiColor,
           centerTitle: true,
         ),

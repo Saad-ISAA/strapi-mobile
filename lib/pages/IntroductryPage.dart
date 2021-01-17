@@ -44,7 +44,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -54,16 +54,62 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
               height: 15,
             ),
             loading ? (CircularProgressIndicator()) : (buildBlogsCard(blogs)),
-            _buildSeeAllBlogsButton()
+            SizedBox(
+              height: 10,
+            ),
+            _buildSeeAllBlogsButton(),
+            SizedBox(
+              height: 10,
+            ),
+            buildBottomOption(
+                'Documentation',
+                'Discover the concepts,reference guides and tutorials',
+                Icon(
+                  Icons.book,
+                  size: 20,
+                  color: strapiColor,
+                )),
+            buildBottomOption(
+                'Code samples',
+                'Learn by testing real projects developed the community',
+                Icon(
+                  Icons.code,
+                  size: 20,
+                  color: strapiColor,
+                ))
           ],
         ),
       ),
     );
   }
 
+  Widget buildBottomOption(String title, String subtitle, Icon icon) {
+    return Container(
+      child: Column(
+        children: [
+          ListTile(
+            leading: icon,
+            subtitle: Text(
+              subtitle,
+              style: TextStyle(fontSize: 12),
+            ),
+            title: Text(
+              title,
+              style: TextStyle(fontSize: 15, color: Colors.grey[600]),
+            ),
+            onTap: () {},
+          ),
+          Divider(),
+        ],
+      ),
+    );
+  }
+
   Widget buildIntroCard() {
-    return Card(
-      elevation: 5,
+    return Container(
+      decoration: BoxDecoration(
+          border: Border.all(color: strapiColor),
+          borderRadius: BorderRadius.all(Radius.circular(20))),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -107,8 +153,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: blogs.map((blog) {
-        return Card(
-          elevation: 5,
+        return Container(
           child: InkWell(
             onTap: () {},
             child: Padding(
@@ -120,7 +165,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                     blog['title'],
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey[800],
+                      color: strapiColor,
                       fontSize: 20,
                     ),
                   ),
@@ -142,31 +187,24 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
   }
 
   Widget _buildSeeAllBlogsButton() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 25.0),
-      // width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => BlogsPage()));
-        },
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: darkNavyBlue,
-        child: Text(
-          'SEE MORE ON BLOGS',
-          style: TextStyle(
+    return FlatButton(
+      onPressed: () {},
+      child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              border: Border.all(
             color: strapiColor,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-          ),
-        ),
-      ),
+          )),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'SEE MORE ON BLOGS',
+                style: TextStyle(color: Colors.grey[800]),
+              ),
+            ],
+          )),
     );
   }
 }
