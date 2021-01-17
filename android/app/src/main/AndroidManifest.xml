@@ -44,4 +44,8 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+    <!-- video straming permission -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- video streaming permission end -->
 </manifest>

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/models/training_videos.dart';
+import 'package:strapi_flutter_cms/pages/videoPlayerScreen.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
@@ -114,6 +115,14 @@ class _TrainingVIdeosPageState extends State<TrainingVIdeosPage> {
           child: Card(
             elevation: 0,
             child: ListTile(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => VideoPlayerPage(
+                              video: trainingVideos[index],
+                            )));
+              },
               leading: AspectRatio(
                 aspectRatio: 4 / 3,
                 child: SizedBox(

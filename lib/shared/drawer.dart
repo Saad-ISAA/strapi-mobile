@@ -26,6 +26,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('token');
     prefs.remove('adminURL');
+    prefs.remove('user');
 
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginScreen()));
