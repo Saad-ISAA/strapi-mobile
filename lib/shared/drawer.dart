@@ -28,8 +28,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     prefs.remove('adminURL');
     prefs.remove('user');
 
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 
   Widget buildDrawerRowEntry({String title, Function onTap}) {
@@ -57,8 +56,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     );
   }
 
-  Widget buildDrawerRowEntryWithCustomIcon(
-      {String title, Function onTap, IconData icon}) {
+  Widget buildDrawerRowEntryWithCustomIcon({String title, Function onTap, IconData icon}) {
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -131,11 +129,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           maxRadius: 30,
                         ),
                         SizedBox(height: 5),
-                        Text(user['firstname'] + user['lastname'],
-                            style: TextStyle(
-                                color: white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600)),
+                        Text(user['firstname'] + user['lastname'], style: TextStyle(color: white, fontSize: 15, fontWeight: FontWeight.w600)),
                         SizedBox(height: 5),
                         Text(user['email'], style: TextStyle(color: white)),
                       ],
@@ -161,10 +155,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           children: [
                             Text(
                               'COLLECTION TYPES',
-                              style: TextStyle(
-                                  color: Colors.white38,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
+                              style: TextStyle(color: Colors.white38, fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             Icon(
                               Icons.search,
@@ -177,20 +168,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             children: widget.drawerData != null
                                 ? widget.drawerData.map((item) {
                                     return buildDrawerRowEntry(
-                                        title: item['label'],
+                                        title: item['apiID'],
                                         onTap: () {
-                                          String url =
-                                              'content-manager/explorer/${item['uid']}';
-
+                                          String url = 'content-manager/collection-types/${item['uid']}';
+// http://35.208.163.99:1337/content-manager/collection-types/application::booking.booking?page=1&pageSize=10&_sort=address:ASC
                                           var data = {
                                             'url': url,
-                                            'title': item['label'],
+                                            'title': item['apiID'],
                                           };
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                                  BookingsList(
+                                              builder: (context) => BookingsList(
                                                 data: data,
                                               ),
                                             ),
@@ -221,19 +210,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         SizedBox(height: 48),
                         Text(
                           'PLUGINS',
-                          style: TextStyle(
-                              color: Colors.white38,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Colors.white38, fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        buildDrawerRowEntryWithCustomIcon(
-                            title: 'Content-Types Builder',
-                            onTap: () {},
-                            icon: Icons.brush),
-                        buildDrawerRowEntryWithCustomIcon(
-                            title: 'Media Library',
-                            onTap: () {},
-                            icon: Icons.cloud_upload),
+                        buildDrawerRowEntryWithCustomIcon(title: 'Content-Types Builder', onTap: () {}, icon: Icons.brush),
+                        buildDrawerRowEntryWithCustomIcon(title: 'Media Library', onTap: () {}, icon: Icons.cloud_upload),
                         buildDrawerRowEntryWithCustomIcon(
                             title: 'Training',
                             onTap: () => Navigator.push(
@@ -246,24 +226,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         SizedBox(height: 48),
                         Text(
                           'GENERAL',
-                          style: TextStyle(
-                              color: Colors.white38,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Colors.white38, fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         buildDrawerRowEntryWithCustomIcon(
                           title: 'Marketplace',
                           onTap: () {},
                           icon: Icons.local_grocery_store,
                         ),
-                        buildDrawerRowEntryWithCustomIcon(
-                            title: 'Plugins',
-                            onTap: () {},
-                            icon: Icons.storage),
-                        buildDrawerRowEntryWithCustomIcon(
-                            title: 'Settings',
-                            onTap: () {},
-                            icon: Icons.settings),
+                        buildDrawerRowEntryWithCustomIcon(title: 'Plugins', onTap: () {}, icon: Icons.storage),
+                        buildDrawerRowEntryWithCustomIcon(title: 'Settings', onTap: () {}, icon: Icons.settings),
                         buildDrawerRowEntryWithCustomIcon(
                             title: 'Logout',
                             onTap: () {

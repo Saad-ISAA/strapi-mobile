@@ -22,8 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loginUser() async {
-    var response = await http.post('http://${this.adminURL}/admin/login',
-        body: {'email': email, 'password': password});
+    var response = await http.post('https://${this.adminURL}/admin/login', body: {'email': email, 'password': password});
     if (response.statusCode == 200) {
       Map jsonResponse = jsonDecode(response.body);
 
@@ -56,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<List> _getDrawerData(String token) async {
     var response = await http.get(
-      'http://$adminURL/content-manager/content-types',
+      'https://$adminURL/content-manager/content-types',
       headers: {"Authorization": 'Bearer $token'},
     );
 
