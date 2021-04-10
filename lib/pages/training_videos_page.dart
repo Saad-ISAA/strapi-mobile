@@ -40,7 +40,8 @@ class _TrainingVIdeosPageState extends State<TrainingVIdeosPage> {
   }
 
   void fetchTrainingVideos() async {
-    var jsonResponse = await http.get('https://strapi.io/videos');
+    var url = Uri.parse('https://strapi.io/videos');
+    var jsonResponse = await http.get(url);
     if (jsonResponse.statusCode == 200) {
       List trainVideos = jsonDecode(jsonResponse.body);
       setState(() {

@@ -22,8 +22,9 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
   }
 
   void _getCurrentBlogs() async {
-    var response = await http.get(
+    var url = Uri.parse(
         'https://strapi.io/api/blog-posts?_limit=2&_sort=publishedAt:desc');
+    var response = await http.get(url);
 
     if (response.statusCode == 200) {
       List responseBody = jsonDecode(response.body);

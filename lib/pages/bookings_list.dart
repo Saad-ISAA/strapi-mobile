@@ -36,9 +36,11 @@ class _BookingsListState extends State<BookingsList> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String adminURL = prefs.getString('adminURL');
     String token = prefs.getString('token');
+    var url = Uri.parse('https://${adminURL}/${widget.data['url']}');
 
     print('https://${adminURL}/${widget.data['url']}');
-    var response = await http.get('https://${adminURL}/${widget.data['url']}', headers: {'Authorization': 'Bearer $token'});
+    var response =
+        await http.get(url, headers: {'Authorization': 'Bearer $token'});
 
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
@@ -66,7 +68,9 @@ class _BookingsListState extends State<BookingsList> {
           centerTitle: true,
           backgroundColor: strapiColor,
           // leading: _isSearching ? const BackButton() : Container(),
-          title: _isSearching ? _buildSearchField() : _buildTitle(widget.data['title']),
+          title: _isSearching
+              ? _buildSearchField()
+              : _buildTitle(widget.data['title']),
           actions: _buildActions(),
         ),
         floatingActionButton: FloatingActionButton(
@@ -237,7 +241,8 @@ class _BookingsListState extends State<BookingsList> {
             Icons.clear,
           ),
           onPressed: () {
-            if (_searchQueryController == null || _searchQueryController.text.isEmpty) {
+            if (_searchQueryController == null ||
+                _searchQueryController.text.isEmpty) {
               Navigator.pop(context);
               return;
             }
@@ -271,7 +276,8 @@ class _BookingsListState extends State<BookingsList> {
   }
 
   void _startSearch() {
-    ModalRoute.of(context).addLocalHistoryEntry(LocalHistoryEntry(onRemove: _stopSearching));
+    ModalRoute.of(context)
+        .addLocalHistoryEntry(LocalHistoryEntry(onRemove: _stopSearching));
 
     setState(() {
       _isSearching = true;
@@ -434,7 +440,9 @@ class _BookingsListState extends State<BookingsList> {
     Map anyContentType = contentTypes[0];
 
     keys.forEach((key) {
-      if (anyContentType[key].runtimeType == String || anyContentType[key].runtimeType == int || anyContentType[key].runtimeType == double) {
+      if (anyContentType[key].runtimeType == String ||
+          anyContentType[key].runtimeType == int ||
+          anyContentType[key].runtimeType == double) {
         onlyStringIntFieldsKeys.add(key);
       }
     });

@@ -41,14 +41,16 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     } else {
       Future.delayed(const Duration(milliseconds: 2500), () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
       });
     }
   }
 
   Future<List> _getDrawerData(String token, String adminURL) async {
+    var url = Uri.parse('https://$adminURL/content-manager/content-types');
     var response = await http.get(
-      'https://$adminURL/content-manager/content-types',
+      url,
       headers: {"Authorization": 'Bearer $token'},
     );
 
