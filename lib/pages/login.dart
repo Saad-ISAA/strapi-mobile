@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:strapi_flutter_cms/models/drawer_data_model.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,48 +10,97 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class LoginScreen extends StatefulWidget {
+  final String adminURL;
+
+  const LoginScreen({Key key, this.adminURL}) : super(key: key);
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
-  String adminURL = '';
-  String email = '';
-  String password = '';
+  TextEditingController urlController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  String strapiVersion;
 
   void initState() {
     super.initState();
+    urlController.text = widget.adminURL;
+    _getEmailAndPassword();
+  }
+
+  void _getEmailAndPassword() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('email')) {
+      setState(() {
+        emailController.text = prefs.getString('email');
+        passwordController.text = prefs.getString('password');
+      });
+    }
+  }
+
+  Future<bool> _checkStrapiVersion(String token) async {
+    var url = Uri.parse('${urlController.text}/admin/information');
+    try {
+      var response = await http.get(url,
+          headers: {HttpHeaders.authorizationHeader: "Bearer " + token});
+      strapiVersion = jsonDecode(response.body)["data"]["strapiVersion"];
+      return int.parse(strapiVersion.split(".")[1]) <= 3 ? false : true;
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<void> _loginUser() async {
-    var url = Uri.parse('https://${this.adminURL}/admin/login');
-    var response =
-        await http.post(url, body: {'email': email, 'password': password});
+    var url = Uri.parse('${urlController.text}/admin/login');
+    print(url);
+    var response = await http.post(url, body: {
+      'email': emailController.text,
+      'password': passwordController.text
+    });
+
     if (response.statusCode == 200) {
       Map jsonResponse = jsonDecode(response.body);
 
       String token = jsonResponse['data']['token'];
+      bool checkVersion =
+          await _checkStrapiVersion(jsonResponse['data']['token']);
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('token', token);
-      prefs.setString('adminURL', adminURL);
-      prefs.setString('user', json.encode(jsonResponse['data']['user']));
+      if (checkVersion) {
+        await saveStringsToPrefs(token, jsonResponse['data']['user']);
 
-      List<dynamic> drawerData = await _getDrawerData(token);
-
-      print(drawerData);
-
-      if (drawerData != null) {
-        Navigator.pushReplacement(
+        List<dynamic> drawerData = await _getDrawerData(token);
+        if (drawerData != null) {
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => HomePage(
-                      drawerData: drawerData,
-                      user: jsonResponse['data']['user'],
-                    )));
+              builder: (context) => HomePage(
+                drawerData: drawerData,
+                user: jsonResponse['data']['user'],
+              ),
+            ),
+          );
+        } else {
+          print('drawer data is null');
+        }
       } else {
-        print('login failed');
+        return showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content:
+                    Text("Sorry your version v$strapiVersion is not supported"),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.forward),
+                  )
+                ],
+              );
+            });
       }
     } else {
       print('Login failed');
@@ -56,15 +108,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<List> _getDrawerData(String token) async {
-    var url = Uri.parse('https://$adminURL/content-manager/content-types');
-    var response = await http.get(
-      url,
-      headers: {"Authorization": 'Bearer $token'},
-    );
+    var url = Uri.parse('${urlController.text}/content-manager/content-types');
+    var response =
+        await http.get(url, headers: {"Authorization": 'Bearer $token'});
 
     if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      return jsonResponse['data'];
+      List jsonResponse = jsonDecode(response.body)['data'] as List;
+      List drawerData = jsonResponse
+          .where((element) => element["isDisplayed"] == true)
+          .toList();
+      return drawerData;
     } else {
       return null;
     }
@@ -170,34 +223,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Image.asset(
-                        'assets/images/logo.png',
-                        height: 100,
-                      ),
+                      Image.asset('assets/images/logo.png', height: 100),
                       SizedBox(height: 30.0),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            'Admin URL',
-                            style: labelStyle,
-                          ),
+                          Text('Admin URL', style: labelStyle),
                           SizedBox(height: 10.0),
                           Container(
                             alignment: Alignment.centerLeft,
                             decoration: boxDecorationStyle,
                             height: 60.0,
                             child: TextField(
-                              onChanged: (value) {
-                                setState(() {
-                                  adminURL = value;
-                                });
-                              },
                               keyboardType: TextInputType.emailAddress,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'OpenSans',
                               ),
+                              controller: urlController,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 contentPadding: EdgeInsets.only(top: 14.0),
@@ -205,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Icons.link,
                                   color: Colors.white,
                                 ),
-                                hintText: 'Enter Admin URL',
+                                hintText: 'http://192.168.0.0',
                                 hintStyle: hintTextStyle,
                               ),
                             ),
@@ -226,16 +269,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             decoration: boxDecorationStyle,
                             height: 60.0,
                             child: TextField(
-                              onChanged: (value) {
-                                setState(() {
-                                  email = value;
-                                });
-                              },
                               keyboardType: TextInputType.emailAddress,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'OpenSans',
                               ),
+                              controller: emailController,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 contentPadding: EdgeInsets.only(top: 14.0),
@@ -266,14 +305,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             decoration: boxDecorationStyle,
                             height: 60.0,
                             child: TextField(
-                              onChanged: (value) {
-                                password = value;
-                              },
                               obscureText: true,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'OpenSans',
                               ),
+                              controller: passwordController,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 contentPadding: EdgeInsets.only(top: 14.0),
@@ -300,6 +337,18 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  saveStringsToPrefs(String token, Map user) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', token);
+    prefs.setString('adminURL', urlController.text);
+    prefs.setString('user', json.encode(user));
+
+    if (_rememberMe) {
+      prefs.setString('email', emailController.text);
+      prefs.setString('password', passwordController.text);
+    }
   }
 }
 

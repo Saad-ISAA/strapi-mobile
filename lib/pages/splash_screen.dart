@@ -11,6 +11,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String adminURL;
   @override
   void initState() {
     super.initState();
@@ -21,9 +22,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void _checkUserIsLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token');
+    if (prefs.containsKey('adminURL')) {
+      adminURL = prefs.getString('adminURL');
+    }
 
-    if (token != null) {
-      String adminURL = prefs.getString('adminURL');
+    if (prefs.containsKey("token")) {
       Map user = json.decode(prefs.getString('user'));
 
       List<dynamic> drawerData = await _getDrawerData(token, adminURL);
@@ -42,7 +45,9 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       Future.delayed(const Duration(milliseconds: 2500), () {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => LoginScreen(adminURL: adminURL)));
       });
     }
   }

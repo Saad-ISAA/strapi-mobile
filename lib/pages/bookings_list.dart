@@ -23,6 +23,7 @@ class _BookingsListState extends State<BookingsList> {
   List contentTypes = [];
   List<String> keys = [];
   bool loading = false;
+  Map filters = {};
 
   void initState() {
     super.initState();
@@ -32,15 +33,54 @@ class _BookingsListState extends State<BookingsList> {
     _getContentTypeData();
   }
 
+  Future<void> _getFilters(var adminURL, String token) async {
+    var url = Uri.parse(
+        '${adminURL}/content-manager/content-types/${widget.data['item_uid']}/configuration');
+
+    print(url);
+    var response =
+        await http.get(url, headers: {'Authorization': 'Bearer $token'});
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      List selectedFilters =
+          jsonResponse["data"]["contentType"]["layouts"]["list"];
+      print(selectedFilters);
+      // List availableFilters = [];
+
+      List availableFilters =
+          jsonResponse["data"]["contentType"]["metadatas"].keys.toList();
+      // jsonResponse["data"]["contentType"]["layouts"]["edit"].forEach((edit) {
+      //   edit.forEach((value) {
+      //     if (value["size"] <= 6) {
+      //       availableFilters.add(value["name"]);
+      //     }
+      //   });
+      // });
+      print(availableFilters);
+      availableFilters.forEach((element) {
+        filters.putIfAbsent(element, () => false);
+      });
+
+      selectedFilters.forEach((element) {
+        filters.update(element, (value) => true);
+      });
+    } else {
+      print('data fetch failed');
+    }
+  }
+
   void _getContentTypeData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String adminURL = prefs.getString('adminURL');
     String token = prefs.getString('token');
-    var url = Uri.parse('https://${adminURL}/${widget.data['url']}');
+    var url = Uri.parse('${adminURL}/${widget.data['url']}');
 
-    print('https://${adminURL}/${widget.data['url']}');
+    print('${adminURL}/${widget.data['url']}');
     var response =
         await http.get(url, headers: {'Authorization': 'Bearer $token'});
+
+    await _getFilters(adminURL, token);
 
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
@@ -48,7 +88,9 @@ class _BookingsListState extends State<BookingsList> {
 
       setState(() {
         contentTypes = jsonResponse["results"];
-        keys = contentTypes[0].keys.toList();
+        if (contentTypes.isNotEmpty) {
+          keys = contentTypes[0].keys.toList();
+        }
         loading = false;
       });
     } else {
@@ -86,17 +128,21 @@ class _BookingsListState extends State<BookingsList> {
               height: 20,
             ),
             loading
-                ? (Center(
-                    child: CircularProgressIndicator(),
-                  ))
-                : (Expanded(
+                ? Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : Expanded(
                     child: contentTypes.length > 0
-                        ? (renderCollectionTypes())
-                        : (Text(
-                            'No content found',
-                            style: TextStyle(color: white),
-                          )),
-                  ))
+                        ? renderCollectionTypes()
+                        : Center(
+                            child: Text(
+                              'No content found',
+                              style: TextStyle(color: white),
+                            ),
+                          ),
+                  )
 
             // ListView.builder(
             //     itemCount: bookingEntries.length,
@@ -267,7 +313,7 @@ class _BookingsListState extends State<BookingsList> {
               Icons.filter_list,
             ),
             onPressed: () {
-              showFilterDiag(context);
+              showFilterDiag(context).then((value) => setState(() {}));
             },
           ),
         ],
@@ -305,17 +351,9 @@ class _BookingsListState extends State<BookingsList> {
     });
   }
 
-  bool showContent = true;
-  bool showCreatedAt = true;
-  bool showID = true;
-  bool showPublishedAt = true;
-  bool showTesting = false;
-  bool showTestingAgain = false;
-  bool showTextField = false;
-  bool showUpdatedAt = false;
-
-  dynamic showFilterDiag(context) {
+  Future<dynamic> showFilterDiag(context) {
     return showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return StatefulBuilder(
@@ -330,102 +368,42 @@ class _BookingsListState extends State<BookingsList> {
                     style: TextStyle(fontSize: 20, color: white),
                   ),
                   SizedBox(height: 16),
-                  CheckboxListTile(
-                      activeColor: strapiColor,
-                      title: Text(
-                        'Content',
-                        style: dialogText,
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        Column(
+                          children: List.generate(
+                            filters.length,
+                            (index) => CheckboxListTile(
+                              activeColor: strapiColor,
+                              title: Text(
+                                filters.keys.toList()[index],
+                                style: dialogText,
+                              ),
+                              value: filters[filters.keys.toList()[index]],
+                              onChanged: (value) {
+                                setState(() {
+                                  filters[filters.keys.toList()[index]] = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        child: Text("Apply"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                       ),
-                      value: showContent,
-                      onChanged: (value) {
-                        setState(() {
-                          showContent = value;
-                        });
-                      }),
-                  CheckboxListTile(
-                      activeColor: strapiColor,
-                      title: Text(
-                        'Created At',
-                        style: dialogText,
-                      ),
-                      value: showCreatedAt,
-                      onChanged: (value) {
-                        setState(() {
-                          showCreatedAt = value;
-                        });
-                      }),
-                  CheckboxListTile(
-                      activeColor: strapiColor,
-                      title: Text(
-                        'ID',
-                        style: dialogText,
-                      ),
-                      value: showID,
-                      onChanged: (value) {
-                        setState(() {
-                          showID = value;
-                        });
-                      }),
-                  CheckboxListTile(
-                      activeColor: strapiColor,
-                      title: Text(
-                        'Published At',
-                        style: dialogText,
-                      ),
-                      value: showPublishedAt,
-                      onChanged: (value) {
-                        setState(() {
-                          showPublishedAt = value;
-                        });
-                      }),
-                  CheckboxListTile(
-                      activeColor: strapiColor,
-                      title: Text(
-                        'Testing',
-                        style: dialogText,
-                      ),
-                      value: showTesting,
-                      onChanged: (value) {
-                        setState(() {
-                          showTesting = value;
-                        });
-                      }),
-                  CheckboxListTile(
-                      activeColor: strapiColor,
-                      title: Text(
-                        'Testing Again',
-                        style: dialogText,
-                      ),
-                      value: showTestingAgain,
-                      onChanged: (value) {
-                        setState(() {
-                          showTestingAgain = value;
-                        });
-                      }),
-                  CheckboxListTile(
-                      activeColor: strapiColor,
-                      title: Text(
-                        'Text Field',
-                        style: dialogText,
-                      ),
-                      value: showTextField,
-                      onChanged: (value) {
-                        setState(() {
-                          showTextField = value;
-                        });
-                      }),
-                  CheckboxListTile(
-                      activeColor: strapiColor,
-                      title: Text(
-                        'Updated At',
-                        style: dialogText,
-                      ),
-                      value: showUpdatedAt,
-                      onChanged: (value) {
-                        setState(() {
-                          showUpdatedAt = value;
-                        });
-                      }),
+                    ],
+                  ),
                 ],
               ),
             );
@@ -447,13 +425,21 @@ class _BookingsListState extends State<BookingsList> {
       }
     });
 
+    List<String> selectedColumns = [];
+    filters.forEach((key, value) {
+      if (value) {
+        selectedColumns.add(key);
+      }
+    });
+    print(selectedColumns);
+
     print(onlyStringIntFieldsKeys);
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: DataTable(
-              columns: onlyStringIntFieldsKeys.map((key) {
+              columns: selectedColumns.map((key) {
                 return DataColumn(
                     label: Text(
                   key,
@@ -462,16 +448,45 @@ class _BookingsListState extends State<BookingsList> {
               }).toList(),
               rows: contentTypes.map((content) {
                 return DataRow(
-                  cells: onlyStringIntFieldsKeys
-                      .map(
-                        (key) => DataCell(
+                  cells: selectedColumns.map(
+                    (key) {
+                      if (content[key].runtimeType == String ||
+                          content[key].runtimeType == int ||
+                          content[key].runtimeType == double) {
+                        return DataCell(
                           Text(
                             content[key].toString(),
                             style: legendStyle,
                           ),
-                        ),
-                      )
-                      .toList(),
+                        );
+                      } else {
+                        List<String> allContentKeys =
+                            content[key].keys.toList();
+                        if (allContentKeys.contains("formats") &&
+                            allContentKeys.contains("mime")) {
+                          return DataCell(
+                            Center(
+                              child: CircleAvatar(
+                                backgroundImage: content[key] != null
+                                    ? NetworkImage(content[key]["url"])
+                                    : null,
+                                child: content[key] != null
+                                    ? null
+                                    : Icon(Icons.person),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return DataCell(
+                            Text(
+                              content[key].toString(),
+                              style: legendStyle,
+                            ),
+                          );
+                        }
+                      }
+                    },
+                  ).toList(),
                 );
               }).toList()),
         ));
