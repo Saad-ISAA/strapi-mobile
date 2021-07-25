@@ -53,7 +53,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<List> _getDrawerData(String token, String adminURL) async {
-    var url = Uri.parse('https://$adminURL/content-manager/content-types');
+    var url = Uri.parse('$adminURL/content-manager/content-types');
+    print(adminURL);
     var response = await http.get(
       url,
       headers: {"Authorization": 'Bearer $token'},
