@@ -69,20 +69,18 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF8A67F3), Color(0xFF1C1B7E)],
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF8A67F3), Color(0xFF1C1B7E)],
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
         ),
-        child: Center(
-          child: Image.asset(
-            'assets/images/logo.png',
-            height: 135,
-          ),
+      ),
+      child: Center(
+        child: Image.asset(
+          'assets/images/logo.png',
+          height: 135,
         ),
       ),
     );

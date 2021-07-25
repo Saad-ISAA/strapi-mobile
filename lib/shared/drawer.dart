@@ -36,6 +36,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   Widget buildDrawerRowEntry({String title, Function onTap}) {
     return InkWell(
+      splashColor: strapiColor,
+      highlightColor: Colors.black,
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.only(top: 24.0),
@@ -149,8 +151,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
             Expanded(
               flex: 3,
               child: Container(
-                padding: EdgeInsets.all(24),
-                color: darkNavyBlue,
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                color: Colors.white,
                 child: ListView(
                   shrinkWrap: true,
                   children: [
@@ -164,7 +166,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             Text(
                               'COLLECTION TYPES',
                               style: TextStyle(
-                                  color: Colors.white38,
+                                  color: Colors.grey[500],
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -225,7 +227,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         Text(
                           'PLUGINS',
                           style: TextStyle(
-                              color: Colors.white38,
+                              color: Colors.grey[500],
                               fontSize: 16,
                               fontWeight: FontWeight.bold),
                         ),
@@ -250,7 +252,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         Text(
                           'GENERAL',
                           style: TextStyle(
-                              color: Colors.white38,
+                              color: Colors.grey[500],
                               fontSize: 16,
                               fontWeight: FontWeight.bold),
                         ),

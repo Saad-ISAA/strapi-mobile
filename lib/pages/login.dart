@@ -19,9 +19,15 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
-  TextEditingController urlController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+
+  // initializing with pre written credentials just to avoid loigns on every hot restart
+
+  TextEditingController urlController =
+      TextEditingController(text: 'http://51.120.94.203:1337');
+  TextEditingController emailController =
+      TextEditingController(text: 'saadmujeeb123@gmail.com');
+  TextEditingController passwordController =
+      TextEditingController(text: 'Saad123!@#');
   String strapiVersion;
 
   void initState() {
@@ -177,11 +183,11 @@ class _LoginScreenState extends State<LoginScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-        color: darkNavyBlue,
+        color: Colors.white,
         child: Text(
           'LOGIN',
           style: TextStyle(
-            color: Color(0xFF527DAA),
+            color: strapiColor,
             letterSpacing: 1.5,
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
@@ -212,123 +218,125 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              Container(
-                height: double.infinity,
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 40.0,
-                    vertical: 70,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset('assets/images/logo.png', height: 100),
-                      SizedBox(height: 30.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text('Admin URL', style: labelStyle),
-                          SizedBox(height: 10.0),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            decoration: boxDecorationStyle,
-                            height: 60.0,
-                            child: TextField(
-                              keyboardType: TextInputType.emailAddress,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'OpenSans',
-                              ),
-                              controller: urlController,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(top: 14.0),
-                                prefixIcon: Icon(
-                                  Icons.link,
+              SafeArea(
+                child: Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.0,
+                      vertical: 70,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image.asset('assets/images/logo.png', height: 100),
+                        SizedBox(height: 30.0),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text('Admin URL', style: labelStyle),
+                            SizedBox(height: 10.0),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              decoration: boxDecorationStyle,
+                              height: 60.0,
+                              child: TextField(
+                                keyboardType: TextInputType.emailAddress,
+                                style: TextStyle(
                                   color: Colors.white,
+                                  fontFamily: 'OpenSans',
                                 ),
-                                hintText: 'http://192.168.0.0',
-                                hintStyle: hintTextStyle,
+                                controller: urlController,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(top: 14.0),
+                                  prefixIcon: Icon(
+                                    Icons.link,
+                                    color: Colors.white,
+                                  ),
+                                  hintText: 'http://192.168.0.0',
+                                  hintStyle: hintTextStyle,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 30.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Email',
-                            style: labelStyle,
-                          ),
-                          SizedBox(height: 10.0),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            decoration: boxDecorationStyle,
-                            height: 60.0,
-                            child: TextField(
-                              keyboardType: TextInputType.emailAddress,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'OpenSans',
-                              ),
-                              controller: emailController,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(top: 14.0),
-                                prefixIcon: Icon(
-                                  Icons.email,
+                          ],
+                        ),
+                        SizedBox(height: 30.0),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Email',
+                              style: labelStyle,
+                            ),
+                            SizedBox(height: 10.0),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              decoration: boxDecorationStyle,
+                              height: 60.0,
+                              child: TextField(
+                                keyboardType: TextInputType.emailAddress,
+                                style: TextStyle(
                                   color: Colors.white,
+                                  fontFamily: 'OpenSans',
                                 ),
-                                hintText: 'Enter your Email',
-                                hintStyle: hintTextStyle,
+                                controller: emailController,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(top: 14.0),
+                                  prefixIcon: Icon(
+                                    Icons.email,
+                                    color: Colors.white,
+                                  ),
+                                  hintText: 'Enter your Email',
+                                  hintStyle: hintTextStyle,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30.0,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Password',
-                            style: labelStyle,
-                          ),
-                          SizedBox(height: 10.0),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            decoration: boxDecorationStyle,
-                            height: 60.0,
-                            child: TextField(
-                              obscureText: true,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'OpenSans',
-                              ),
-                              controller: passwordController,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(top: 14.0),
-                                prefixIcon: Icon(
-                                  Icons.lock,
+                          ],
+                        ),
+                        SizedBox(
+                          height: 30.0,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Password',
+                              style: labelStyle,
+                            ),
+                            SizedBox(height: 10.0),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              decoration: boxDecorationStyle,
+                              height: 60.0,
+                              child: TextField(
+                                obscureText: true,
+                                style: TextStyle(
                                   color: Colors.white,
+                                  fontFamily: 'OpenSans',
                                 ),
-                                hintText: 'Enter your Password',
-                                hintStyle: hintTextStyle,
+                                controller: passwordController,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(top: 14.0),
+                                  prefixIcon: Icon(
+                                    Icons.lock,
+                                    color: Colors.white,
+                                  ),
+                                  hintText: 'Enter your Password',
+                                  hintStyle: hintTextStyle,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      _buildForgotPasswordBtn(),
-                      _buildRememberMeCheckbox(),
-                      _buildLoginBtn(),
-                    ],
+                          ],
+                        ),
+                        _buildForgotPasswordBtn(),
+                        _buildRememberMeCheckbox(),
+                        _buildLoginBtn(),
+                      ],
+                    ),
                   ),
                 ),
               )
