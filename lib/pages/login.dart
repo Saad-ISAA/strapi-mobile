@@ -148,11 +148,13 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Row(
         children: <Widget>[
           Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
+            data: ThemeData(
+              unselectedWidgetColor: primary500,
+            ),
             child: Checkbox(
               value: _rememberMe,
-              checkColor: Colors.green,
-              activeColor: Colors.white,
+              checkColor: primary500,
+              activeColor: primary100,
               onChanged: (value) {
                 setState(() {
                   _rememberMe = value;
@@ -182,11 +184,11 @@ class _LoginScreenState extends State<LoginScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-        color: Colors.white,
+        color: primary500,
         child: Text(
           'LOGIN',
           style: TextStyle(
-            color: strapiColor,
+            color: Colors.white,
             letterSpacing: 1.5,
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
@@ -209,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 height: double.infinity,
                 width: double.infinity,
-                color: Colors.grey[100],
+                color: primary100,
               ),
               SafeArea(
                 child: Container(
@@ -359,13 +361,13 @@ final hintTextStyle = TextStyle(
 );
 
 final labelStyle = TextStyle(
-  color: Colors.white,
+  color: neutral800,
   fontWeight: FontWeight.bold,
   fontFamily: 'OpenSans',
 );
 
 final boxDecorationStyle = BoxDecoration(
-  color: strapiColor,
+  color: primary500,
   borderRadius: BorderRadius.circular(10.0),
   boxShadow: [
     BoxShadow(
