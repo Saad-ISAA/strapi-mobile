@@ -1,22 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
 import 'package:strapi_flutter_cms/pages/login.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:velocity_x/velocity_x.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  Animation _animation;
+
+  _animateLogo() {
+    _controller = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1500));
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _controller.forward();
+    _controller.addListener(() {
+      setState(() {});
+    });
+  }
+
   String adminURL;
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.initState();
+    _animateLogo();
 
-    _checkUserIsLoggedIn();
+    Future.delayed(const Duration(milliseconds: 2500), () {
+      _checkUserIsLoggedIn();
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.dispose();
+
+    super.dispose();
   }
 
   void _checkUserIsLoggedIn() async {
@@ -43,12 +71,10 @@ class _SplashScreenState extends State<SplashScreen> {
         print('login failed');
       }
     } else {
-      Future.delayed(const Duration(milliseconds: 2500), () {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => LoginScreen(adminURL: adminURL)));
-      });
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => LoginScreen(adminURL: adminURL)));
     }
   }
 
@@ -72,16 +98,13 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF8A67F3), Color(0xFF1C1B7E)],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-        ),
+        color: Colors.white,
       ),
       child: Center(
         child: Image.asset(
           'assets/images/logo.png',
-          height: 135,
+          opacity: _animation,
+          height: context.percentWidth * 30,
         ),
       ),
     );
