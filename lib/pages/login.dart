@@ -2,12 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
 import 'package:strapi_flutter_cms/models/drawer_data_model.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:velocity_x/velocity_x.dart';
 
 class LoginScreen extends StatefulWidget {
   final String adminURL;
@@ -149,12 +152,14 @@ class _LoginScreenState extends State<LoginScreen> {
         children: <Widget>[
           Theme(
             data: ThemeData(
-              unselectedWidgetColor: primary500,
+              unselectedWidgetColor: neutral500,
             ),
             child: Checkbox(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4)),
               value: _rememberMe,
-              checkColor: primary500,
-              activeColor: primary100,
+              checkColor: Colors.white,
+              activeColor: primary600,
               onChanged: (value) {
                 setState(() {
                   _rememberMe = value;
@@ -176,15 +181,15 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: MaterialButton(
-        elevation: 5.0,
+        elevation: 0,
         onPressed: () {
           _loginUser();
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
-        color: primary500,
+        color: primary600,
         child: Text(
           'LOGIN',
           style: TextStyle(
@@ -211,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 height: double.infinity,
                 width: double.infinity,
-                color: primary100,
+                color: Colors.white,
               ),
               SafeArea(
                 child: Container(
@@ -227,105 +232,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: <Widget>[
                         Image.asset('assets/images/logo.png', height: 100),
                         SizedBox(height: 30.0),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text('Admin URL', style: labelStyle),
-                            SizedBox(height: 10.0),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              decoration: boxDecorationStyle,
-                              height: 60.0,
-                              child: TextField(
-                                keyboardType: TextInputType.emailAddress,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'OpenSans',
-                                ),
-                                controller: urlController,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.only(top: 14.0),
-                                  prefixIcon: Icon(
-                                    Icons.link,
-                                    color: Colors.white,
-                                  ),
-                                  hintText: 'http://192.168.0.0',
-                                  hintStyle: hintTextStyle,
-                                ),
-                              ),
-                            ),
-                          ],
+                        PrimaryTextField(
+                          controller: urlController,
+                          title: 'Admin URL',
+                          hintText: 'http://192.168.0.0',
+                          inputType: TextInputType.url,
+                          icon: 'assets/icons/uid.svg',
                         ),
                         SizedBox(height: 30.0),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Email',
-                              style: labelStyle,
-                            ),
-                            SizedBox(height: 10.0),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              decoration: boxDecorationStyle,
-                              height: 60.0,
-                              child: TextField(
-                                keyboardType: TextInputType.emailAddress,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'OpenSans',
-                                ),
-                                controller: emailController,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.only(top: 14.0),
-                                  prefixIcon: Icon(
-                                    Icons.email,
-                                    color: Colors.white,
-                                  ),
-                                  hintText: 'Enter your Email',
-                                  hintStyle: hintTextStyle,
-                                ),
-                              ),
-                            ),
-                          ],
+                        PrimaryTextField(
+                          controller: emailController,
+                          title: 'Email',
+                          hintText: 'Enter your Email',
+                          inputType: TextInputType.emailAddress,
+                          icon: 'assets/icons/email.svg',
                         ),
                         SizedBox(
                           height: 30.0,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Password',
-                              style: labelStyle,
-                            ),
-                            SizedBox(height: 10.0),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              decoration: boxDecorationStyle,
-                              height: 60.0,
-                              child: TextField(
-                                obscureText: true,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'OpenSans',
-                                ),
-                                controller: passwordController,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.only(top: 14.0),
-                                  prefixIcon: Icon(
-                                    Icons.lock,
-                                    color: Colors.white,
-                                  ),
-                                  hintText: 'Enter your Password',
-                                  hintStyle: hintTextStyle,
-                                ),
-                              ),
-                            ),
-                          ],
+                        PrimaryTextField(
+                          controller: passwordController,
+                          title: 'Password',
+                          hintText: 'Enter your password',
+                          inputType: TextInputType.visiblePassword,
+                          isObscure: true,
+                          icon: 'assets/icons/password.svg',
                         ),
                         _buildForgotPasswordBtn(),
                         _buildRememberMeCheckbox(),
@@ -354,17 +285,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 }
-
-final hintTextStyle = TextStyle(
-  color: Colors.white54,
-  fontFamily: 'OpenSans',
-);
-
-final labelStyle = TextStyle(
-  color: neutral800,
-  fontWeight: FontWeight.bold,
-  fontFamily: 'OpenSans',
-);
 
 final boxDecorationStyle = BoxDecoration(
   color: primary500,
