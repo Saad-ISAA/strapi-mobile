@@ -48,13 +48,20 @@ class PrimaryTextField extends StatelessWidget {
               fontFamily: 'OpenSans',
             ),
             controller: controller,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: SvgPicture.asset(icon).px(12),
-              hintText: hintText,
-              hintStyle: hintTextStyle,
-            ),
+            decoration: (icon != null)
+                ? InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(top: 14.0),
+                    prefixIcon: SvgPicture.asset(icon).px(12),
+                    hintText: hintText,
+                    hintStyle: hintTextStyle,
+                  )
+                : InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                    hintText: hintText,
+                    hintStyle: hintTextStyle,
+                  ),
           ),
         ),
         (descriptionText != null)
