@@ -445,17 +445,9 @@ class _BookingsListState extends State<BookingsList> {
           child: DataTable(
               columns: selectedColumns.map((key) {
                 return DataColumn(
-                    label: Row(
-                  children: [
-                    (key == 'id')
-                        ? StrapiCheckBox(onChanged: (v) {}, value: false)
-                            .pOnly(right: 12)
-                        : SizedBox.shrink(),
-                    Text(
-                      key.toUpperCase(),
-                      style: dialogText,
-                    ),
-                  ],
+                    label: Text(
+                  key.toUpperCase(),
+                  style: dialogText,
                 ));
               }).toList(),
               rows: contentTypes.map((content) {
@@ -466,15 +458,9 @@ class _BookingsListState extends State<BookingsList> {
                           content[key].runtimeType == int ||
                           content[key].runtimeType == double) {
                         return DataCell(
-                          Row(
-                            children: [
-                              StrapiCheckBox(onChanged: (v) {}, value: false)
-                                  .pOnly(right: 12),
-                              Text(
-                                content[key].toString(),
-                                style: legendStyle,
-                              ),
-                            ],
+                          Text(
+                            content[key].toString(),
+                            style: legendStyle,
                           ),
                         );
                       } else {
