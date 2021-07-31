@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/models/booking_entry.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -105,7 +107,7 @@ class _BookingsListState extends State<BookingsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: darkNavyBlue,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: strapiColor,
@@ -435,15 +437,25 @@ class _BookingsListState extends State<BookingsList> {
 
     print(onlyStringIntFieldsKeys);
     return SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
+          physics: BouncingScrollPhysics(),
           child: DataTable(
               columns: selectedColumns.map((key) {
                 return DataColumn(
-                    label: Text(
-                  key,
-                  style: dialogText,
+                    label: Row(
+                  children: [
+                    (key == 'id')
+                        ? StrapiCheckBox(onChanged: (v) {}, value: false)
+                            .pOnly(right: 12)
+                        : SizedBox.shrink(),
+                    Text(
+                      key.toUpperCase(),
+                      style: dialogText,
+                    ),
+                  ],
                 ));
               }).toList(),
               rows: contentTypes.map((content) {
@@ -454,9 +466,15 @@ class _BookingsListState extends State<BookingsList> {
                           content[key].runtimeType == int ||
                           content[key].runtimeType == double) {
                         return DataCell(
-                          Text(
-                            content[key].toString(),
-                            style: legendStyle,
+                          Row(
+                            children: [
+                              StrapiCheckBox(onChanged: (v) {}, value: false)
+                                  .pOnly(right: 12),
+                              Text(
+                                content[key].toString(),
+                                style: legendStyle,
+                              ),
+                            ],
                           ),
                         );
                       } else {
@@ -527,8 +545,8 @@ class _BookingsListState extends State<BookingsList> {
     // );
   }
 
-  TextStyle legendStyle = TextStyle(color: white, fontSize: 16);
-  TextStyle dialogText = TextStyle(color: drawerRowsColor, fontSize: 16);
+  TextStyle legendStyle = TextStyle(color: neutral900, fontSize: 16);
+  TextStyle dialogText = TextStyle(color: neutral900, fontSize: 16);
 }
 
 // for more options dropdown on every tile

@@ -141,69 +141,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               icon: 'assets/icons/content-icon.svg',
                               onTap: () {},
                               text: 'Content'),
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                             children: [
-//                               Text(
-//                                 'COLLECTION TYPES',
-//                                 style: TextStyle(
-//                                     color: Colors.grey[500],
-//                                     fontSize: 16,
-//                                     fontWeight: FontWeight.bold),
-//                               ),
-//                               Icon(
-//                                 Icons.search,
-//                                 color: Colors.white38,
-//                                 size: 19,
-//                               ),
-//                             ],
-//                           ),
-//                           Column(
-//                               children: widget.drawerData != null
-//                                   ? widget.drawerData.map((item) {
-//                                       return buildDrawerRowEntry(
-//                                           title: item['info']["label"],
-//                                           onTap: () {
-//                                             String url =
-//                                                 'content-manager/collection-types/${item['uid']}';
-// // http://35.208.163.99:1337/content-manager/collection-types/application::booking.booking?page=1&pageSize=10&_sort=address:ASC
-//                                             var data = {
-//                                               'url': url,
-//                                               'item_uid': item['uid'],
-//                                               'title': item['apiID'],
-//                                             };
-//                                             Navigator.push(
-//                                               context,
-//                                               MaterialPageRoute(
-//                                                 builder: (context) =>
-//                                                     BookingsList(
-//                                                   data: data,
-//                                                 ),
-//                                               ),
-//                                             );
-//                                           });
-//                                     }).toList()
-//                                   : [
-//                                       Text(
-//                                         'Loading',
-//                                         style: TextStyle(color: Colors.white),
-//                                       ),
-//                                     ]),
-                          // buildDrawerRowEntry(
-                          //   title: 'Chauffeur Bookings',
-                          //   onTap: () => Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       builder: (context) => BookingsList(),
-                          //     ),
-                          //   ),
-                          // ),
-                          // buildDrawerRowEntry(title: 'Form Fields', onTap: () {}),
-                          // buildDrawerRowEntry(
-                          //     title: 'Housekeeper Bookings', onTap: () {}),
-                          // buildDrawerRowEntry(
-                          //     title: 'Nurse Bookings', onTap: () {}),
-                          // buildDrawerRowEntry(title: 'Users', onTap: () {}),
                           SizedBox(height: 48),
                           Text(
                             'PLUGINS',
@@ -244,8 +181,71 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               icon: 'assets/icons/settings-icon.svg',
                               onTap: () {},
                               text: 'Settings'),
-
                           SizedBox(height: 32),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'COLLECTION TYPES',
+                                style: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Icon(
+                                Icons.search,
+                                color: Colors.white38,
+                                size: 19,
+                              ),
+                            ],
+                          ),
+                          Column(
+                              children: widget.drawerData != null
+                                  ? widget.drawerData.map((item) {
+                                      return buildDrawerRowEntry(
+                                          title: item['info']["label"],
+                                          onTap: () {
+                                            String url =
+                                                'content-manager/collection-types/${item['uid']}';
+// http://35.208.163.99:1337/content-manager/collection-types/application::booking.booking?page=1&pageSize=10&_sort=address:ASC
+                                            var data = {
+                                              'url': url,
+                                              'item_uid': item['uid'],
+                                              'title': item['apiID'],
+                                            };
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BookingsList(
+                                                  data: data,
+                                                ),
+                                              ),
+                                            );
+                                          });
+                                    }).toList()
+                                  : [
+                                      Text(
+                                        'Loading',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ]),
+                          buildDrawerRowEntry(
+                            title: 'Chauffeur Bookings',
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookingsList(),
+                              ),
+                            ),
+                          ),
+                          buildDrawerRowEntry(
+                              title: 'Form Fields', onTap: () {}),
+                          buildDrawerRowEntry(
+                              title: 'Housekeeper Bookings', onTap: () {}),
+                          buildDrawerRowEntry(
+                              title: 'Nurse Bookings', onTap: () {}),
+                          buildDrawerRowEntry(title: 'Users', onTap: () {}),
                         ],
                       ),
                     ],

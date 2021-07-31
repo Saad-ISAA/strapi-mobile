@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
 import 'package:strapi_flutter_cms/models/drawer_data_model.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
@@ -150,22 +151,13 @@ class _LoginScreenState extends State<LoginScreen> {
       height: 20.0,
       child: Row(
         children: <Widget>[
-          Theme(
-            data: ThemeData(
-              unselectedWidgetColor: neutral500,
-            ),
-            child: Checkbox(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4)),
-              value: _rememberMe,
-              checkColor: Colors.white,
-              activeColor: primary600,
-              onChanged: (value) {
-                setState(() {
-                  _rememberMe = value;
-                });
-              },
-            ),
+          StrapiCheckBox(
+            value: _rememberMe,
+            onChanged: (value) {
+              setState(() {
+                _rememberMe = value;
+              });
+            },
           ),
           Text(
             'Remember me',
@@ -182,6 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
       width: double.infinity,
       child: MaterialButton(
         elevation: 0,
+        highlightElevation: 0,
         onPressed: () {
           _loginUser();
         },
