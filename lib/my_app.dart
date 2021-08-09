@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/pages/bookings_list.dart';
 import 'package:strapi_flutter_cms/pages/login.dart';
 import 'package:strapi_flutter_cms/pages/media_library_page.dart';
+import 'package:strapi_flutter_cms/pages/settings.dart';
 import 'package:strapi_flutter_cms/pages/splash_screen.dart';
 import 'package:strapi_flutter_cms/pages/training_videos_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
@@ -21,7 +22,7 @@ class _MyAppState extends State<MyApp> {
             color: strapiColor,
           )),
       debugShowCheckedModeBanner: false,
-      home: MediaLibraryPage(),
+      home: SettingsPage(),
     );
   }
 }

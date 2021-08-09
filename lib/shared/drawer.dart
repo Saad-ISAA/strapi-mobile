@@ -319,30 +319,56 @@ class _CustomDrawerState extends State<CustomDrawer> {
       ),
     ).pOnly(top: 24);
   }
+}
 
-  Widget buildDrawerRowEntryWithCustomIcon(
-      {String title, Function onTap, IconData icon}) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 24.0),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: drawerRowsColor,
-              size: 20,
-            ),
-            SizedBox(
-              width: 16,
-            ),
-            Text(
-              title,
-              style: TextStyle(fontSize: 15, color: drawerRowsColor),
-            )
-          ],
-        ),
+Widget buildDrawerRowEntryWithCustomIcon(
+    {String title, Function onTap, IconData icon}) {
+  return InkWell(
+    onTap: onTap,
+    child: Padding(
+      padding: const EdgeInsets.only(top: 24.0),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: drawerRowsColor,
+            size: 20,
+          ),
+          SizedBox(
+            width: 16,
+          ),
+          Text(
+            title,
+            style: TextStyle(fontSize: 15, color: drawerRowsColor),
+          )
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+Widget buildDrawerRowEntryWithoutIcon({String title, Function onTap}) {
+  return InkWell(
+    borderRadius: BorderRadius.circular(8),
+    onTap: onTap,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16),
+      child: Row(
+        children: [
+          Container(
+              height: 9,
+              width: 9,
+              decoration:
+                  BoxDecoration(color: neutral500, shape: BoxShape.circle)),
+          SizedBox(
+            width: 16,
+          ),
+          Text(
+            title,
+            style: TextStyle(fontSize: 15, color: drawerRowsColor),
+          )
+        ],
+      ),
+    ),
+  );
 }
