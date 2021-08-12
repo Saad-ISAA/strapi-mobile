@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
+import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -77,7 +78,7 @@ dynamic showMediaLibraryInfoDialog(context) {
                       ],
                     ).py(24),
                   ),
-                  _buildHeader(context),
+                  _buildHeader(context, 'Details'),
                 ],
               ),
             ),
@@ -140,7 +141,7 @@ Container _buildInfoSection() {
   );
 }
 
-Container _buildHeader(BuildContext context) {
+Container _buildHeader(BuildContext context, String title) {
   return Container(
     height: 55,
     decoration: BoxDecoration(
@@ -150,8 +151,7 @@ Container _buildHeader(BuildContext context) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('Details',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold))
+        Text(title, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold))
             .pOnly(left: 12),
         IconButton(
             splashRadius: 20,
@@ -185,4 +185,92 @@ Widget _mediaLibraryItemInfoEntry({String key, String val}) {
       ],
     ),
   );
+}
+
+dynamic showAddLocaleDialog(context) {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          contentPadding: EdgeInsets.all(0),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          children: [
+            Container(
+              color: Colors.transparent,
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        55.heightBox,
+                        PrimaryTextField(
+                          controller: null,
+                          title: 'Locales',
+                        ).px(16),
+                        PrimaryTextField(
+                          controller: null,
+                          title: 'Locale Display Name',
+                          descriptionText:
+                              'Locale will be displayed under that name in the administration panel',
+                        ).p(16).py(8),
+                        Divider(
+                          color: neutral500,
+                        ),
+                        Row(
+                          children: [
+                            StrapiCheckBox(
+                              onChanged: (v) {},
+                              value: true,
+                            ),
+                            Text('Set as default locale',
+                                style: TextStyle(
+                                    fontSize: 13, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        Text(
+                          'One default locale is required, change it by selecting another one',
+                          style: TextStyle(color: neutral500),
+                        ).px(16),
+                        16.heightBox,
+                        Container(
+                          decoration: BoxDecoration(
+                              color: neutral100,
+                              borderRadius: BorderRadius.circular(3)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child: PrimaryCancelGreySquareButton(
+                                onPressed: () {},
+                              )),
+                              24.widthBox,
+                              Expanded(
+                                child: MaterialButton(
+                                  elevation: 0,
+                                  onPressed: () {},
+                                  color: success500,
+                                  child: Text(
+                                    'Finish',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ).p(16),
+                        ),
+                      ],
+                    ).pOnly(top: 24),
+                  ),
+                  _buildHeader(context, 'Edit a locale'),
+                ],
+              ),
+            ),
+          ],
+        );
+      });
 }

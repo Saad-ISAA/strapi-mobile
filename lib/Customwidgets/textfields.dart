@@ -39,7 +39,7 @@ class PrimaryTextField extends StatelessWidget {
                 color: neutral500,
               ),
               borderRadius: BorderRadius.circular(8)),
-          height: 55.0,
+          height: 50.0,
           child: TextField(
             obscureText: isObscure,
             keyboardType: inputType,
@@ -65,7 +65,8 @@ class PrimaryTextField extends StatelessWidget {
           ),
         ),
         (descriptionText != null)
-            ? Text(descriptionText).pOnly(top: 5)
+            ? Text(descriptionText, style: TextStyle(color: neutral500))
+                .pOnly(top: 5)
             : SizedBox.shrink(),
       ],
     );

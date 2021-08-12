@@ -27,3 +27,49 @@ class StrapiIconButton extends StatelessWidget {
     );
   }
 }
+
+class PrimarySquareButton extends StatelessWidget {
+  const PrimarySquareButton({Key key, this.text, this.color}) : super(key: key);
+
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+      minWidth: double.infinity,
+      height: 40,
+      elevation: 0,
+      onPressed: () {},
+      color: color,
+      child: Text(
+        text,
+        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+    );
+  }
+}
+
+class PrimaryCancelGreySquareButton extends StatelessWidget {
+  const PrimaryCancelGreySquareButton({Key key, this.onPressed})
+      : super(key: key);
+
+  final Function() onPressed;
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(3),
+          side: BorderSide(color: neutral500, width: 1)),
+      minWidth: double.infinity,
+      height: 37,
+      elevation: 0,
+      onPressed: onPressed,
+      color: Colors.white,
+      child: Text(
+        'Cancel',
+        style: TextStyle(fontWeight: FontWeight.bold, color: neutral500),
+      ),
+    );
+  }
+}
