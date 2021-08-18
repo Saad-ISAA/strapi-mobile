@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
 import 'package:strapi_flutter_cms/Customwidgets/on_off_button.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/roles.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/drawer.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -30,7 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ]),
       endDrawer: _buildSettingsDrawer(),
-      body: MediaLibrarySettingsPage(),
+      body: RolesPage(),
     );
   }
 
