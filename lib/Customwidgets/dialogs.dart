@@ -78,7 +78,7 @@ dynamic showMediaLibraryInfoDialog(context) {
                       ],
                     ).py(24),
                   ),
-                  _buildHeader(context, 'Details'),
+                  buildHeader(context, 'Details'),
                 ],
               ),
             ),
@@ -141,7 +141,7 @@ Container _buildInfoSection() {
   );
 }
 
-Container _buildHeader(BuildContext context, String title) {
+Container buildHeader(BuildContext context, String title) {
   return Container(
     height: 55,
     decoration: BoxDecoration(
@@ -266,7 +266,7 @@ dynamic showAddLocaleDialog(context) {
                       ],
                     ).pOnly(top: 24),
                   ),
-                  _buildHeader(context, 'Edit a locale'),
+                  buildHeader(context, 'Edit a locale'),
                 ],
               ),
             ),
