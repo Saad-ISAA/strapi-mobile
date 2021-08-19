@@ -8,6 +8,8 @@ import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/drawer.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import 'settings_pages/advanced_settings.dart';
+
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key key}) : super(key: key);
 
@@ -22,16 +24,20 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(centerTitle: true, title: Text('Settings'), actions: [
-        Builder(
-          builder: (context) => IconButton(
-            onPressed: () => Scaffold.of(context).openEndDrawer(),
-            icon: Icon(Icons.menu),
-          ).px(16),
-        ),
-      ]),
+      appBar: AppBar(
+          elevation: 2,
+          centerTitle: true,
+          title: Text('Settings'),
+          actions: [
+            Builder(
+              builder: (context) => IconButton(
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
+                icon: Icon(Icons.menu),
+              ).px(16),
+            ),
+          ]),
       endDrawer: _buildSettingsDrawer(),
-      body: RolesPage(),
+      body: AdvancedSettingsScreen(),
     );
   }
 

@@ -29,18 +29,22 @@ class StrapiIconButton extends StatelessWidget {
 }
 
 class PrimarySquareButton extends StatelessWidget {
-  const PrimarySquareButton({Key key, this.text, this.color}) : super(key: key);
+  const PrimarySquareButton({Key key, this.text, this.color, this.onPressed})
+      : super(key: key);
 
   final String text;
   final Color color;
+  final Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
+      disabledColor: neutral300,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
       minWidth: double.infinity,
       height: 40,
       elevation: 0,
-      onPressed: () {},
+      onPressed: onPressed,
       color: color,
       child: Text(
         text,
@@ -51,10 +55,11 @@ class PrimarySquareButton extends StatelessWidget {
 }
 
 class PrimaryCancelGreySquareButton extends StatelessWidget {
-  const PrimaryCancelGreySquareButton({Key key, this.onPressed})
+  const PrimaryCancelGreySquareButton({Key key, this.onPressed, this.text})
       : super(key: key);
 
   final Function() onPressed;
+  final String text;
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
@@ -67,7 +72,7 @@ class PrimaryCancelGreySquareButton extends StatelessWidget {
       onPressed: onPressed,
       color: Colors.white,
       child: Text(
-        'Cancel',
+        (text != null) ? text : 'Cancel',
         style: TextStyle(fontWeight: FontWeight.bold, color: neutral500),
       ),
     );

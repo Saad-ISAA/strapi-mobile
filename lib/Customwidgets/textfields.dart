@@ -38,8 +38,8 @@ class PrimaryTextField extends StatelessWidget {
                 width: 0.5,
                 color: neutral500,
               ),
-              borderRadius: BorderRadius.circular(8)),
-          height: 50.0,
+              borderRadius: BorderRadius.circular(4)),
+          height: 45.0,
           child: TextField(
             obscureText: isObscure,
             keyboardType: inputType,
@@ -51,14 +51,15 @@ class PrimaryTextField extends StatelessWidget {
             decoration: (icon != null)
                 ? InputDecoration(
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(top: 14.0),
+                    contentPadding: EdgeInsets.only(top: 10, bottom: 8),
                     prefixIcon: SvgPicture.asset(icon).px(12),
                     hintText: hintText,
                     hintStyle: hintTextStyle,
                   )
                 : InputDecoration(
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                    contentPadding:
+                        EdgeInsets.only(left: 16, right: 16, bottom: 6),
                     hintText: hintText,
                     hintStyle: hintTextStyle,
                   ),
@@ -74,12 +75,13 @@ class PrimaryTextField extends StatelessWidget {
 
   final hintTextStyle = TextStyle(
     color: neutral500,
+    fontSize: 15,
     fontFamily: 'OpenSans',
   );
 }
 
 final labelStyle = TextStyle(
   color: neutral800,
-  fontWeight: FontWeight.bold,
+  fontSize: 16,
   fontFamily: 'OpenSans',
 );
