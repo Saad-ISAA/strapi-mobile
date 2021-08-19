@@ -66,11 +66,12 @@ class _AdvancedSettingsScreenState extends State<AdvancedSettingsScreen> {
             text: 'Save',
             onPressed: () {},
           ),
-          16.heightBox,
+          8.heightBox,
           PrimaryCancelGreySquareButton(
             onPressed: () {},
             text: 'Reset',
-          )
+          ),
+          24.heightBox
         ],
       ).p(24),
     );

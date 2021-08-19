@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
 import 'package:strapi_flutter_cms/Customwidgets/on_off_button.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/email_templates.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/roles.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/drawer.dart';
@@ -37,7 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ]),
       endDrawer: _buildSettingsDrawer(),
-      body: AdvancedSettingsScreen(),
+      body: EmailTemplateSettingsPage(),
     );
   }
 
@@ -112,7 +113,7 @@ class Internationalization extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  '1 Locale'.text.xl3.semiBold.make().px(16),
+                  '1 Locale'.text.xl2.semiBold.make().px(16),
                   24.heightBox,
                   LocaleRow(
                     code: 'en',
