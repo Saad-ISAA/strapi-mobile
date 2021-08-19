@@ -346,29 +346,3 @@ Widget buildDrawerRowEntryWithCustomIcon(
     ),
   );
 }
-
-Widget buildDrawerRowEntryWithoutIcon({String title, Function onTap}) {
-  return InkWell(
-    borderRadius: BorderRadius.circular(8),
-    onTap: onTap,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16),
-      child: Row(
-        children: [
-          Container(
-              height: 9,
-              width: 9,
-              decoration:
-                  BoxDecoration(color: neutral500, shape: BoxShape.circle)),
-          SizedBox(
-            width: 16,
-          ),
-          Text(
-            title,
-            style: TextStyle(fontSize: 15, color: drawerRowsColor),
-          )
-        ],
-      ),
-    ),
-  );
-}
