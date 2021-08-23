@@ -29,7 +29,11 @@ class PrimaryTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         (title != null)
-            ? Text(title, style: labelStyle).pOnly(bottom: 10)
+            ? Text(
+                title,
+                style: labelStyle,
+                softWrap: true,
+              ).pOnly(bottom: 10)
             : SizedBox.shrink(),
         Container(
           alignment: Alignment.centerLeft,

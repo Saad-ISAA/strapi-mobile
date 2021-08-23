@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
+import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
+import 'package:strapi_flutter_cms/Customwidgets/on_off_button.dart';
+import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -69,7 +73,9 @@ class ProvidersRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        showEditProviderDialog(context, title);
+      },
       child: Column(
         children: [
           Row(
@@ -111,4 +117,102 @@ class ProvidersRow extends StatelessWidget {
       ),
     );
   }
+}
+
+dynamic showEditProviderDialog(context, String title) {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          contentPadding: EdgeInsets.all(0),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          children: [
+            Container(
+              color: Colors.transparent,
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        55.heightBox,
+                        Text(
+                          'Enable',
+                          style: TextStyle(fontSize: 16),
+                        ).px(16),
+                        StrapiSwitch(
+                          val: false,
+                        ).px(16),
+                        Text(
+                          'If disabled, users won\'t be able to use this provider.',
+                          style: TextStyle(color: neutral400),
+                        ).px(16),
+                        16.heightBox,
+                        PrimaryTextField(
+                          controller: null,
+                          title: 'Client ID',
+                          hintText: 'TEXT',
+                        ).px(16),
+                        PrimaryTextField(
+                          controller: null,
+                          title: 'Client Secret',
+                          hintText: 'TEXT',
+                        ).p(16),
+                        PrimaryTextField(
+                          controller: TextEditingController(
+                              text: 'my.subdomain.com/cas'),
+                          title: 'Host URI (Subdomain)',
+                        ).px(16),
+                        PrimaryTextField(
+                          controller:
+                              TextEditingController(text: '/auth/cas/callback'),
+                          title: 'The redirect URL to your front-end app',
+                        ).p(16),
+                        PrimaryTextField(
+                          controller: null,
+                          hintText: '/connect/cas/callback',
+                          title:
+                              'The redirect URL to add in your Cas application configurations',
+                        ).px(16),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: neutral100,
+                              borderRadius: BorderRadius.circular(3)),
+                          child: Row(
+                            children: [
+                              Expanded(child: PrimaryCancelGreySquareButton(
+                                onPressed: () {
+                                  context.pop();
+                                },
+                              )),
+                              24.widthBox,
+                              Expanded(
+                                child: MaterialButton(
+                                  elevation: 0,
+                                  onPressed: () {},
+                                  color: success500,
+                                  child: Text(
+                                    'Save',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ).p(16),
+                        ),
+                      ],
+                    ).pOnly(top: 24),
+                  ),
+                  buildHeader(context, 'Edit Provider > $title'),
+                ],
+              ),
+            ),
+          ],
+        );
+      });
 }

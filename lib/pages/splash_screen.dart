@@ -101,10 +101,12 @@ class _SplashScreenState extends State<SplashScreen>
         color: Colors.white,
       ),
       child: Center(
-        child: Image.asset(
-          'assets/images/logo.png',
-          opacity: _animation,
-          height: context.percentWidth * 30,
+        child: Opacity(
+          opacity: _animation.value,
+          child: Image.asset(
+            'assets/images/logo.png',
+            height: context.percentWidth * 30,
+          ),
         ),
       ),
     );

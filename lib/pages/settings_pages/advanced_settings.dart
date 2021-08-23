@@ -27,13 +27,13 @@ class _AdvancedSettingsScreenState extends State<AdvancedSettingsScreen> {
           24.heightBox,
           _buildRoleDropdown(),
           24.heightBox,
-          _buildStrapiSwitchWIthTitle(
+          buildStrapiSwitchWIthTitle(
               title: 'One account per email address',
               value: true,
               description:
                   'Disallow the user to create multiple accounts using the same email address with different authentication providers.'),
           24.heightBox,
-          _buildStrapiSwitchWIthTitle(
+          buildStrapiSwitchWIthTitle(
               title: 'Enable sign-ups',
               value: true,
               description:
@@ -47,7 +47,7 @@ class _AdvancedSettingsScreenState extends State<AdvancedSettingsScreen> {
             descriptionText: 'URL of your application\'s reset password page',
           ),
           24.heightBox,
-          _buildStrapiSwitchWIthTitle(
+          buildStrapiSwitchWIthTitle(
               title: 'Enable email confirmation',
               value: false,
               description:
@@ -77,26 +77,6 @@ class _AdvancedSettingsScreenState extends State<AdvancedSettingsScreen> {
     );
   }
 
-  Column _buildStrapiSwitchWIthTitle(
-      {String title,
-      bool value,
-      String description,
-      Function onOnClick,
-      Function onOffClick}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        title.text.lg.softWrap(true).make(),
-        StrapiSwitch(
-          onOnPress: onOnClick,
-          onOffPress: onOffClick,
-          val: value,
-        ),
-        description.text.softWrap(true).color(neutral500).make(),
-      ],
-    );
-  }
-
   Column _buildRoleDropdown() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,4 +103,24 @@ class _AdvancedSettingsScreenState extends State<AdvancedSettingsScreen> {
       ],
     );
   }
+}
+
+Column buildStrapiSwitchWIthTitle(
+    {String title,
+    bool value,
+    String description,
+    Function onOnClick,
+    Function onOffClick}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      title.text.lg.softWrap(true).make(),
+      StrapiSwitch(
+        onOnPress: onOnClick,
+        onOffPress: onOffClick,
+        val: value,
+      ),
+      description.text.softWrap(true).color(neutral500).make(),
+    ],
+  );
 }
