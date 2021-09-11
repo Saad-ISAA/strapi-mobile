@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:strapi_flutter_cms/pages/bookings_list.dart';
+import 'package:strapi_flutter_cms/pages/collection.dart';
 import 'package:strapi_flutter_cms/pages/login.dart';
 import 'package:strapi_flutter_cms/pages/media_library_page.dart';
 import 'package:strapi_flutter_cms/pages/settings.dart';
@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
             color: strapiColor,
           )),
       debugShowCheckedModeBanner: false,
-      home: SettingsPage(),
+      home: SplashScreen(),
     );
   }
 }

@@ -49,6 +49,16 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _checkUserIsLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
+    prefs.remove('user');
+    prefs.remove('adminURL');
+    prefs.remove('email');
+    prefs.remove('password');
+    prefs.remove('adminURL');
+    String adminURL = prefs.getString("adminURL");
+
+
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token');
     if (prefs.containsKey('adminURL')) {
       adminURL = prefs.getString('adminURL');

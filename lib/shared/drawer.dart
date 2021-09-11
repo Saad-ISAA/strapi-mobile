@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:strapi_flutter_cms/pages/bookings_list.dart';
+import 'package:strapi_flutter_cms/pages/collection.dart';
 import 'package:strapi_flutter_cms/pages/login.dart';
+import 'package:strapi_flutter_cms/pages/media_library_page.dart';
+import 'package:strapi_flutter_cms/pages/settings.dart';
 import 'package:strapi_flutter_cms/pages/training_videos_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -30,10 +32,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     prefs.remove('user');
     String adminURL = prefs.getString("adminURL");
 
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => LoginScreen(adminURL: adminURL)));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(adminURL: adminURL)));
   }
 
   Widget buildDrawerRowEntry({String title, Function onTap}) {
@@ -84,9 +83,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     children: [
                       8.widthBox,
                       Container(
-                        decoration: BoxDecoration(
-                            color: primary600,
-                            borderRadius: BorderRadius.circular(8)),
+                        decoration: BoxDecoration(color: primary600, borderRadius: BorderRadius.circular(8)),
                         child: Image.asset(
                           'assets/images/logo_white.png',
                           height: 25,
@@ -137,49 +134,40 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          _dawerEntryWithPrefixIcon(
-                              icon: 'assets/icons/content-icon.svg',
-                              onTap: () {},
-                              text: 'Content'),
+                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/content-icon.svg', onTap: () {}, text: 'Content'),
                           SizedBox(height: 48),
                           Text(
                             'PLUGINS',
-                            style: TextStyle(
-                                color: neutral600,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(color: neutral600, fontSize: 15, fontWeight: FontWeight.bold),
                           ),
-                          _dawerEntryWithPrefixIcon(
-                              icon: 'assets/icons/content-icon.svg',
-                              onTap: () {},
-                              text: 'Builder'),
-                          _dawerEntryWithPrefixIcon(
-                              icon: 'assets/icons/media-library.svg',
-                              onTap: () {},
-                              text: 'Media Library'),
-                          _dawerEntryWithPrefixIcon(
-                              icon: 'assets/icons/info-alert.svg',
-                              onTap: () {},
-                              text: 'Documentation'),
+                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/content-icon.svg', onTap: () {}, text: 'Builder'),
+                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/media-library.svg', onTap: () {
+                            Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MediaLibraryPage()
+                                  ),
+                                );
+
+                          }, text: 'Media Library'),
+                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/info-alert.svg', onTap: () {}, text: 'Documentation'),
                           SizedBox(height: 48),
                           Text(
                             'GENERAL',
-                            style: TextStyle(
-                                color: neutral600,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(color: neutral600, fontSize: 15, fontWeight: FontWeight.bold),
                           ),
-                          _dawerEntryWithPrefixIcon(
-                              icon: 'assets/icons/plugins-icons.svg',
-                              onTap: () {},
-                              text: 'Plugins'),
-                          _dawerEntryWithPrefixIcon(
-                              icon: 'assets/icons/marketplace-icon.svg',
-                              onTap: () {},
-                              text: 'Marketplace'),
+                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/plugins-icons.svg', onTap: () {}, text: 'Plugins'),
+                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/marketplace-icon.svg', onTap: () {}, text: 'Marketplace'),
                           _dawerEntryWithPrefixIcon(
                               icon: 'assets/icons/settings-icon.svg',
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SettingsPage()
+                                  ),
+                                );
+                              },
                               text: 'Settings'),
                           SizedBox(height: 32),
                           Row(
@@ -187,10 +175,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             children: [
                               Text(
                                 'COLLECTION TYPES',
-                                style: TextStyle(
-                                    color: Colors.grey[500],
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
+                                style: TextStyle(color: Colors.grey[500], fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                               Icon(
                                 Icons.search,
@@ -205,8 +190,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       return buildDrawerRowEntry(
                                           title: item['info']["label"],
                                           onTap: () {
-                                            String url =
-                                                'content-manager/collection-types/${item['uid']}';
+                                            String url = 'content-manager/collection-types/${item['uid']}';
 // http://35.208.163.99:1337/content-manager/collection-types/application::booking.booking?page=1&pageSize=10&_sort=address:ASC
                                             var data = {
                                               'url': url,
@@ -216,8 +200,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) =>
-                                                    BookingsList(
+                                                builder: (context) => Collection(
                                                   data: data,
                                                 ),
                                               ),
@@ -230,22 +213,22 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                     ]),
-                          buildDrawerRowEntry(
-                            title: 'Chauffeur Bookings',
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BookingsList(),
-                              ),
-                            ),
-                          ),
-                          buildDrawerRowEntry(
-                              title: 'Form Fields', onTap: () {}),
-                          buildDrawerRowEntry(
-                              title: 'Housekeeper Bookings', onTap: () {}),
-                          buildDrawerRowEntry(
-                              title: 'Nurse Bookings', onTap: () {}),
-                          buildDrawerRowEntry(title: 'Users', onTap: () {}),
+                          // buildDrawerRowEntry(
+                          //   title: 'Chauffeur Bookings',
+                          //   onTap: () => Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) => Collection(),
+                          //     ),
+                          //   ),
+                          // ),
+                          // buildDrawerRowEntry(
+                          //     title: 'Form Fields', onTap: () {}),
+                          // buildDrawerRowEntry(
+                          //     title: 'Housekeeper Bookings', onTap: () {}),
+                          // buildDrawerRowEntry(
+                          //     title: 'Nurse Bookings', onTap: () {}),
+                          // buildDrawerRowEntry(title: 'Users', onTap: () {}),
                         ],
                       ),
                     ],
@@ -270,9 +253,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   Spacer(),
                   Container(
                     height: 35,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: neutral600)),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), border: Border.all(color: neutral600)),
                     child: Icon(
                       Icons.keyboard_arrow_left,
                       size: 20,
@@ -321,8 +302,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 }
 
-Widget buildDrawerRowEntryWithCustomIcon(
-    {String title, Function onTap, IconData icon}) {
+Widget buildDrawerRowEntryWithCustomIcon({String title, Function onTap, IconData icon}) {
   return InkWell(
     onTap: onTap,
     child: Padding(

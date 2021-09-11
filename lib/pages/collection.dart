@@ -11,17 +11,17 @@ TextEditingController _searchQueryController = TextEditingController();
 bool _isSearching = false;
 String searchQuery = "Search query";
 
-class BookingsList extends StatefulWidget {
-  BookingsList({this.drawerData, this.user, this.data});
+class Collection extends StatefulWidget {
+  Collection({this.drawerData, this.user, this.data});
   final List drawerData;
   final Map user;
   final Map data;
 
   @override
-  _BookingsListState createState() => _BookingsListState();
+  _CollectionState createState() => _CollectionState();
 }
 
-class _BookingsListState extends State<BookingsList> {
+class _CollectionState extends State<Collection> {
   List contentTypes = [];
   List<String> keys = [];
   bool loading = false;
@@ -464,30 +464,31 @@ class _BookingsListState extends State<BookingsList> {
                           ),
                         );
                       } else {
-                        List<String> allContentKeys =
-                            content[key].keys.toList();
-                        if (allContentKeys.contains("formats") &&
-                            allContentKeys.contains("mime")) {
-                          return DataCell(
-                            Center(
-                              child: CircleAvatar(
-                                backgroundImage: content[key] != null
-                                    ? NetworkImage(content[key]["url"])
-                                    : null,
-                                child: content[key] != null
-                                    ? null
-                                    : Icon(Icons.person),
-                              ),
-                            ),
-                          );
-                        } else {
+                        print(content[key]);
+                        // List<String> allContentKeys =
+                        //     content[key].toList();
+                        // if (allContentKeys.contains("formats") &&
+                        //     allContentKeys.contains("mime")) {
+                        //   return DataCell(
+                        //     Center(
+                        //       child: CircleAvatar(
+                        //         backgroundImage: content[key] != null
+                        //             ? NetworkImage(content[key]["url"])
+                        //             : null,
+                        //         child: content[key] != null
+                        //             ? null
+                        //             : Icon(Icons.person),
+                        //       ),
+                        //     ),
+                        //   );
+                        // } else {
                           return DataCell(
                             Text(
                               content[key].toString(),
                               style: legendStyle,
                             ),
                           );
-                        }
+                        // }
                       }
                     },
                   ).toList(),
