@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/models/booking_entry.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -9,17 +11,17 @@ TextEditingController _searchQueryController = TextEditingController();
 bool _isSearching = false;
 String searchQuery = "Search query";
 
-class BookingsList extends StatefulWidget {
-  BookingsList({this.drawerData, this.user, this.data});
+class Collection extends StatefulWidget {
+  Collection({this.drawerData, this.user, this.data});
   final List drawerData;
   final Map user;
   final Map data;
 
   @override
-  _BookingsListState createState() => _BookingsListState();
+  _CollectionState createState() => _CollectionState();
 }
 
-class _BookingsListState extends State<BookingsList> {
+class _CollectionState extends State<Collection> {
   List contentTypes = [];
   List<String> keys = [];
   bool loading = false;
@@ -105,7 +107,7 @@ class _BookingsListState extends State<BookingsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: darkNavyBlue,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: strapiColor,
@@ -435,14 +437,16 @@ class _BookingsListState extends State<BookingsList> {
 
     print(onlyStringIntFieldsKeys);
     return SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
+          physics: BouncingScrollPhysics(),
           child: DataTable(
               columns: selectedColumns.map((key) {
                 return DataColumn(
                     label: Text(
-                  key,
+                  key.toUpperCase(),
                   style: dialogText,
                 ));
               }).toList(),
@@ -460,30 +464,31 @@ class _BookingsListState extends State<BookingsList> {
                           ),
                         );
                       } else {
-                        List<String> allContentKeys =
-                            content[key].keys.toList();
-                        if (allContentKeys.contains("formats") &&
-                            allContentKeys.contains("mime")) {
-                          return DataCell(
-                            Center(
-                              child: CircleAvatar(
-                                backgroundImage: content[key] != null
-                                    ? NetworkImage(content[key]["url"])
-                                    : null,
-                                child: content[key] != null
-                                    ? null
-                                    : Icon(Icons.person),
-                              ),
-                            ),
-                          );
-                        } else {
+                        print(content[key]);
+                        // List<String> allContentKeys =
+                        //     content[key].toList();
+                        // if (allContentKeys.contains("formats") &&
+                        //     allContentKeys.contains("mime")) {
+                        //   return DataCell(
+                        //     Center(
+                        //       child: CircleAvatar(
+                        //         backgroundImage: content[key] != null
+                        //             ? NetworkImage(content[key]["url"])
+                        //             : null,
+                        //         child: content[key] != null
+                        //             ? null
+                        //             : Icon(Icons.person),
+                        //       ),
+                        //     ),
+                        //   );
+                        // } else {
                           return DataCell(
                             Text(
                               content[key].toString(),
                               style: legendStyle,
                             ),
                           );
-                        }
+                        // }
                       }
                     },
                   ).toList(),
@@ -527,8 +532,8 @@ class _BookingsListState extends State<BookingsList> {
     // );
   }
 
-  TextStyle legendStyle = TextStyle(color: white, fontSize: 16);
-  TextStyle dialogText = TextStyle(color: drawerRowsColor, fontSize: 16);
+  TextStyle legendStyle = TextStyle(color: neutral900, fontSize: 16);
+  TextStyle dialogText = TextStyle(color: neutral900, fontSize: 16);
 }
 
 // for more options dropdown on every tile
