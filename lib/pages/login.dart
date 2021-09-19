@@ -4,30 +4,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
+import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
 import 'package:strapi_flutter_cms/models/drawer_data_model.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'dart:convert';
 import 'package:velocity_x/velocity_x.dart';
 
 class LoginScreen extends StatefulWidget {
-  final String adminURL;
-
-  const LoginScreen({Key key, this.adminURL}) : super(key: key);
+  const LoginScreen({Key key}) : super(key: key);
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
+  bool _loading = false;
 
   // initializing with pre written credentials just to avoid loigns on every hot restart
 
   TextEditingController urlController =
-      TextEditingController(text: 'http://192.168.100.79:1337');
+      TextEditingController(text: 'http://51.120.94.203:1337');
   TextEditingController emailController =
       TextEditingController(text: 'saadmujeeb123@gmail.com');
   TextEditingController passwordController =
@@ -36,7 +37,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void initState() {
     super.initState();
-    urlController.text = widget.adminURL;
     _getEmailAndPassword();
   }
 
@@ -65,12 +65,20 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _loginUser() async {
     var url = Uri.parse('${urlController.text}/admin/login');
     print(url);
+    setState(() {
+      _loading = true;
+    });
     var response = await http.post(url, body: {
       'email': emailController.text,
       'password': passwordController.text
+    }, headers: {
+      'Accept': 'application/json'
     });
 
     if (response.statusCode == 200) {
+      setState(() {
+        _loading = false;
+      });
       Map jsonResponse = jsonDecode(response.body);
 
       String token = jsonResponse['data']['token'];
@@ -79,21 +87,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (checkVersion) {
         await saveStringsToPrefs(token, jsonResponse['data']['user']);
-
-        List<dynamic> drawerData = await _getDrawerData(token);
-        if (drawerData != null) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomePage(
-                drawerData: drawerData,
-                user: jsonResponse['data']['user'],
-              ),
-            ),
-          );
-        } else {
-          print('drawer data is null');
-        }
+        await GlobalConfig.prefs.setString("baseURL", urlController.text);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+        );
       } else {
         return showDialog(
             context: context,
@@ -113,6 +113,9 @@ class _LoginScreenState extends State<LoginScreen> {
             });
       }
     } else {
+      setState(() {
+        _loading = false;
+      });
       print('Login failed');
     }
   }
@@ -168,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginBtn() {
+  Widget _buildLoginBtn(bool isLoading) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
@@ -183,16 +186,18 @@ class _LoginScreenState extends State<LoginScreen> {
           borderRadius: BorderRadius.circular(8.0),
         ),
         color: primary600,
-        child: Text(
-          'LOGIN',
-          style: TextStyle(
-            color: Colors.white,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-          ),
-        ),
+        child: isLoading
+            ? CustomSpinner(color: Colors.white)
+            : Text(
+                'LOGIN',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.5,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
       ),
     );
   }
@@ -253,7 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         _buildForgotPasswordBtn(),
                         _buildRememberMeCheckbox(),
-                        _buildLoginBtn(),
+                        _buildLoginBtn(_loading),
                       ],
                     ),
                   ),
@@ -267,14 +272,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   saveStringsToPrefs(String token, Map user) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('token', token);
-    prefs.setString('adminURL', urlController.text);
-    prefs.setString('user', json.encode(user));
+    await GlobalConfig.prefs.setString('token', 'Bearer $token');
+    await GlobalConfig.prefs.setString('adminURL', urlController.text);
+    await GlobalConfig.prefs.setString('user', json.encode(user));
 
     if (_rememberMe) {
-      prefs.setString('email', emailController.text);
-      prefs.setString('password', passwordController.text);
+      await GlobalConfig.prefs.setString('email', emailController.text);
+      await GlobalConfig.prefs.setString('password', passwordController.text);
     }
   }
 }

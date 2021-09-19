@@ -5,8 +5,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class IntroductoryPage extends StatefulWidget {
-  IntroductoryPage({this.user});
-  final Map user;
   @override
   _IntroductoryPageState createState() => _IntroductoryPageState();
 }
@@ -124,7 +122,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                 width: 4,
               ))),
               child: Text(
-                'Hi ${widget.user['firstname'].toString()}!',
+                '',
                 style: TextStyle(
                   fontWeight: FontWeight.normal,
                   fontSize: 20,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
 import 'package:strapi_flutter_cms/pages/login.dart';
 import 'package:http/http.dart' as http;
@@ -47,60 +48,15 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
-  void _checkUserIsLoggedIn() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('token');
-    prefs.remove('user');
-    prefs.remove('adminURL');
-    prefs.remove('email');
-    prefs.remove('password');
-    prefs.remove('adminURL');
-    String adminURL = prefs.getString("adminURL");
+  void _checkUserIsLoggedIn() {
+    String user = GlobalConfig.prefs.getString("user");
 
-
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('token');
-    if (prefs.containsKey('adminURL')) {
-      adminURL = prefs.getString('adminURL');
-    }
-
-    if (prefs.containsKey("token")) {
-      Map user = json.decode(prefs.getString('user'));
-
-      List<dynamic> drawerData = await _getDrawerData(token, adminURL);
-
-      if (drawerData != null) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomePage(
-                      drawerData: drawerData,
-                      user: user,
-                    )));
-      } else {
-        print('login failed');
-      }
+    if (user != null) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
     } else {
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => LoginScreen(adminURL: adminURL)));
-    }
-  }
-
-  Future<List> _getDrawerData(String token, String adminURL) async {
-    var url = Uri.parse('$adminURL/content-manager/content-types');
-    print(adminURL);
-    var response = await http.get(
-      url,
-      headers: {"Authorization": 'Bearer $token'},
-    );
-
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      return jsonResponse['data'];
-    } else {
-      return null;
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     }
   }
 

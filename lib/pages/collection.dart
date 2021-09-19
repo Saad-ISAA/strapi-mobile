@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
+import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
+import 'package:strapi_flutter_cms/controllers/collectionTypeController.dart';
 import 'package:strapi_flutter_cms/models/booking_entry.dart';
+import 'package:strapi_flutter_cms/models/content_type.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
@@ -12,10 +15,8 @@ bool _isSearching = false;
 String searchQuery = "Search query";
 
 class Collection extends StatefulWidget {
-  Collection({this.drawerData, this.user, this.data});
-  final List drawerData;
-  final Map user;
-  final Map data;
+  Collection({this.contentType});
+  final ContentType contentType;
 
   @override
   _CollectionState createState() => _CollectionState();
@@ -27,17 +28,43 @@ class _CollectionState extends State<Collection> {
   bool loading = false;
   Map filters = {};
 
+  List<dynamic> collectionTypeData = [];
+  List<String> displayFields = [];
+
   void initState() {
     super.initState();
     setState(() {
       loading = true;
     });
-    _getContentTypeData();
+    fetchCollectionType(widget.contentType.uid)
+        .then((value) {
+          print(value);
+          collectionTypeData = value;
+        })
+        .catchError((err) => print(err))
+        .whenComplete(() => setState(() {
+              loading = false;
+            }));
+    _initializeDefaultDisplayFields();
+  }
+
+  void _initializeDefaultDisplayFields() {
+    List<String> defaultDisplayFields = [];
+    widget.contentType.attributes.forEach((key, value) {
+      var attribute = widget.contentType.attributes[key];
+
+      if (attribute["type"] != "richtext" && attribute["type"] != "component")
+        defaultDisplayFields.add(key);
+    });
+
+    setState(() {
+      displayFields = defaultDisplayFields;
+    });
   }
 
   Future<void> _getFilters(var adminURL, String token) async {
     var url = Uri.parse(
-        '${adminURL}/content-manager/content-types/${widget.data['item_uid']}/configuration');
+        '${adminURL}/content-manager/content-types/${widget.contentType.uid}/configuration');
 
     print(url);
     var response =
@@ -72,37 +99,37 @@ class _CollectionState extends State<Collection> {
     }
   }
 
-  void _getContentTypeData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String adminURL = prefs.getString('adminURL');
-    String token = prefs.getString('token');
-    var url = Uri.parse('${adminURL}/${widget.data['url']}');
+  // void _getContentTypeData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String adminURL = prefs.getString('adminURL');
+  //   String token = prefs.getString('token');
+  //   var url = Uri.parse('${adminURL}/${widget.data['url']}');
 
-    print('${adminURL}/${widget.data['url']}');
-    var response =
-        await http.get(url, headers: {'Authorization': 'Bearer $token'});
+  //   print('${adminURL}/${widget.data['url']}');
+  //   var response =
+  //       await http.get(url, headers: {'Authorization': 'Bearer $token'});
 
-    await _getFilters(adminURL, token);
+  //   await _getFilters(adminURL, token);
 
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      Map anyContentType = jsonResponse[0];
+  //   if (response.statusCode == 200) {
+  //     var jsonResponse = jsonDecode(response.body);
+  //     Map anyContentType = jsonResponse[0];
 
-      setState(() {
-        contentTypes = jsonResponse["results"];
-        if (contentTypes.isNotEmpty) {
-          keys = contentTypes[0].keys.toList();
-        }
-        loading = false;
-      });
-    } else {
-      print('data fetch failed');
-    }
+  //     setState(() {
+  //       contentTypes = jsonResponse["results"];
+  //       if (contentTypes.isNotEmpty) {
+  //         keys = contentTypes[0].keys.toList();
+  //       }
+  //       loading = false;
+  //     });
+  //   } else {
+  //     print('data fetch failed');
+  //   }
 
-    setState(() {
-      loading = false;
-    });
-  }
+  //   setState(() {
+  //     loading = false;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +141,7 @@ class _CollectionState extends State<Collection> {
           // leading: _isSearching ? const BackButton() : Container(),
           title: _isSearching
               ? _buildSearchField()
-              : _buildTitle(widget.data['title']),
+              : _buildTitle(widget.contentType.info.label),
           actions: _buildActions(),
         ),
         floatingActionButton: FloatingActionButton(
@@ -132,12 +159,13 @@ class _CollectionState extends State<Collection> {
             loading
                 ? Expanded(
                     child: Center(
-                      child: CircularProgressIndicator(),
+                      child: CustomSpinner(),
                     ),
                   )
                 : Expanded(
-                    child: contentTypes.length > 0
-                        ? renderCollectionTypes()
+                    child: collectionTypeData.length > 0
+                        ? renderCollectionTypes(widget.contentType,
+                            collectionTypeData, displayFields)
                         : Center(
                             child: Text(
                               'No content found',
@@ -145,108 +173,6 @@ class _CollectionState extends State<Collection> {
                             ),
                           ),
                   )
-
-            // ListView.builder(
-            //     itemCount: bookingEntries.length,
-            //     shrinkWrap: true,
-            //     itemBuilder: (context, index) {
-            // return Padding(
-            //   padding: const EdgeInsets.only(bottom: 4.0),
-            //   child: SizedBox(
-            //     child: Card(
-            //       elevation: 5,
-            //       child: Padding(
-            //         padding: EdgeInsets.only(left: 6.0, right: 0.0),
-            //         child: ExpansionTile(
-            //           trailing: PopupMenuButton<String>(
-            //             onSelected: (String choice) {
-            //               if (choice == 'Delete') {
-            //                 setState(() {
-            //                   bookingEntries.removeAt(index);
-            //                 });
-            //               }
-            //             },
-            //             itemBuilder: (context) {
-            //               return DropDownItem.choices
-            //                   .map((String choice) {
-            //                 return PopupMenuItem<String>(
-            //                   value: choice,
-            //                   child: Row(
-            //                     children: [
-            //                       Icon((choice == 'Edit')
-            //                           ? Icons.edit
-            //                           : Icons.delete),
-            //                       SizedBox(width: 8),
-            //                       Text(choice),
-            //                     ],
-            //                   ),
-            //                 );
-            //               }).toList();
-            //             },
-            //           ),
-            //           title: Row(
-            //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //             children: [
-            //               Text('${bookingEntries[index].id}'),
-            //               Text('${bookingEntries[index].content}'),
-            //               Container(
-            //                 height: 25,
-            //                 width: 75,
-            //                 padding: EdgeInsets.all(2),
-            //                 decoration: bookingEntries[index].isPublished
-            //                     ? BoxDecoration(
-            //                         color: Colors.green[50],
-            //                         border: Border.all(
-            //                             width: 1, color: Colors.green))
-            //                     : BoxDecoration(
-            //                         color: Colors.red[100],
-            //                         border: Border.all(
-            //                             width: 1,
-            //                             color: Colors.redAccent),
-            //                       ),
-            //                 child: Center(
-            //                   child: bookingEntries[index].isPublished
-            //                       ? Text(
-            //                           'Published',
-            //                           style: TextStyle(
-            //                               color: Colors.green,
-            //                               fontSize: 12),
-            //                         )
-            //                       : Text(
-            //                           'Unpublished',
-            //                           style: TextStyle(
-            //                               color: Colors.redAccent,
-            //                               fontSize: 12),
-            //                         ),
-            //                 ),
-            //               ),
-            //             ],
-            //           ),
-            //           children: <Widget>[
-            //             Text(
-            //               'Published at:  ${bookingEntries[index].publishedAt}',
-            //               style: TextStyle(
-            //                 color: darkNavyBlue,
-            //                 fontSize: 16,
-            //               ),
-            //             ),
-            //             SizedBox(height: 5),
-            //             Text(
-            //               'Created at:  ${bookingEntries[index].createdAt}',
-            //               style: TextStyle(
-            //                 color: Colors.grey,
-            //                 fontSize: 16,
-            //               ),
-            //             ),
-            //             SizedBox(height: 16),
-            //             SizedBox(height: 8),
-            //           ],
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // );
-            //     })
           ],
         ));
   }
@@ -414,126 +340,68 @@ class _CollectionState extends State<Collection> {
       },
     );
   }
+}
 
-  Widget renderCollectionTypes() {
-    List<String> onlyStringIntFieldsKeys = [];
-    Map anyContentType = contentTypes[0];
+Widget renderCollectionTypes(ContentType contentType,
+    List<dynamic> collectionTypeData, List<String> displayFields) {
+  List<DataRow> dataRows = [];
 
-    keys.forEach((key) {
-      if (anyContentType[key].runtimeType == String ||
-          anyContentType[key].runtimeType == int ||
-          anyContentType[key].runtimeType == double) {
-        onlyStringIntFieldsKeys.add(key);
+  collectionTypeData.forEach((collection) {
+    List<DataCell> dataCells = [];
+    displayFields.forEach((field) {
+      var attribute = contentType.attributes[field];
+      String value = "";
+      if (attribute["type"] == "relation") {
+        // if type == "relation"
+        if (attribute["relationType"] == "oneToMany" ||
+            attribute["relationType"] == "manyWay") {
+          value = '${collection[field]["count"]} items';
+        } else if (attribute["relationType"] == "manyToOne" ||
+            attribute["relationType"] == "oneWay") {
+          // for (int i = 0; i < collection[field].length; i++) {
+          //   var key = collection[field].keys.toList()[i];
+          //   var v = collection[field][key];
+          //   print(key);
+          //   if (value.runtimeType != Map) {
+          //     value = '$v';
+          //     break;
+          //   } else {
+          //     value = '${collection[field]["id"]}';
+          //   }
+          // }
+
+          value = '${collection[field]["id"]}';
+        } else {
+          value = 'cell';
+        }
+      } else if (attribute["type"] == "media") {
+        value = 'cell';
+      } else {
+        value = '${collection[field]}';
       }
+      dataCells.add(DataCell(Text(
+        value,
+        style: legendStyle,
+      )));
     });
+    dataRows.add(DataRow(cells: dataCells));
+  });
 
-    List<String> selectedColumns = [];
-    filters.forEach((key, value) {
-      if (value) {
-        selectedColumns.add(key);
-      }
-    });
-    print(selectedColumns);
-
-    print(onlyStringIntFieldsKeys);
-    return SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        child: SingleChildScrollView(
+  return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           physics: BouncingScrollPhysics(),
           child: DataTable(
-              columns: selectedColumns.map((key) {
-                return DataColumn(
-                    label: Text(
-                  key.toUpperCase(),
-                  style: dialogText,
-                ));
-              }).toList(),
-              rows: contentTypes.map((content) {
-                return DataRow(
-                  cells: selectedColumns.map(
-                    (key) {
-                      if (content[key].runtimeType == String ||
-                          content[key].runtimeType == int ||
-                          content[key].runtimeType == double) {
-                        return DataCell(
-                          Text(
-                            content[key].toString(),
-                            style: legendStyle,
-                          ),
-                        );
-                      } else {
-                        print(content[key]);
-                        // List<String> allContentKeys =
-                        //     content[key].toList();
-                        // if (allContentKeys.contains("formats") &&
-                        //     allContentKeys.contains("mime")) {
-                        //   return DataCell(
-                        //     Center(
-                        //       child: CircleAvatar(
-                        //         backgroundImage: content[key] != null
-                        //             ? NetworkImage(content[key]["url"])
-                        //             : null,
-                        //         child: content[key] != null
-                        //             ? null
-                        //             : Icon(Icons.person),
-                        //       ),
-                        //     ),
-                        //   );
-                        // } else {
-                          return DataCell(
-                            Text(
-                              content[key].toString(),
-                              style: legendStyle,
-                            ),
-                          );
-                        // }
-                      }
-                    },
-                  ).toList(),
-                );
-              }).toList()),
-        ));
-
-    // return ListView.builder(
-    //   shrinkWrap: true,
-    //   scrollDirection: Axis.vertical,
-    //   itemCount: contentTypes.length,
-    //   itemBuilder: (context, index) {
-    //     Map item = contentTypes[index];
-    //     var randomField = item[keys[1]];
-
-    //     // return Container(
-    //     //     child: Padding(
-    //     //   padding: EdgeInsets.all(10),
-    //     //   child: Card(
-    //     //     child: Padding(
-    //     //         padding: EdgeInsets.all(10),
-    //     //         child: Column(
-    //     //           children: [
-    //     //             Text(
-    //     //               'key: ${keys[1]}',
-    //     //               style:
-    //     //                   TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-    //     //             ),
-    //     //             SizedBox(
-    //     //               height: 5,
-    //     //             ),
-    //     //             Text(
-    //     //               'value: $randomField',
-    //     //               style: TextStyle(fontSize: 15),
-    //     //             ),
-    //     //           ],
-    //     //         )),
-    //     //   ),
-    //     // ));
-    //   },
-    // );
-  }
-
-  TextStyle legendStyle = TextStyle(color: neutral900, fontSize: 16);
-  TextStyle dialogText = TextStyle(color: neutral900, fontSize: 16);
+              columns: displayFields
+                  .map((e) => DataColumn(
+                          label: Text(
+                        e,
+                        style: dialogText,
+                      )))
+                  .toList(),
+              rows: dataRows)));
 }
 
 // for more options dropdown on every tile
@@ -543,3 +411,6 @@ class DropDownItem {
 
   static const List<String> choices = <String>[edit, delete];
 }
+
+TextStyle legendStyle = TextStyle(color: neutral900, fontSize: 16);
+TextStyle dialogText = TextStyle(color: neutral900, fontSize: 16);

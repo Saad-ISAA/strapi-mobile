@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:strapi_flutter_cms/GlobalConfig.dart';
+import 'package:strapi_flutter_cms/models/content_type.dart';
 import 'package:strapi_flutter_cms/pages/collection.dart';
 import 'package:strapi_flutter_cms/pages/login.dart';
 import 'package:strapi_flutter_cms/pages/media_library_page.dart';
@@ -11,10 +13,9 @@ import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class CustomDrawer extends StatefulWidget {
-  CustomDrawer({this.drawerData, this.user});
+  CustomDrawer({this.contentTypes = const []});
 
-  final List<dynamic> drawerData;
-  final Map user;
+  final List<ContentType> contentTypes;
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
 }
@@ -22,17 +23,15 @@ class CustomDrawer extends StatefulWidget {
 class _CustomDrawerState extends State<CustomDrawer> {
   void initState() {
     super.initState();
-
-    print(widget.user);
   }
 
   void logoutUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('token');
     prefs.remove('user');
-    String adminURL = prefs.getString("adminURL");
 
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(adminURL: adminURL)));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 
   Widget buildDrawerRowEntry({String title, Function onTap}) {
@@ -64,7 +63,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    var user = widget.user;
     return Drawer(
       child: Container(
         color: Colors.white,
@@ -83,7 +81,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     children: [
                       8.widthBox,
                       Container(
-                        decoration: BoxDecoration(color: primary600, borderRadius: BorderRadius.circular(8)),
+                        decoration: BoxDecoration(
+                            color: primary600,
+                            borderRadius: BorderRadius.circular(8)),
                         child: Image.asset(
                           'assets/images/logo_white.png',
                           height: 25,
@@ -134,38 +134,59 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/content-icon.svg', onTap: () {}, text: 'Content'),
+                          _dawerEntryWithPrefixIcon(
+                              icon: 'assets/icons/content-icon.svg',
+                              onTap: () {},
+                              text: 'Content'),
                           SizedBox(height: 48),
                           Text(
                             'PLUGINS',
-                            style: TextStyle(color: neutral600, fontSize: 15, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: neutral600,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
                           ),
-                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/content-icon.svg', onTap: () {}, text: 'Builder'),
-                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/media-library.svg', onTap: () {
-                            Navigator.push(
+                          _dawerEntryWithPrefixIcon(
+                              icon: 'assets/icons/content-icon.svg',
+                              onTap: () {},
+                              text: 'Builder'),
+                          _dawerEntryWithPrefixIcon(
+                              icon: 'assets/icons/media-library.svg',
+                              onTap: () {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => MediaLibraryPage()
-                                  ),
+                                      builder: (context) => MediaLibraryPage()),
                                 );
-
-                          }, text: 'Media Library'),
-                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/info-alert.svg', onTap: () {}, text: 'Documentation'),
+                              },
+                              text: 'Media Library'),
+                          _dawerEntryWithPrefixIcon(
+                              icon: 'assets/icons/info-alert.svg',
+                              onTap: () {},
+                              text: 'Documentation'),
                           SizedBox(height: 48),
                           Text(
                             'GENERAL',
-                            style: TextStyle(color: neutral600, fontSize: 15, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: neutral600,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
                           ),
-                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/plugins-icons.svg', onTap: () {}, text: 'Plugins'),
-                          _dawerEntryWithPrefixIcon(icon: 'assets/icons/marketplace-icon.svg', onTap: () {}, text: 'Marketplace'),
+                          _dawerEntryWithPrefixIcon(
+                              icon: 'assets/icons/plugins-icons.svg',
+                              onTap: () {},
+                              text: 'Plugins'),
+                          _dawerEntryWithPrefixIcon(
+                              icon: 'assets/icons/marketplace-icon.svg',
+                              onTap: () {},
+                              text: 'Marketplace'),
                           _dawerEntryWithPrefixIcon(
                               icon: 'assets/icons/settings-icon.svg',
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => SettingsPage()
-                                  ),
+                                      builder: (context) => SettingsPage()),
                                 );
                               },
                               text: 'Settings'),
@@ -175,7 +196,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             children: [
                               Text(
                                 'COLLECTION TYPES',
-                                style: TextStyle(color: Colors.grey[500], fontSize: 16, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
                               ),
                               Icon(
                                 Icons.search,
@@ -185,34 +209,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             ],
                           ),
                           Column(
-                              children: widget.drawerData != null
-                                  ? widget.drawerData.map((item) {
-                                      return buildDrawerRowEntry(
-                                          title: item['info']["label"],
-                                          onTap: () {
-                                            String url = 'content-manager/collection-types/${item['uid']}';
-// http://35.208.163.99:1337/content-manager/collection-types/application::booking.booking?page=1&pageSize=10&_sort=address:ASC
-                                            var data = {
-                                              'url': url,
-                                              'item_uid': item['uid'],
-                                              'title': item['apiID'],
-                                            };
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => Collection(
-                                                  data: data,
-                                                ),
-                                              ),
-                                            );
-                                          });
-                                    }).toList()
-                                  : [
-                                      Text(
-                                        'Loading',
-                                        style: TextStyle(color: Colors.white),
+                              children: widget.contentTypes.map((item) {
+                            return buildDrawerRowEntry(
+                                title: '${item.info.label}',
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Collection(
+                                        contentType: item,
                                       ),
-                                    ]),
+                                    ),
+                                  );
+                                });
+                          }).toList()),
                           // buildDrawerRowEntry(
                           //   title: 'Chauffeur Bookings',
                           //   onTap: () => Navigator.push(
@@ -245,7 +255,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                   12.widthBox,
                   Text(
-                    user['firstname'] + user['lastname'],
+                    GlobalConfig.data.user["firstname"] +
+                        GlobalConfig.data.user["lastname"],
                     style: TextStyle(
                       fontSize: 17,
                     ),
@@ -253,7 +264,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   Spacer(),
                   Container(
                     height: 35,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), border: Border.all(color: neutral600)),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: neutral600)),
                     child: Icon(
                       Icons.keyboard_arrow_left,
                       size: 20,
@@ -302,7 +315,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 }
 
-Widget buildDrawerRowEntryWithCustomIcon({String title, Function onTap, IconData icon}) {
+Widget buildDrawerRowEntryWithCustomIcon(
+    {String title, Function onTap, IconData icon}) {
   return InkWell(
     onTap: onTap,
     child: Padding(

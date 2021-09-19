@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:strapi_flutter_cms/controllers/collectionTypeController.dart';
+import 'package:strapi_flutter_cms/models/content_type.dart';
 import 'package:strapi_flutter_cms/pages/IntroductryPage.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/drawer.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({this.drawerData, this.user});
-  final List<dynamic> drawerData;
-  final Map user;
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  List<ContentType> contentTypes = [];
+
   void initState() {
     super.initState();
+    fetchContentTypes().then((value) {
+      print(value);
+      setState(() {
+        // print("content types fetched" + value.length.toString());
+        contentTypes = value;
+      });
+    }).catchError((err) {
+      print(err);
+      print("caught errorrr");
+    }).whenComplete(() => null);
   }
 
   @override
@@ -44,10 +55,9 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
       ),
       drawer: CustomDrawer(
-        drawerData: widget.drawerData,
-        user: widget.user,
+        contentTypes: contentTypes,
       ),
-      body: IntroductoryPage(user: widget.user),
+      body: IntroductoryPage(),
     );
   }
 }

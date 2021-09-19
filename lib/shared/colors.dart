@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 Color blue = Color(0xFF007EFF);
 Color white = Color(0xFFFFFFFF);
-Color strapiColor = Color(0xFF8C4BFF);
+const strapiColor = Color(0xFF8C4BFF);
 Color darkNavyBlue = Color(0xFF18202E);
 Color drawerRowsColor = Colors.grey[600];
 Color yellowAccentColor = Color(0xFFFEE895);
