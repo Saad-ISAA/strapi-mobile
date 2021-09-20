@@ -3,78 +3,134 @@ import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
 import 'package:strapi_flutter_cms/Customwidgets/on_off_button.dart';
+import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
+import 'package:strapi_flutter_cms/controllers/settingsControllers/providerController.dart';
+import 'package:strapi_flutter_cms/models/provider.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class ProvidersSettings extends StatelessWidget {
+class ProvidersSettings extends StatefulWidget {
   const ProvidersSettings({Key key}) : super(key: key);
+
+  @override
+  _ProvidersSettingsState createState() => _ProvidersSettingsState();
+}
+
+class _ProvidersSettingsState extends State<ProvidersSettings> {
+  List<Map<String, ProviderDetail>> providers = [];
+  bool loading = true;
+  int enabledProvidersCount = 0;
+  int disabledProvidersCount = 0;
+
+  void initState() {
+    fetchProviders()
+        .then((value) => {
+              setState(() {
+                providers = value;
+                _setEnabledAndDisabledProviderCount();
+              })
+            })
+        .whenComplete(() => setState(() {
+              loading = false;
+            }));
+
+    super.initState();
+  }
+
+  void _setEnabledAndDisabledProviderCount() {
+    int enabledCount = 0;
+    int disabledCount = 0;
+    providers.forEach((item) {
+      var itemKey = item.keys.toList()[0];
+      print(itemKey);
+      if (item[itemKey].enabled == true)
+        enabledCount += 1;
+      else
+        disabledCount += 1;
+    });
+    setState(() {
+      enabledProvidersCount = enabledCount;
+      disabledProvidersCount = disabledCount;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Card(
-              margin: EdgeInsets.all(0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  '1 provider is enabled and 14 are disabled'
-                      .text
-                      .xl2
-                      .semiBold
-                      .softWrap(true)
-                      .make()
-                      .px(16),
-                  24.heightBox,
-                  ProvidersRow(
-                    title: 'Auth0',
-                    isEnabled: false,
-                  ),
-                  ProvidersRow(
-                    title: 'Cas',
-                    isEnabled: false,
-                  ),
-                  ProvidersRow(
-                    icon: 'assets/icons/email-template.svg',
-                    title: 'Email',
-                    isEnabled: true,
-                  ),
-                  ProvidersRow(
-                    icon: 'assets/icons/github.svg',
-                    title: 'Github',
-                    isEnabled: false,
-                  ),
-                  ProvidersRow(
-                    icon: 'assets/icons/twitter.svg',
-                    title: 'Twitter',
-                    isEnabled: false,
-                  ),
-                ],
-              ).pOnly(top: 16)),
-        ],
-      ).p(24),
+      child: loading
+          ? CustomSpinner()
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Card(
+                      margin: EdgeInsets.all(0),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(2)),
+                      child: ListView(
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          '$enabledProvidersCount provider is enabled and $disabledProvidersCount are disabled'
+                              .text
+                              .xl2
+                              .semiBold
+                              .softWrap(true)
+                              .make()
+                              .px(16),
+                          24.heightBox,
+                          ...providers.map((provider) => ProvidersRow(
+                                title: provider.keys.toList()[0],
+                                isEnabled: provider.values.toList()[0].enabled,
+                                providerDetail: provider.values.toList()[0],
+                              )),
+                          // ProvidersRow(
+                          //   title: 'Cas',
+                          //   isEnabled: false,
+                          // ),
+                          // ProvidersRow(
+                          //   icon: 'assets/icons/email-template.svg',
+                          //   title: 'Email',
+                          //   isEnabled: true,
+                          // ),
+                          // ProvidersRow(
+                          //   icon: 'assets/icons/github.svg',
+                          //   title: 'Github',
+                          //   isEnabled: false,
+                          // ),
+                          // ProvidersRow(
+                          //   icon: 'assets/icons/twitter.svg',
+                          //   title: 'Twitter',
+                          //   isEnabled: false,
+                          // ),
+                        ],
+                      ).pOnly(top: 16)),
+                ),
+              ],
+            ).p(24),
     );
   }
 }
 
 class ProvidersRow extends StatelessWidget {
-  const ProvidersRow({Key key, this.icon, this.title, this.isEnabled = true})
+  const ProvidersRow(
+      {Key key,
+      this.icon,
+      this.title,
+      this.isEnabled = true,
+      this.providerDetail})
       : super(key: key);
 
   final String icon;
   final String title;
   final bool isEnabled;
+  final ProviderDetail providerDetail;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showEditProviderDialog(context, title);
+        showEditProviderDialog(context, title, providerDetail);
       },
       child: Column(
         children: [
@@ -119,7 +175,17 @@ class ProvidersRow extends StatelessWidget {
   }
 }
 
-dynamic showEditProviderDialog(context, String title) {
+dynamic showEditProviderDialog(
+    context, String title, ProviderDetail providerDetail) {
+  var clientIDController = TextEditingController(text: '${providerDetail.key}');
+  var clientSecretController =
+      TextEditingController(text: '${providerDetail.secret}');
+  var hostURLController = TextEditingController(text: "www.yoursubdomain.com");
+  var redirectURLController =
+      TextEditingController(text: providerDetail.redirectUri);
+  var callbackURLController =
+      TextEditingController(text: providerDetail.callback);
+
   return showDialog(
       context: context,
       builder: (context) {
@@ -144,7 +210,7 @@ dynamic showEditProviderDialog(context, String title) {
                           style: TextStyle(fontSize: 16),
                         ).px(16),
                         StrapiSwitch(
-                          val: false,
+                          val: providerDetail.enabled,
                         ).px(16),
                         Text(
                           'If disabled, users won\'t be able to use this provider.',
@@ -152,30 +218,28 @@ dynamic showEditProviderDialog(context, String title) {
                         ).px(16),
                         16.heightBox,
                         PrimaryTextField(
-                          controller: null,
+                          controller: clientIDController,
                           title: 'Client ID',
                           hintText: 'TEXT',
                         ).px(16),
                         PrimaryTextField(
-                          controller: null,
+                          controller: clientSecretController,
                           title: 'Client Secret',
                           hintText: 'TEXT',
                         ).p(16),
                         PrimaryTextField(
-                          controller: TextEditingController(
-                              text: 'my.subdomain.com/cas'),
+                          controller: hostURLController,
                           title: 'Host URI (Subdomain)',
                         ).px(16),
                         PrimaryTextField(
-                          controller:
-                              TextEditingController(text: '/auth/cas/callback'),
+                          controller: redirectURLController,
                           title: 'The redirect URL to your front-end app',
                         ).p(16),
                         PrimaryTextField(
-                          controller: null,
+                          controller: callbackURLController,
                           hintText: '/connect/cas/callback',
                           title:
-                              'The redirect URL to add in your Cas application configurations',
+                              'The redirect URL to add in your $title application configurations',
                         ).px(16),
                         Container(
                           decoration: BoxDecoration(

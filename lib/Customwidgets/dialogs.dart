@@ -7,6 +7,7 @@ import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
 import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'package:strapi_flutter_cms/controllers/mediaLibraryController.dart';
+import 'package:strapi_flutter_cms/models/locale.dart';
 import 'package:strapi_flutter_cms/models/media_library.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -228,7 +229,10 @@ Widget _mediaLibraryItemInfoEntry({String key, String val}) {
   );
 }
 
-dynamic showAddLocaleDialog(context) {
+dynamic showAddLocaleDialog(context, SelectedLocale locale) {
+  var localeController = TextEditingController(text: locale.code);
+  var localeDisplayNameController = TextEditingController(text: locale.name);
+  bool isDefault = locale.isDefault;
   return showDialog(
       context: context,
       builder: (context) {
@@ -249,11 +253,11 @@ dynamic showAddLocaleDialog(context) {
                       children: [
                         55.heightBox,
                         PrimaryTextField(
-                          controller: null,
+                          controller: localeController,
                           title: 'Locales',
                         ).px(16),
                         PrimaryTextField(
-                          controller: null,
+                          controller: localeDisplayNameController,
                           title: 'Locale Display Name',
                           descriptionText:
                               'Locale will be displayed under that name in the administration panel',
@@ -265,7 +269,7 @@ dynamic showAddLocaleDialog(context) {
                           children: [
                             StrapiCheckBox(
                               onChanged: (v) {},
-                              value: true,
+                              value: isDefault,
                             ),
                             Text('Set as default locale',
                                 style: TextStyle(
@@ -283,9 +287,10 @@ dynamic showAddLocaleDialog(context) {
                               borderRadius: BorderRadius.circular(3)),
                           child: Row(
                             children: [
-                              Expanded(
-                                  child: PrimaryCancelGreySquareButton(
-                                onPressed: () {},
+                              Expanded(child: PrimaryCancelGreySquareButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
                               )),
                               24.widthBox,
                               Expanded(

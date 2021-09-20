@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/advanced_settings.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/email_templates.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/internationalization.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/media_library_settings.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/providers.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/roles.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-Drawer buildSettingsDrawer() {
+Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
   return Drawer(
     child: SafeArea(
       child: SingleChildScrollView(
@@ -17,27 +23,52 @@ Drawer buildSettingsDrawer() {
               style: _drawerTitleText,
             ).py(16),
             buildDrawerRowEntryWithoutIcon(
-                title: 'Internationalization', onTap: () {}),
+                title: 'Internationalization',
+                onTap: () {
+                  setSelectedPage(Internationalization());
+                }),
             buildDrawerRowEntryWithoutIcon(
-                title: 'Media Library', onTap: () {}),
+                title: 'Media Library',
+                onTap: () {
+                  setSelectedPage(MediaLibrarySettingsPage());
+                }),
             buildDrawerRowEntryWithoutIcon(title: 'Webhooks', onTap: () {}),
             16.heightBox,
             Text(
               'ADMINISTRATION PANEL',
               style: _drawerTitleText,
             ).py(16),
-            buildDrawerRowEntryWithoutIcon(title: 'Roles', onTap: () {}),
+            buildDrawerRowEntryWithoutIcon(
+                title: 'Roles',
+                onTap: () {
+                  setSelectedPage(RolesPage());
+                }),
             buildDrawerRowEntryWithoutIcon(title: 'Users', onTap: () {}),
             16.heightBox,
             Text(
               'USERS & PERMISSONS PLUGIN',
               style: _drawerTitleText,
             ).py(16),
-            buildDrawerRowEntryWithoutIcon(title: 'Roles', onTap: () {}),
-            buildDrawerRowEntryWithoutIcon(title: 'Providers', onTap: () {}),
-            buildDrawerRowEntryWithoutIcon(title: 'Email', onTap: () {}),
-            buildDrawerRowEntryWithoutIcon(title: 'Template', onTap: () {}),
-            buildDrawerRowEntryWithoutIcon(title: 'Settings', onTap: () {}),
+            buildDrawerRowEntryWithoutIcon(
+                title: 'Roles',
+                onTap: () {
+                  setSelectedPage(ProvidersSettings());
+                }),
+            buildDrawerRowEntryWithoutIcon(
+                title: 'Providers',
+                onTap: () {
+                  setSelectedPage(ProvidersSettings());
+                }),
+            buildDrawerRowEntryWithoutIcon(
+                title: 'Email Templates',
+                onTap: () {
+                  setSelectedPage(EmailTemplateSettingsPage());
+                }),
+            buildDrawerRowEntryWithoutIcon(
+                title: 'Advanced Settings',
+                onTap: () {
+                  setSelectedPage(AdvancedSettingsScreen());
+                }),
             16.heightBox,
             Text(
               'EMAIL PLUGIN',

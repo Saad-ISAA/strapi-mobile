@@ -50,11 +50,15 @@ class _CollectionState extends State<Collection> {
 
   void _initializeDefaultDisplayFields() {
     List<String> defaultDisplayFields = [];
-    widget.contentType.attributes.forEach((key, value) {
-      var attribute = widget.contentType.attributes[key];
 
-      if (attribute["type"] != "richtext" && attribute["type"] != "component")
-        defaultDisplayFields.add(key);
+    int i = 0;
+    widget.contentType.attributes.forEach((key, value) {
+      if (i <= 3) {
+        var attribute = widget.contentType.attributes[key];
+        if (attribute["type"] != "richtext" && attribute["type"] != "component")
+          defaultDisplayFields.add(key);
+      }
+      i += 1;
     });
 
     setState(() {
