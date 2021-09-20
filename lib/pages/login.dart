@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   // initializing with pre written credentials just to avoid loigns on every hot restart
 
   TextEditingController urlController =
-      TextEditingController(text: 'http://192.168.100.59:1337');
+      TextEditingController(text: 'http://51.13.64.82:1337');
   TextEditingController emailController =
       TextEditingController(text: 'saadmujeeb123@gmail.com');
   TextEditingController passwordController =

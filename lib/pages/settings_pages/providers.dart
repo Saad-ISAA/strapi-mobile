@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
@@ -27,7 +28,8 @@ class _ProvidersSettingsState extends State<ProvidersSettings> {
     print(adminURL);
     var url = Uri.parse('$adminURL/users-permissions/providers');
     try {
-      var response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer " + token});
+      var response = await http.get(url,
+          headers: {HttpHeaders.authorizationHeader: "Bearer " + token});
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
@@ -53,14 +55,18 @@ class _ProvidersSettingsState extends State<ProvidersSettings> {
         children: [
           Card(
             margin: EdgeInsets.all(0),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
             child: FutureBuilder(
               future: _fetchProviders(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.none && !snapshot.hasData) {
+                if (snapshot.connectionState == ConnectionState.none &&
+                    !snapshot.hasData) {
                   //print('project snapshot data is: ${snapshot.data}');
                   return Container();
-                } else if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
+                } else if (snapshot.connectionState ==
+                        ConnectionState.waiting &&
+                    !snapshot.hasData) {
                   //print('project snapshot data is: ${snapshot.data}');
                   return Container(
                     child: CircularProgressIndicator(),
@@ -68,17 +74,24 @@ class _ProvidersSettingsState extends State<ProvidersSettings> {
                 } else {
                   List<ProvidersRow> providerList = [];
                   snapshot.data.forEach((key, value) {
+                    print(value["icon"]);
                     providerList.add(new ProvidersRow(
                       title: '${key[0].toUpperCase()}${key.substring(1)}',
                       isEnabled: value["enabled"],
-                      icon: 'assets/icons/providers/discord.svg',
+                      icon: value["icon"],
                     ));
                   });
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      '1 provider is enabled and 14 are disabled'.text.xl2.semiBold.softWrap(true).make().px(16),
+                      '1 provider is enabled and 14 are disabled'
+                          .text
+                          .xl2
+                          .semiBold
+                          .softWrap(true)
+                          .make()
+                          .px(16),
                       24.heightBox,
                       ...providerList
                       // ProvidersRow(
@@ -117,11 +130,43 @@ class _ProvidersSettingsState extends State<ProvidersSettings> {
 }
 
 class ProvidersRow extends StatelessWidget {
-  const ProvidersRow({Key key, this.icon, this.title, this.isEnabled = true}) : super(key: key);
+  const ProvidersRow({Key key, this.icon, this.title, this.isEnabled = true})
+      : super(key: key);
 
   final String icon;
   final String title;
   final bool isEnabled;
+
+  IconData _loadIcon(String code) {
+    switch (code) {
+      case 'aws':
+        return FontAwesomeIcons.aws;
+      case 'envelope':
+        return FontAwesomeIcons.envelope;
+      case 'discord':
+        return FontAwesomeIcons.discord;
+      case 'facebook-square':
+        return FontAwesomeIcons.facebookSquare;
+      case 'google':
+        return FontAwesomeIcons.google;
+      case 'github':
+        return FontAwesomeIcons.github;
+      case 'windows':
+        return FontAwesomeIcons.windows;
+      case 'twitter':
+        return FontAwesomeIcons.twitter;
+      case 'instagram':
+        return FontAwesomeIcons.instagram;
+      case 'vk':
+        return FontAwesomeIcons.vk;
+      case 'twitch':
+        return FontAwesomeIcons.twitch;
+      case 'linkedin':
+        return FontAwesomeIcons.linkedin;
+      default:
+        return FontAwesomeIcons.borderNone;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,18 +182,15 @@ class ProvidersRow extends StatelessWidget {
                 flex: 8,
                 child: Row(
                   children: [
-                    if (icon != null)
-                      SvgPicture.asset(
-                        icon,
-                        color: neutral800,
-                        height: 15,
-                      ),
+                    if (icon != null) Icon(_loadIcon(icon), size: 15),
                     16.widthBox,
                     title.text.lg.softWrap(true).make(),
                   ],
                 ),
               ),
-              (isEnabled) ? 'Enabled'.text.color(success500).make() : 'Disabled'.text.color(danger500).make(),
+              (isEnabled)
+                  ? 'Enabled'.text.color(success500).make()
+                  : 'Disabled'.text.color(danger500).make(),
               32.widthBox,
               GestureDetector(
                 onTap: () {},
@@ -213,20 +255,25 @@ dynamic showEditProviderDialog(context, String title) {
                           hintText: 'TEXT',
                         ).p(16),
                         PrimaryTextField(
-                          controller: TextEditingController(text: 'my.subdomain.com/cas'),
+                          controller: TextEditingController(
+                              text: 'my.subdomain.com/cas'),
                           title: 'Host URI (Subdomain)',
                         ).px(16),
                         PrimaryTextField(
-                          controller: TextEditingController(text: '/auth/cas/callback'),
+                          controller:
+                              TextEditingController(text: '/auth/cas/callback'),
                           title: 'The redirect URL to your front-end app',
                         ).p(16),
                         PrimaryTextField(
                           controller: null,
                           hintText: '/connect/cas/callback',
-                          title: 'The redirect URL to add in your Cas application configurations',
+                          title:
+                              'The redirect URL to add in your Cas application configurations',
                         ).px(16),
                         Container(
-                          decoration: BoxDecoration(color: neutral100, borderRadius: BorderRadius.circular(3)),
+                          decoration: BoxDecoration(
+                              color: neutral100,
+                              borderRadius: BorderRadius.circular(3)),
                           child: Row(
                             children: [
                               Expanded(child: PrimaryCancelGreySquareButton(
@@ -242,7 +289,9 @@ dynamic showEditProviderDialog(context, String title) {
                                   color: success500,
                                   child: Text(
                                     'Save',
-                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
                                   ),
                                 ),
                               ),
