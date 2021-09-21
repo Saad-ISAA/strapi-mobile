@@ -16,24 +16,49 @@ Drawer buildContentDrawer() {
                 'Content'.text.xl3.bold.make(),
                 Card(
                   elevation: 2,
-                  child: Icon(Icons.search).p(5),
+                  child: InkWell(
+                      onTap: () {},
+                      borderRadius: BorderRadius.circular(4),
+                      child: Icon(Icons.search).p(4)),
                 ),
               ],
             ),
             16.heightBox,
-            Text(
-              'COLLECTION TYPES',
-              style: _drawerTitleText,
-            ).py(16),
+            InkWell(
+              borderRadius: BorderRadius.circular(4),
+              onTap: () {},
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  children: [
+                    Text(
+                      'SINGLE TYPES',
+                      style: _drawerTitleText,
+                    ),
+                  ],
+                ),
+              ),
+            ).py(8),
             buildDrawerRowEntryWithoutIcon(title: 'Like', onTap: () {}),
             buildDrawerRowEntryWithoutIcon(title: 'Permission', onTap: () {}),
             buildDrawerRowEntryWithoutIcon(title: 'Restaurants', onTap: () {}),
             buildDrawerRowEntryWithoutIcon(title: 'Lablel ID', onTap: () {}),
             16.heightBox,
-            Text(
-              'SINGLE TYPES',
-              style: _drawerTitleText,
-            ).py(16),
+            InkWell(
+              borderRadius: BorderRadius.circular(4),
+              onTap: () {},
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  children: [
+                    Text(
+                      'SINGLE TYPES',
+                      style: _drawerTitleText,
+                    ),
+                  ],
+                ),
+              ),
+            ).py(8),
             buildDrawerRowEntryWithoutIcon(title: 'Categories', onTap: () {}),
             buildDrawerRowEntryWithoutIcon(title: 'Label B', onTap: () {}),
             buildDrawerRowEntryWithoutIcon(title: 'Label C', onTap: () {}),
