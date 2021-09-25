@@ -4,11 +4,40 @@ import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
+import 'package:strapi_flutter_cms/controllers/settingsControllers/emailTemplateController.dart';
+import 'package:strapi_flutter_cms/models/email_template.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class EmailTemplateSettingsPage extends StatelessWidget {
+Map<String, String> templateIcons = {
+  "sync": "assets/icons/reload.svg",
+  "check-square": "assets/icons/check-icon.svg"
+};
+
+class EmailTemplateSettingsPage extends StatefulWidget {
   const EmailTemplateSettingsPage({Key key}) : super(key: key);
+
+  @override
+  _EmailTemplateSettingsPageState createState() =>
+      _EmailTemplateSettingsPageState();
+}
+
+class _EmailTemplateSettingsPageState extends State<EmailTemplateSettingsPage> {
+  bool loading = true;
+  List<EmailTemplate> emailTemplates = [];
+
+  void initState() {
+    fetchEmailTemplateSettings().then((value) {
+      setState(() {
+        emailTemplates = value;
+      });
+    }).whenComplete(() {
+      setState(() {
+        loading = false;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +52,7 @@ class EmailTemplateSettingsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  '2 email templates are available'
+                  '${emailTemplates.length} email templates are available'
                       .text
                       .xl2
                       .semiBold
@@ -31,14 +60,11 @@ class EmailTemplateSettingsPage extends StatelessWidget {
                       .make()
                       .px(16),
                   24.heightBox,
-                  EmailTemplateRow(
-                    icon: 'assets/icons/reload.svg',
-                    title: 'Reset Password',
-                  ),
-                  EmailTemplateRow(
-                    icon: 'assets/icons/check-icon.svg',
-                    title: 'Email address confirmation',
-                  ),
+                  ...emailTemplates
+                      .map((template) => EmailTemplateRow(
+                            template: template,
+                          ))
+                      .toList(),
                 ],
               ).pOnly(top: 16)),
         ],
@@ -48,27 +74,33 @@ class EmailTemplateSettingsPage extends StatelessWidget {
 }
 
 class EmailTemplateRow extends StatelessWidget {
-  const EmailTemplateRow({Key key, this.icon, this.title}) : super(key: key);
+  const EmailTemplateRow({Key key, this.template}) : super(key: key);
 
-  final String icon;
-  final String title;
+  final EmailTemplate template;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showEditTemplateDialog(context);
+        showEditTemplateDialog(context, template);
       },
       child: Row(
         children: [
           Row(
             children: [
               SvgPicture.asset(
-                icon,
+                templateIcons[template.icon],
                 height: 15,
               ),
               16.widthBox,
-              title.text.lg.softWrap(true).make(),
+              template.display
+                  .split(".")[2]
+                  ?.replaceAll(RegExp(r'_'), " ")
+                  ?.firstLetterUpperCase()
+                  ?.text
+                  ?.lg
+                  ?.softWrap(true)
+                  ?.make(),
             ],
           ),
           Spacer(),
@@ -85,7 +117,16 @@ class EmailTemplateRow extends StatelessWidget {
   }
 }
 
-dynamic showEditTemplateDialog(context) {
+dynamic showEditTemplateDialog(context, EmailTemplate template) {
+  var shipperNameController =
+      TextEditingController(text: template.options.from.name);
+  var shipperEmailController =
+      TextEditingController(text: template.options.from.email);
+  var responseEmailController =
+      TextEditingController(text: template.options.responseEmail);
+  var objectController = TextEditingController(text: template.options.object);
+  var messageController = TextEditingController(text: template.options.message);
+
   return showDialog(
       context: context,
       builder: (context) {
@@ -106,29 +147,26 @@ dynamic showEditTemplateDialog(context) {
                       children: [
                         55.heightBox,
                         PrimaryTextField(
-                          controller: TextEditingController(
-                              text: 'Administration Panel'),
+                          controller: shipperNameController,
                           title: 'Shipper name',
                         ).px(16),
                         PrimaryTextField(
-                          controller:
-                              TextEditingController(text: 'no-reply@strapi.io'),
+                          controller: shipperEmailController,
                           title: 'Shipper Email',
                         ).p(16),
                         PrimaryTextField(
-                          controller: null,
+                          controller: responseEmailController,
                           title: 'Response Email',
                           hintText: 'kai@doe.com',
                         ).px(16),
                         PrimaryTextField(
-                          controller: TextEditingController(
-                              text: 'Account Information'),
+                          controller: objectController,
                           title: 'Subject',
                           descriptionText:
                               'If you\'re unsure how to use variables, check out our documentation.',
                         ).p(16),
                         PrimaryTextField(
-                          controller: null,
+                          controller: messageController,
                           title: 'Message',
                         ).p(16),
                         Container(
