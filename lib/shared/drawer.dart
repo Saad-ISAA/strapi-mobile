@@ -249,7 +249,29 @@ class _CustomDrawerState extends State<CustomDrawer> {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/user.png'),
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [primary700, Colors.white])),
+                      child: Center(
+                        child: Text(
+                          GlobalConfig.data.user["firstname"]
+                                  .toString()
+                                  .characters
+                                  .first +
+                              GlobalConfig.data.user["lastname"]
+                                  .toString()
+                                  .characters
+                                  .first,
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    ),
                     minRadius: 20,
                     maxRadius: 20,
                   ),
