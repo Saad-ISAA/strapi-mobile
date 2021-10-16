@@ -22,30 +22,24 @@ class StrapiSwitch extends StatelessWidget {
           GestureDetector(
             onTap: onOffPress,
             child: AnimatedContainer(
-              duration: Duration(milliseconds: 300),
+              duration: Duration(milliseconds: 350),
               decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        spreadRadius: (val == false) ? 0.1 : 0.0,
-                        blurRadius: (val == false) ? 2 : 0.0,
-                        color: Colors.black38)
-                  ],
-                  color: (val == false) ? danger500 : Colors.white,
-                  border: (val == false)
-                      ? null
-                      : Border(
-                          left: BorderSide(color: neutral400, width: 0.5),
-                          top: BorderSide(color: neutral400, width: 0.5),
-                          bottom: BorderSide(color: neutral400, width: 0.5),
-                        )),
-              height: 33,
-              width: 60,
+                  color: (val == false)
+                      ? danger600.withOpacity(0.2)
+                      : Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(5),
+                    bottomLeft: Radius.circular(5),
+                  ),
+                  border: Border.all(color: neutral400, width: 0.3)),
+              height: 40,
+              width: 70,
               child: Center(
                 child: Text(
                   'OFF',
                   style: TextStyle(
-                      color: (val == false) ? Colors.white : neutral400,
-                      fontWeight: FontWeight.bold),
+                    color: (val == false) ? danger500 : neutral800,
+                  ),
                 ),
               ),
             ),
@@ -53,30 +47,23 @@ class StrapiSwitch extends StatelessWidget {
           GestureDetector(
             onTap: onOnPress,
             child: AnimatedContainer(
-              duration: Duration(milliseconds: 300),
+              duration: Duration(milliseconds: 350),
               decoration: BoxDecoration(
-                  color: (val == true) ? blue : Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        spreadRadius: (val == true) ? 0.1 : 0.0,
-                        blurRadius: (val == true) ? 2 : 0.0,
-                        color: Colors.black38)
-                  ],
-                  border: (val == true)
-                      ? null
-                      : Border(
-                          right: BorderSide(color: neutral400, width: 0.5),
-                          top: BorderSide(color: neutral400, width: 0.5),
-                          bottom: BorderSide(color: neutral400, width: 0.5),
-                        )),
-              height: 33,
-              width: 60,
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(5),
+                    bottomRight: Radius.circular(5)),
+                color:
+                    (val == true) ? primary500.withOpacity(0.2) : Colors.white,
+                border: Border.all(color: neutral400, width: 0.3),
+              ),
+              height: 40,
+              width: 70,
               child: Center(
                 child: Text(
                   'ON',
                   style: TextStyle(
-                      color: (val == true) ? Colors.white : neutral400,
-                      fontWeight: FontWeight.bold),
+                    color: (val == true) ? primary600 : neutral800,
+                  ),
                 ),
               ),
             ),
