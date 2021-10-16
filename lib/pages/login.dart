@@ -27,12 +27,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // initializing with pre written credentials just to avoid loigns on every hot restart
 
-  TextEditingController urlController =
-      TextEditingController(text: 'http://51.120.94.203:1337');
-  TextEditingController emailController =
-      TextEditingController(text: 'saadmujeeb123@gmail.com');
-  TextEditingController passwordController =
-      TextEditingController(text: 'Saad123!@#');
+  TextEditingController urlController = TextEditingController(text: '');
+  TextEditingController emailController = TextEditingController(text: '');
+  TextEditingController passwordController = TextEditingController(text: '');
   String strapiVersion;
 
   void initState() {
@@ -88,6 +85,8 @@ class _LoginScreenState extends State<LoginScreen> {
       if (checkVersion) {
         await saveStringsToPrefs(token, jsonResponse['data']['user']);
         await GlobalConfig.prefs.setString("baseURL", urlController.text);
+
+        await GlobalConfig.initializePrefs();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -233,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         PrimaryTextField(
                           controller: urlController,
                           title: 'Admin URL',
-                          hintText: 'http://192.168.0.0',
+                          hintText: 'http://127.0.0.1:1337',
                           inputType: TextInputType.url,
                           icon: 'assets/icons/uid.svg',
                         ),
@@ -277,6 +276,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await GlobalConfig.prefs.setString('user', json.encode(user));
 
     if (_rememberMe) {
+      await GlobalConfig.prefs.setString("isRememberMe", "true");
       await GlobalConfig.prefs.setString('email', emailController.text);
       await GlobalConfig.prefs.setString('password', passwordController.text);
     }
