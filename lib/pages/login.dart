@@ -228,7 +228,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Image.asset('assets/images/logo.png', height: 100),
+                        Image.asset('assets/images/strapi_new.png',
+                            height: 100),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        Text(
+                          'Welcome!',
+                          style: TextStyle(
+                              fontFamily: 'OpenSans',
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        12.heightBox,
+                        Text('Log in to your Strapi account',
+                            style: TextStyle(fontSize: 15, color: neutral500)),
                         SizedBox(height: 30.0),
                         PrimaryTextField(
                           controller: urlController,
