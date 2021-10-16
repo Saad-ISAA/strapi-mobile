@@ -27,9 +27,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // initializing with pre written credentials just to avoid loigns on every hot restart
 
-  TextEditingController urlController = TextEditingController(text: '');
-  TextEditingController emailController = TextEditingController(text: '');
-  TextEditingController passwordController = TextEditingController(text: '');
+  TextEditingController urlController =
+      TextEditingController(text: 'http://51.13.64.82:1337');
+  TextEditingController emailController =
+      TextEditingController(text: 'saadmueeb123@gmail.com');
+  TextEditingController passwordController =
+      TextEditingController(text: 'Saad123!@#');
   String strapiVersion;
 
   void initState() {
@@ -65,57 +68,80 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _loading = true;
     });
-    var response = await http.post(url, body: {
-      'email': emailController.text,
-      'password': passwordController.text
-    }, headers: {
-      'Accept': 'application/json'
-    });
-
-    if (response.statusCode == 200) {
-      setState(() {
-        _loading = false;
+    try {
+      var response = await http.post(url, body: {
+        'email': emailController.text,
+        'password': passwordController.text
+      }, headers: {
+        'Accept': 'application/json'
       });
-      Map jsonResponse = jsonDecode(response.body);
 
-      String token = jsonResponse['data']['token'];
-      bool checkVersion =
-          await _checkStrapiVersion(jsonResponse['data']['token']);
+      if (response.statusCode == 200) {
+        setState(() {
+          _loading = false;
+        });
+        Map jsonResponse = jsonDecode(response.body);
 
-      if (checkVersion) {
-        await saveStringsToPrefs(token, jsonResponse['data']['user']);
-        await GlobalConfig.prefs.setString("baseURL", urlController.text);
+        String token = jsonResponse['data']['token'];
+        bool checkVersion =
+            await _checkStrapiVersion(jsonResponse['data']['token']);
 
-        await GlobalConfig.initializePrefs();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
-          ),
-        );
+        if (checkVersion) {
+          await saveStringsToPrefs(token, jsonResponse['data']['user']);
+          await GlobalConfig.prefs.setString("baseURL", urlController.text);
+
+          await GlobalConfig.initializePrefs();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        } else {
+          return showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  content: Text(
+                      "Sorry your version v$strapiVersion is not supported"),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.forward),
+                    )
+                  ],
+                );
+              });
+        }
       } else {
-        return showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                content:
-                    Text("Sorry your version v$strapiVersion is not supported"),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.forward),
-                  )
-                ],
-              );
-            });
+        setState(() {
+          _loading = false;
+        });
+        print('Login failed');
       }
-    } else {
+    } catch (err) {
       setState(() {
         _loading = false;
       });
-      print('Login failed');
+
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content:
+                  Text("Failed to login , Mae Sure your server is running."),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.forward),
+                )
+              ],
+            );
+          });
     }
   }
 
