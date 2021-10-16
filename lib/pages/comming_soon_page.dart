@@ -15,6 +15,8 @@ class CommingSoonPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // row for expanding column horizontally
+                Row(),
                 SvgPicture.asset(
                   'assets/icons/emptypage.svg',
                   width: MediaQuery.of(context).size.width / 2,

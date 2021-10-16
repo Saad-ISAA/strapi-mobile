@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -55,6 +56,8 @@ class PrimaryTextField extends StatelessWidget {
             decoration: (icon != null)
                 ? InputDecoration(
                     border: InputBorder.none,
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: primary700)),
                     contentPadding: EdgeInsets.only(top: 10, bottom: 8),
                     prefixIcon: SvgPicture.asset(icon).px(12),
                     hintText: hintText,
@@ -86,6 +89,7 @@ class PrimaryTextField extends StatelessWidget {
 
 final labelStyle = TextStyle(
   color: neutral800,
-  fontSize: 16,
+  fontSize: 15,
+  fontWeight: FontWeight.w500,
   fontFamily: 'OpenSans',
 );
