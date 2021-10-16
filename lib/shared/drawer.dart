@@ -3,13 +3,17 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strapi_flutter_cms/GlobalConfig.dart';
+import 'package:strapi_flutter_cms/controllers/authController.dart';
 import 'package:strapi_flutter_cms/models/content_type.dart';
 import 'package:strapi_flutter_cms/pages/collection.dart';
+import 'package:strapi_flutter_cms/pages/comming_soon_page.dart';
+import 'package:strapi_flutter_cms/pages/content_pages/content_page.dart';
 import 'package:strapi_flutter_cms/pages/login.dart';
 import 'package:strapi_flutter_cms/pages/media_library_page.dart';
 import 'package:strapi_flutter_cms/pages/settings.dart';
 import 'package:strapi_flutter_cms/pages/training_videos_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
+import 'package:strapi_flutter_cms/shared/messages.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -25,14 +29,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
     super.initState();
   }
 
-  void logoutUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('token');
-    prefs.remove('user');
+  // void logoutUser() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.remove('token');
+  //   prefs.remove('user');
 
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
-  }
+  //   Navigator.pushReplacement(
+  //       context, MaterialPageRoute(builder: (context) => LoginScreen()));
+  // }
 
   Widget buildDrawerRowEntry({String title, Function onTap}) {
     return InkWell(
@@ -136,7 +140,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         children: [
                           _dawerEntryWithPrefixIcon(
                               icon: 'assets/icons/content-icon.svg',
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ContentPage()));
+                              },
                               text: 'Content'),
                           SizedBox(height: 48),
                           Text(
@@ -148,7 +157,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                           _dawerEntryWithPrefixIcon(
                               icon: 'assets/icons/content-icon.svg',
-                              onTap: () {},
+                              onTap: () {
+                                print("Tapped");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CommingSoonPage(
+                                              message:
+                                                  contentInDevelopmentMessage,
+                                            )));
+                              },
                               text: 'Builder'),
                           _dawerEntryWithPrefixIcon(
                               icon: 'assets/icons/media-library.svg',
@@ -160,10 +178,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 );
                               },
                               text: 'Media Library'),
-                          _dawerEntryWithPrefixIcon(
-                              icon: 'assets/icons/info-alert.svg',
-                              onTap: () {},
-                              text: 'Documentation'),
+                          // _dawerEntryWithPrefixIcon(
+                          //     icon: 'assets/icons/info-alert.svg',
+                          //     onTap: () {},
+                          //     text: 'Documentation'),
                           SizedBox(height: 48),
                           Text(
                             'GENERAL',
@@ -174,11 +192,27 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                           _dawerEntryWithPrefixIcon(
                               icon: 'assets/icons/plugins-icons.svg',
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CommingSoonPage(
+                                              message:
+                                                  contentInDevelopmentMessage,
+                                            )));
+                              },
                               text: 'Plugins'),
                           _dawerEntryWithPrefixIcon(
                               icon: 'assets/icons/marketplace-icon.svg',
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CommingSoonPage(
+                                              message:
+                                                  contentInDevelopmentMessage,
+                                            )));
+                              },
                               text: 'Marketplace'),
                           _dawerEntryWithPrefixIcon(
                               icon: 'assets/icons/settings-icon.svg',
@@ -191,38 +225,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               },
                               text: 'Settings'),
                           SizedBox(height: 32),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'COLLECTION TYPES',
-                                style: TextStyle(
-                                    color: Colors.grey[500],
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Icon(
-                                Icons.search,
-                                color: Colors.white38,
-                                size: 19,
-                              ),
-                            ],
-                          ),
-                          Column(
-                              children: widget.contentTypes.map((item) {
-                            return buildDrawerRowEntry(
-                                title: '${item.info.label}',
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Collection(
-                                        contentType: item,
-                                      ),
-                                    ),
-                                  );
-                                });
-                          }).toList()),
+
                           // buildDrawerRowEntry(
                           //   title: 'Chauffeur Bookings',
                           //   onTap: () => Navigator.push(
@@ -245,7 +248,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                 ),
               ),
-              SizedBox(height: 5),
+              _dawerEntryWithPrefixIcon(
+                      icon: 'assets/icons/logout.svg',
+                      onTap: () {
+                        logoutUser().then((value) {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()));
+                        });
+                      },
+                      text: 'Logout')
+                  .pSymmetric(h: 30),
+              SizedBox(height: 20),
               Row(
                 children: [
                   CircleAvatar(
@@ -278,6 +293,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   12.widthBox,
                   Text(
                     GlobalConfig.data.user["firstname"] +
+                        " " +
                         GlobalConfig.data.user["lastname"],
                     style: TextStyle(
                       fontSize: 17,
@@ -289,9 +305,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(color: neutral600)),
-                    child: Icon(
-                      Icons.keyboard_arrow_left,
-                      size: 20,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.keyboard_arrow_left,
+                        size: 20,
+                      ),
                     ),
                   )
                 ],

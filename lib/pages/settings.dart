@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/Customwidgets/settings_end_drawer.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/application_settings.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/email_templates.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/media_library_settings.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/providers.dart';
@@ -16,7 +17,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   GlobalKey<_SettingsPageState> _scaffoldKey = GlobalKey();
 
-  Widget selectedPage = RolesPage();
+  Widget selectedPage = ApplicationSettingsPage();
 
   void _setSelectedPage(Widget page) {
     setState(() {

@@ -8,8 +8,8 @@ import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class RolesPage extends StatefulWidget {
-  const RolesPage({Key key}) : super(key: key);
-
+  const RolesPage({Key key, this.isAdmin = false}) : super(key: key);
+  final bool isAdmin;
   @override
   _RolesPageState createState() => _RolesPageState();
 }
@@ -18,6 +18,18 @@ class _RolesPageState extends State<RolesPage> {
   bool loading = true;
   var roles = [];
   void initState() {
+    if (widget.isAdmin) {
+      fetchAdminRoles().then((value) {
+        setState(() {
+          print(value);
+          roles = value;
+        });
+      }).whenComplete(() {
+        setState(() {
+          loading = false;
+        });
+      });
+    }
     fetchRoles().then((value) {
       setState(() {
         print(value);
@@ -46,7 +58,13 @@ class _RolesPageState extends State<RolesPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        '${roles.length} roles'.text.xl3.semiBold.make().px(16),
+                        '${roles.length} roles'
+                            .text
+                            .xl3
+                            .semiBold
+                            .overflow(TextOverflow.clip)
+                            .make()
+                            .px(16),
                         24.heightBox,
                         ...roles.map((role) {
                           return Column(
@@ -54,7 +72,8 @@ class _RolesPageState extends State<RolesPage> {
                               RoleRow(
                                   status: '${role.name}',
                                   name: '${role.description}',
-                                  user: '${role.nbUsers} user'),
+                                  user:
+                                      '${widget.isAdmin ? role.usersCount : role.nbUsers} user'),
                               Divider(height: 4),
                               16.heightBox,
                             ],

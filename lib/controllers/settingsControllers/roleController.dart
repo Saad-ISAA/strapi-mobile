@@ -25,3 +25,24 @@ Future<List<Role>> fetchRoles() async {
     throw err;
   }
 }
+
+Future<List<AdminRole>> fetchAdminRoles() async {
+  try {
+    var url = Uri.parse('${GlobalConfig.data.adminURL}/admin/roles');
+    var response = await http.get(url,
+        headers: {HttpHeaders.authorizationHeader: GlobalConfig.data.token});
+    var decoded = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      var parsedBody = decoded["data"];
+      var responseToSend = List.generate(
+          parsedBody.length, (index) => AdminRole.fromMap(parsedBody[index]));
+      return responseToSend;
+    } else {
+      print("failed fetch content");
+      throw decoded;
+    }
+  } catch (err) {
+    throw err;
+  }
+}

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:strapi_flutter_cms/pages/comming_soon_page.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/advanced_settings.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/application_settings.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/email_templates.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/internationalization.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/media_library_settings.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/providers.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/roles.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
+import 'package:strapi_flutter_cms/shared/messages.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
@@ -16,7 +19,12 @@ Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildDrawerRowEntryWithoutIcon(title: 'Application', onTap: () {}),
+            'Settings'.text.xl3.bold.make().p(10),
+            buildDrawerRowEntryWithoutIcon(
+                title: 'Application',
+                onTap: () {
+                  setSelectedPage(ApplicationSettingsPage());
+                }),
             16.heightBox,
             Text(
               'GLOBAL SETTINGS',
@@ -32,7 +40,13 @@ Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
                 onTap: () {
                   setSelectedPage(MediaLibrarySettingsPage());
                 }),
-            buildDrawerRowEntryWithoutIcon(title: 'Webhooks', onTap: () {}),
+            buildDrawerRowEntryWithoutIcon(
+                title: 'Webhooks',
+                onTap: () {
+                  setSelectedPage(CommingSoonPage(
+                    message: contentInDevelopmentMessage,
+                  ));
+                }),
             16.heightBox,
             Text(
               'ADMINISTRATION PANEL',
@@ -41,9 +55,17 @@ Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
             buildDrawerRowEntryWithoutIcon(
                 title: 'Roles',
                 onTap: () {
-                  setSelectedPage(RolesPage());
+                  setSelectedPage(CommingSoonPage(
+                    message: contentInDevelopmentMessage,
+                  ));
                 }),
-            buildDrawerRowEntryWithoutIcon(title: 'Users', onTap: () {}),
+            buildDrawerRowEntryWithoutIcon(
+                title: 'Users',
+                onTap: () {
+                  setSelectedPage(CommingSoonPage(
+                    message: contentInDevelopmentMessage,
+                  ));
+                }),
             16.heightBox,
             Text(
               'USERS & PERMISSONS PLUGIN',
@@ -52,7 +74,9 @@ Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
             buildDrawerRowEntryWithoutIcon(
                 title: 'Roles',
                 onTap: () {
-                  setSelectedPage(ProvidersSettings());
+                  setSelectedPage(RolesPage(
+                    isAdmin: false,
+                  ));
                 }),
             buildDrawerRowEntryWithoutIcon(
                 title: 'Providers',
@@ -75,7 +99,12 @@ Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
               style: _drawerTitleText,
             ).py(16),
             buildDrawerRowEntryWithoutIcon(
-                title: 'Email Settings', onTap: () {}),
+                title: 'Email Settings',
+                onTap: () {
+                  setSelectedPage(CommingSoonPage(
+                    message: contentInDevelopmentMessage,
+                  ));
+                }),
           ],
         ).p(16),
       ),
