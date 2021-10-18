@@ -10,6 +10,7 @@ import 'package:strapi_flutter_cms/pages/comming_soon_page.dart';
 import 'package:strapi_flutter_cms/pages/content_pages/content_page.dart';
 import 'package:strapi_flutter_cms/pages/login.dart';
 import 'package:strapi_flutter_cms/pages/media_library_page.dart';
+import 'package:strapi_flutter_cms/pages/profile_page.dart';
 import 'package:strapi_flutter_cms/pages/settings.dart';
 import 'package:strapi_flutter_cms/pages/training_videos_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
@@ -215,15 +216,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               },
                               text: 'Marketplace'),
                           _dawerEntryWithPrefixIcon(
-                              icon: 'assets/icons/settings-icon.svg',
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SettingsPage()),
-                                );
-                              },
-                              text: 'Settings'),
+                            icon: 'assets/icons/settings-icon.svg',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SettingsPage()),
+                              );
+                            },
+                            text: 'Settings',
+                          ),
                           SizedBox(height: 32),
 
                           // buildDrawerRowEntry(
@@ -263,32 +265,38 @@ class _CustomDrawerState extends State<CustomDrawer> {
               SizedBox(height: 20),
               Row(
                 children: [
-                  CircleAvatar(
-                    child: Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [primary700, Colors.white])),
-                      child: Center(
-                        child: Text(
-                          GlobalConfig.data.user["firstname"]
-                                  .toString()
-                                  .characters
-                                  .first +
-                              GlobalConfig.data.user["lastname"]
-                                  .toString()
-                                  .characters
-                                  .first,
-                          style: TextStyle(fontSize: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (ctx) => ProfilePage()));
+                    },
+                    child: CircleAvatar(
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [primary700, Colors.white])),
+                        child: Center(
+                          child: Text(
+                            GlobalConfig.data.user["firstname"]
+                                    .toString()
+                                    .characters
+                                    .first +
+                                GlobalConfig.data.user["lastname"]
+                                    .toString()
+                                    .characters
+                                    .first,
+                            style: TextStyle(fontSize: 20),
+                          ),
                         ),
                       ),
+                      minRadius: 20,
+                      maxRadius: 20,
                     ),
-                    minRadius: 20,
-                    maxRadius: 20,
                   ),
                   12.widthBox,
                   Text(
