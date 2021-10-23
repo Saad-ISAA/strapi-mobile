@@ -13,6 +13,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
   return Drawer(
+    backgroundColor: neutral150,
     child: SafeArea(
       child: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -117,6 +118,7 @@ TextStyle _drawerTitleText =
 
 Widget buildDrawerRowEntryWithoutIcon({String title, Function onTap}) {
   return InkWell(
+    splashColor: primary200,
     borderRadius: BorderRadius.circular(8),
     onTap: onTap,
     child: Padding(

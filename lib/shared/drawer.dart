@@ -341,8 +341,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 
   Widget _dawerEntryWithPrefixIcon({String icon, String text, Function onTap}) {
-    return InkWell(
-      onTap: onTap,
+    return MaterialButton(
+      padding: EdgeInsets.all(0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+      splashColor: primary200,
+      highlightColor: primary200,
+      onPressed: onTap,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -362,13 +366,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
         ],
       ),
-    ).pOnly(top: 24);
+    ).pOnly(top: 0);
   }
 }
 
 Widget buildDrawerRowEntryWithCustomIcon(
     {String title, Function onTap, IconData icon}) {
   return InkWell(
+    splashColor: primary100,
     onTap: onTap,
     child: Padding(
       padding: const EdgeInsets.only(top: 24.0),
