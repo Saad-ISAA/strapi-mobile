@@ -22,6 +22,7 @@ class CommingSoonPage extends StatelessWidget {
                   width: MediaQuery.of(context).size.width / 2,
                   height: MediaQuery.of(context).size.width / 2,
                 ),
+                24.heightBox,
                 message.text.xl.semiBold.center.make(),
               ],
             )));

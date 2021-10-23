@@ -96,7 +96,8 @@ class _RolesPageState extends State<RolesPage> {
                     ).pOnly(top: 16)),
                 Spacer(),
                 PrimarySquareButton(
-                  color: blue,
+                  onPressed: () {},
+                  color: primary600,
                   text: '+ Add new role',
                 )
               ],

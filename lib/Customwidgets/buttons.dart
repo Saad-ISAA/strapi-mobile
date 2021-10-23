@@ -40,7 +40,7 @@ class PrimarySquareButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialButton(
       disabledColor: neutral300,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       minWidth: double.infinity,
       height: 40,
       elevation: 0,

@@ -129,7 +129,7 @@ Widget buildDrawerRowEntryWithoutIcon({String title, Function onTap}) {
               height: 9,
               width: 9,
               decoration:
-                  BoxDecoration(color: neutral500, shape: BoxShape.circle)),
+                  BoxDecoration(color: neutral700, shape: BoxShape.circle)),
           SizedBox(
             width: 16,
           ),

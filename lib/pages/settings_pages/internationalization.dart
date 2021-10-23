@@ -68,7 +68,8 @@ class _InternationalizationState extends State<Internationalization> {
                     ).pOnly(top: 16)),
                 Spacer(),
                 PrimarySquareButton(
-                  color: blue,
+                  onPressed: () {},
+                  color: primary600,
                   text: '+ Add Locale',
                 )
               ],
@@ -89,7 +90,6 @@ class LocaleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
       child: InkWell(
         onTap: () {
           showAddLocaleDialog(context, locale);

@@ -341,32 +341,35 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 
   Widget _dawerEntryWithPrefixIcon({String icon, String text, Function onTap}) {
-    return MaterialButton(
-      padding: EdgeInsets.all(0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-      splashColor: primary200,
-      highlightColor: primary200,
-      onPressed: onTap,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SvgPicture.asset(
-            icon,
-            color: neutral500,
-            height: 22,
-            width: 22,
-          ),
-          12.widthBox,
-          Text(
-            text,
-            style: TextStyle(
+    return SizedBox(
+      height: 40,
+      child: MaterialButton(
+        padding: EdgeInsets.all(0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        splashColor: primary200,
+        highlightColor: primary200,
+        onPressed: onTap,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SvgPicture.asset(
+              icon,
               color: neutral500,
-              fontSize: 17,
+              height: 22,
+              width: 22,
             ),
-          ),
-        ],
-      ),
-    ).pOnly(top: 0);
+            12.widthBox,
+            Text(
+              text,
+              style: TextStyle(
+                color: neutral500,
+                fontSize: 17,
+              ),
+            ),
+          ],
+        ),
+      ).pOnly(top: 0),
+    );
   }
 }
 

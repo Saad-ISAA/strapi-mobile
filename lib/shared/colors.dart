@@ -4,7 +4,7 @@ Color blue = Color(0xFF007EFF);
 Color white = Color(0xFFFFFFFF);
 const strapiColor = Color(0xFF8C4BFF);
 Color darkNavyBlue = Color(0xFF18202E);
-Color drawerRowsColor = Colors.grey[600];
+Color drawerRowsColor = neutral700;
 Color yellowAccentColor = Color(0xFFFEE895);
 
 Color alternative100 = Color(0xFFf6ecfc);
