@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
             color: strapiColor,
           )),
       debugShowCheckedModeBanner: false,
-      home: Dashboard(),
+      home: SplashScreen(),
     );
   }
 }
