@@ -386,9 +386,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
             Text(
               text,
               style: TextStyle(
-                color: (_currentTab == val) ? primary600 : neutral500,
-                fontSize: 17,
-              ),
+                  color: (_currentTab == val) ? primary600 : neutral500,
+                  fontSize: 17,
+                  fontWeight: (_currentTab == val)
+                      ? FontWeight.w600
+                      : FontWeight.normal),
             ),
           ],
         ).px(8),
