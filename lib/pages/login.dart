@@ -272,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           title: 'Admin URL',
                           hintText: 'http://127.0.0.1:1337',
                           inputType: TextInputType.url,
-                          icon: 'assets/icons/uid.svg',
+                          // icon: 'assets/icons/uid.svg',
                         ),
                         SizedBox(height: 30.0),
                         PrimaryTextField(
@@ -280,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           title: 'Email',
                           hintText: 'Enter your Email',
                           inputType: TextInputType.emailAddress,
-                          icon: 'assets/icons/email.svg',
+                          //  icon: 'assets/icons/email.svg',
                         ),
                         SizedBox(
                           height: 30.0,
@@ -291,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintText: 'Enter your password',
                           inputType: TextInputType.visiblePassword,
                           isObscure: true,
-                          icon: 'assets/icons/password.svg',
+                          // icon: 'assets/icons/password.svg',
                         ),
                         _buildForgotPasswordBtn(),
                         _buildRememberMeCheckbox(),

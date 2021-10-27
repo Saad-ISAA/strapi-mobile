@@ -32,6 +32,7 @@ class _ApplicationSettingsPageState extends State<ApplicationSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: neutral100,
       padding: EdgeInsets.all(20),
       width: double.infinity,
       child: loading
@@ -77,8 +78,8 @@ class SettingsDetailRow extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          title.text.medium.color(neutral500).make(),
-          value.text.normal.color(neutral500).make(),
+          title.text.size(12).semiBold.make(),
+          value.text.normal.make(),
         ],
       ),
     );
