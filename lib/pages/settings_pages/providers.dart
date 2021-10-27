@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
 import 'package:strapi_flutter_cms/Customwidgets/on_off_button.dart';
@@ -9,6 +14,7 @@ import 'package:strapi_flutter_cms/controllers/settingsControllers/providerContr
 import 'package:strapi_flutter_cms/models/provider.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:http/http.dart' as http;
 
 class ProvidersSettings extends StatefulWidget {
   const ProvidersSettings({Key key}) : super(key: key);
@@ -126,6 +132,37 @@ class ProvidersRow extends StatelessWidget {
   final bool isEnabled;
   final ProviderDetail providerDetail;
 
+  IconData _loadIcon(String code) {
+    switch (code) {
+      case 'aws':
+        return FontAwesomeIcons.aws;
+      case 'envelope':
+        return FontAwesomeIcons.envelope;
+      case 'discord':
+        return FontAwesomeIcons.discord;
+      case 'facebook-square':
+        return FontAwesomeIcons.facebookSquare;
+      case 'google':
+        return FontAwesomeIcons.google;
+      case 'github':
+        return FontAwesomeIcons.github;
+      case 'windows':
+        return FontAwesomeIcons.windows;
+      case 'twitter':
+        return FontAwesomeIcons.twitter;
+      case 'instagram':
+        return FontAwesomeIcons.instagram;
+      case 'vk':
+        return FontAwesomeIcons.vk;
+      case 'twitch':
+        return FontAwesomeIcons.twitch;
+      case 'linkedin':
+        return FontAwesomeIcons.linkedin;
+      default:
+        return FontAwesomeIcons.borderNone;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -140,12 +177,7 @@ class ProvidersRow extends StatelessWidget {
                 flex: 8,
                 child: Row(
                   children: [
-                    if (icon != null)
-                      SvgPicture.asset(
-                        icon,
-                        color: neutral800,
-                        height: 15,
-                      ),
+                    if (icon != null) Icon(_loadIcon(icon), size: 15),
                     16.widthBox,
                     title.text.lg.softWrap(true).make(),
                   ],

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'package:strapi_flutter_cms/controllers/authController.dart';
 import 'package:strapi_flutter_cms/models/content_type.dart';
-import 'package:strapi_flutter_cms/pages/collection.dart';
 import 'package:strapi_flutter_cms/pages/comming_soon_page.dart';
-import 'package:strapi_flutter_cms/pages/content_pages/content_page.dart';
+import 'package:strapi_flutter_cms/pages/content_pages/content_page.dart'
+    as ContentPage;
 import 'package:strapi_flutter_cms/pages/login.dart';
 import 'package:strapi_flutter_cms/pages/media_library_page.dart';
 import 'package:strapi_flutter_cms/pages/profile_page.dart';
 import 'package:strapi_flutter_cms/pages/settings.dart';
-import 'package:strapi_flutter_cms/pages/training_videos_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/messages.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -153,7 +151,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ContentPage()));
+                                      builder: (context) =>
+                                          ContentPage.ContentPage()));
                             },
                             text: 'Content'),
                         SizedBox(height: 48),
