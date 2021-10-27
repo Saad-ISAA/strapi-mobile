@@ -87,6 +87,7 @@ class _ProvidersSettingsState extends State<ProvidersSettings> {
                           24.heightBox,
                           ...providers.map((provider) => ProvidersRow(
                                 title: provider.keys.toList()[0],
+                                icon: provider.values.toList()[0].icon,
                                 isEnabled: provider.values.toList()[0].enabled,
                                 providerDetail: provider.values.toList()[0],
                               )),

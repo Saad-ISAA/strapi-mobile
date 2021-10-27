@@ -13,7 +13,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
   return Drawer(
-    backgroundColor: neutral150,
+    // backgroundColor: neutral150,
     child: SafeArea(
       child: SingleChildScrollView(
         physics: BouncingScrollPhysics(),

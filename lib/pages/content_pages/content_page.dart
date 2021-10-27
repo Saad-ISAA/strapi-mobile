@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +6,6 @@ import 'package:strapi_flutter_cms/controllers/collectionTypeController.dart';
 import 'package:strapi_flutter_cms/models/content_type.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/messages.dart';
-=======
-import 'package:flutter/material.dart';
-import 'package:strapi_flutter_cms/Customwidgets/content_page_end_drawer.dart';
->>>>>>> dev
 import 'package:velocity_x/velocity_x.dart';
 
 class ContentPage extends StatefulWidget {
@@ -23,7 +18,6 @@ class ContentPage extends StatefulWidget {
 class _ContentPageState extends State<ContentPage> {
   GlobalKey<_ContentPageState> _scaffoldKey = GlobalKey();
 
-<<<<<<< HEAD
   List<ContentType> collectionTypes = [];
   List<ContentType> singleTypes = [];
 
@@ -98,8 +92,6 @@ class _ContentPageState extends State<ContentPage> {
     }
   }
 
-=======
->>>>>>> dev
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,7 +108,6 @@ class _ContentPageState extends State<ContentPage> {
               ).px(16),
             ),
           ]),
-<<<<<<< HEAD
       endDrawer: buildContentDrawer(context,
           collectionTypes: collectionTypes,
           singleTypes: singleTypes,
@@ -204,10 +195,3 @@ Widget renderCollectionType(ContentType contentType,
 
 TextStyle legendStyle = TextStyle(color: neutral900, fontSize: 16);
 TextStyle dialogText = TextStyle(color: neutral900, fontSize: 16);
-=======
-      endDrawer: buildContentDrawer(),
-      body: Container(),
-    );
-  }
-}
->>>>>>> dev
