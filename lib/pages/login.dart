@@ -27,12 +27,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // initializing with pre written credentials just to avoid loigns on every hot restart
 
-  TextEditingController urlController =
-      TextEditingController(text: 'http://51.13.64.82:1337');
-  TextEditingController emailController =
-      TextEditingController(text: 'saadmueeb123@gmail.com');
-  TextEditingController passwordController =
-      TextEditingController(text: 'Saad123!@#');
+  TextEditingController urlController = TextEditingController(text: '');
+  TextEditingController emailController = TextEditingController(text: '');
+  TextEditingController passwordController = TextEditingController(text: '');
   String strapiVersion;
 
   void initState() {
@@ -122,6 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
         print('Login failed');
       }
     } catch (err) {
+      print(err);
       setState(() {
         _loading = false;
       });
@@ -131,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
           builder: (context) {
             return AlertDialog(
               content:
-                  Text("Failed to login , Mae Sure your server is running."),
+                  Text("Failed to login , Make Sure your server is running."),
               actions: [
                 IconButton(
                   onPressed: () {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:strapi_flutter_cms/controllers/settingsControllers/applicationSettingsController.dart';
 import 'package:strapi_flutter_cms/models/admin_information_model.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
@@ -14,12 +15,17 @@ class ApplicationSettingsPage extends StatefulWidget {
 
 class _ApplicationSettingsPageState extends State<ApplicationSettingsPage> {
   AdminInformation admininfo;
+  bool loading = true;
   void initState() {
-    fetchApplicationSettings().then((value) => {
-          setState(() {
-            admininfo = value;
-          })
-        });
+    fetchApplicationSettings()
+        .then((value) => {
+              setState(() {
+                admininfo = value;
+              })
+            })
+        .whenComplete(() => setState(() {
+              loading = false;
+            }));
     super.initState();
   }
 
@@ -28,31 +34,34 @@ class _ApplicationSettingsPageState extends State<ApplicationSettingsPage> {
     return Container(
       padding: EdgeInsets.all(20),
       width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          'Application'.text.xl2.semiBold.make(),
-          5.heightBox,
-          'See your project details'.text.medium.color(neutral500).make(),
-          20.heightBox,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SettingsDetailRow(
-                  title: "STRAPI VERSION",
-                  value: "v${admininfo?.strapiVersion}"),
-              20.heightBox,
-              SettingsDetailRow(
-                  title: "CURRENT PLAN",
-                  value:
-                      "${admininfo != null ? admininfo.communityEdition ? 'Community' : '' : ""}"),
-              20.heightBox,
-              SettingsDetailRow(
-                  title: "NODE VERSION", value: "${admininfo?.nodeVersion}"),
-            ],
-          )
-        ],
-      ),
+      child: loading
+          ? CustomSpinner()
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                'Application'.text.xl2.semiBold.make(),
+                5.heightBox,
+                'See your project details'.text.medium.color(neutral500).make(),
+                20.heightBox,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SettingsDetailRow(
+                        title: "STRAPI VERSION",
+                        value: "v${admininfo?.strapiVersion}"),
+                    20.heightBox,
+                    SettingsDetailRow(
+                        title: "CURRENT PLAN",
+                        value:
+                            "${admininfo != null ? admininfo.communityEdition ? 'Community' : '' : ""}"),
+                    20.heightBox,
+                    SettingsDetailRow(
+                        title: "NODE VERSION",
+                        value: "${admininfo?.nodeVersion}"),
+                  ],
+                )
+              ],
+            ),
     );
   }
 }
