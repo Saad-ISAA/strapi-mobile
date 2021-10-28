@@ -42,24 +42,45 @@ class _ApplicationSettingsPageState extends State<ApplicationSettingsPage> {
               children: [
                 'Application'.text.xl2.semiBold.make(),
                 5.heightBox,
-                'See your project details'.text.medium.color(neutral500).make(),
+                'See your project details'.text.medium.color(neutral700).make(),
                 20.heightBox,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SettingsDetailRow(
-                        title: "STRAPI VERSION",
-                        value: "v${admininfo?.strapiVersion}"),
-                    20.heightBox,
-                    SettingsDetailRow(
-                        title: "CURRENT PLAN",
-                        value:
-                            "${admininfo != null ? admininfo.communityEdition ? 'Community' : '' : ""}"),
-                    20.heightBox,
-                    SettingsDetailRow(
-                        title: "NODE VERSION",
-                        value: "${admininfo?.nodeVersion}"),
-                  ],
+                Card(
+                  margin: EdgeInsets.all(0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      'Information'.text.xl.make(),
+                      24.heightBox,
+                      SettingsDetailRow(
+                          title: "DETAILS",
+                          value: "v${admininfo?.strapiVersion}"),
+                      20.heightBox,
+                      Row(
+                        children: [
+                          SettingsDetailRow(
+                              title: "CURRENT PLAN",
+                              value:
+                                  "${admininfo != null ? admininfo.communityEdition ? 'Community' : '' : ""}"),
+                          Spacer(),
+                          'SEE ALL PRICING'
+                              .text
+                              .color(primary600)
+                              .size(12)
+                              .semiBold
+                              .make(),
+                          8.widthBox,
+                          Icon(
+                            Icons.screen_share_outlined,
+                            color: primary600,
+                          )
+                        ],
+                      ),
+                      20.heightBox,
+                      SettingsDetailRow(
+                          title: "NODE VERSION",
+                          value: "${admininfo?.nodeVersion}"),
+                    ],
+                  ).p(16),
                 )
               ],
             ),
