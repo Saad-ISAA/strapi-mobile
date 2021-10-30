@@ -2,11 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
-import 'package:strapi_flutter_cms/models/drawer_data_model.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';

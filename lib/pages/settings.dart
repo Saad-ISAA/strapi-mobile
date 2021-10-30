@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/Customwidgets/settings_end_drawer.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/application_settings.dart';
-import 'package:strapi_flutter_cms/pages/settings_pages/email_templates.dart';
-import 'package:strapi_flutter_cms/pages/settings_pages/media_library_settings.dart';
-import 'package:strapi_flutter_cms/pages/settings_pages/providers.dart';
-import 'package:strapi_flutter_cms/pages/settings_pages/roles.dart';
 import 'package:strapi_flutter_cms/shared/settings_drawer_items.dart';
 import 'package:velocity_x/velocity_x.dart';
 

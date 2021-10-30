@@ -1,4 +1,3 @@
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/Customwidgets/content_page_end_drawer.dart';

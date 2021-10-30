@@ -1,10 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
 import 'package:strapi_flutter_cms/Customwidgets/on_off_button.dart';
@@ -14,7 +10,6 @@ import 'package:strapi_flutter_cms/controllers/settingsControllers/providerContr
 import 'package:strapi_flutter_cms/models/provider.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:http/http.dart' as http;
 
 class ProvidersSettings extends StatefulWidget {
   const ProvidersSettings({Key key}) : super(key: key);

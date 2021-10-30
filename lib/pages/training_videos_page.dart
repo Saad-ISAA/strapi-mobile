@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:strapi_flutter_cms/models/training_videos.dart';
 import 'package:strapi_flutter_cms/pages/videoPlayerScreen.dart';
-import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

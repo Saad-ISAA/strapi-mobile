@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
-import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
 import 'package:strapi_flutter_cms/controllers/settingsControllers/emailTemplateController.dart';
