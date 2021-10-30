@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
         contentTypes: contentTypes,
       ),
       floatingActionButton: StrapiFab(),
-      body: IntroductoryPage(),
+      body: Dashboard(),
     );
   }
 }
