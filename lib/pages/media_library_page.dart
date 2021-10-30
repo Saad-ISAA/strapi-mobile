@@ -122,8 +122,9 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
 
   FloatingActionButton _buildFLoatingActionButton() {
     return FloatingActionButton(
+      elevation: 0,
       onPressed: () {},
-      backgroundColor: blue,
+      backgroundColor: primary600,
       child: Icon(Icons.add),
       tooltip: 'Add Asset',
     );
