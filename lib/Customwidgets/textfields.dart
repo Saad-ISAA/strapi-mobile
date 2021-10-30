@@ -57,7 +57,7 @@ class PrimaryTextField extends StatelessWidget {
                 ? InputDecoration(
                     border: InputBorder.none,
                     focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary700)),
+                        borderSide: BorderSide(color: primary700, width: 3)),
                     contentPadding: EdgeInsets.only(top: 10, bottom: 8),
                     prefixIcon: SvgPicture.asset(icon).px(12),
                     hintText: hintText,
@@ -65,6 +65,8 @@ class PrimaryTextField extends StatelessWidget {
                   )
                 : InputDecoration(
                     border: InputBorder.none,
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: primary700)),
                     contentPadding:
                         EdgeInsets.only(left: 16, right: 16, bottom: 6),
                     hintText: hintText,
