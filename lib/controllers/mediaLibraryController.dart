@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:strapi_flutter_cms/models/media_library.dart';
@@ -8,7 +9,9 @@ Future<List<Media>> fetchMediaLibarary() async {
   try {
     var baseURL = GlobalConfig.data.adminURL;
     var url = Uri.parse('$baseURL/upload/files?_sort=updated_at:DESC');
-    return await http.get(url).then((response) {
+    return await http.get(url, headers: {
+      HttpHeaders.authorizationHeader: GlobalConfig.data.token
+    }).then((response) {
       var parsedBody = jsonDecode(response.body);
       var responseToSend = List.generate(
           parsedBody.length, (index) => Media.fromMap(parsedBody[index]));
