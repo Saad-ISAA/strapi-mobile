@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 class StrapiIconButton extends StatelessWidget {
   const StrapiIconButton(

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
 import 'package:strapi_flutter_cms/pages/login.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:velocity_x/velocity_x.dart';
 
 class SplashScreen extends StatefulWidget {

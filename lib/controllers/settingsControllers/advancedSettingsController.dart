@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:strapi_flutter_cms/models/advanced_settings.dart';
 
 import 'package:strapi_flutter_cms/GlobalConfig.dart';
-import 'package:strapi_flutter_cms/models/locale.dart';
 import 'package:http/http.dart' as http;
 
 Future<AdvancedSettings> fetchAdvancedSettings() async {

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:strapi_flutter_cms/controllers/collectionTypeController.dart';
-import 'package:strapi_flutter_cms/models/booking_entry.dart';
 import 'package:strapi_flutter_cms/models/content_type.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -68,7 +64,7 @@ class _CollectionState extends State<Collection> {
 
   Future<void> _getFilters(var adminURL, String token) async {
     var url = Uri.parse(
-        '${adminURL}/content-manager/content-types/${widget.contentType.uid}/configuration');
+        '$adminURL/content-manager/content-types/${widget.contentType.uid}/configuration');
 
     print(url);
     var response =
