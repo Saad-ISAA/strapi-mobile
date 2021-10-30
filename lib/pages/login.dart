@@ -27,12 +27,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // initializing with pre written credentials just to avoid loigns on every hot restart
 
-  TextEditingController urlController =
-      TextEditingController(text: 'http://51.120.94.203:1337');
-  TextEditingController emailController =
-      TextEditingController(text: 'saadmujeeb123@gmail.com');
-  TextEditingController passwordController =
-      TextEditingController(text: 'Saad123!@#');
+  TextEditingController urlController = TextEditingController(text: '');
+  TextEditingController emailController = TextEditingController(text: '');
+  TextEditingController passwordController = TextEditingController(text: '');
   String strapiVersion;
 
   void initState() {
@@ -68,55 +65,81 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _loading = true;
     });
-    var response = await http.post(url, body: {
-      'email': emailController.text,
-      'password': passwordController.text
-    }, headers: {
-      'Accept': 'application/json'
-    });
-
-    if (response.statusCode == 200) {
-      setState(() {
-        _loading = false;
+    try {
+      var response = await http.post(url, body: {
+        'email': emailController.text,
+        'password': passwordController.text
+      }, headers: {
+        'Accept': 'application/json'
       });
-      Map jsonResponse = jsonDecode(response.body);
 
-      String token = jsonResponse['data']['token'];
-      bool checkVersion =
-          await _checkStrapiVersion(jsonResponse['data']['token']);
+      if (response.statusCode == 200) {
+        setState(() {
+          _loading = false;
+        });
+        Map jsonResponse = jsonDecode(response.body);
 
-      if (checkVersion) {
-        await saveStringsToPrefs(token, jsonResponse['data']['user']);
-        await GlobalConfig.prefs.setString("baseURL", urlController.text);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
-          ),
-        );
+        String token = jsonResponse['data']['token'];
+        bool checkVersion =
+            await _checkStrapiVersion(jsonResponse['data']['token']);
+
+        if (checkVersion) {
+          await saveStringsToPrefs(token, jsonResponse['data']['user']);
+          await GlobalConfig.prefs.setString("baseURL", urlController.text);
+
+          await GlobalConfig.initializePrefs();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        } else {
+          return showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  content: Text(
+                      "Sorry your version v$strapiVersion is not supported"),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.forward),
+                    )
+                  ],
+                );
+              });
+        }
       } else {
-        return showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                content:
-                    Text("Sorry your version v$strapiVersion is not supported"),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.forward),
-                  )
-                ],
-              );
-            });
+        setState(() {
+          _loading = false;
+        });
+        print('Login failed');
       }
-    } else {
+    } catch (err) {
+      print(err);
       setState(() {
         _loading = false;
       });
-      print('Login failed');
+
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content:
+                  Text("Failed to login , Make Sure your server is running."),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.forward),
+                )
+              ],
+            );
+          });
     }
   }
 
@@ -228,14 +251,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Image.asset('assets/images/logo.png', height: 100),
+                        Image.asset('assets/images/strapi_new.png',
+                            height: 100),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        Text(
+                          'Welcome!',
+                          style: TextStyle(
+                              fontFamily: 'OpenSans',
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        12.heightBox,
+                        Text('Log in to your Strapi account',
+                            style: TextStyle(fontSize: 15, color: neutral500)),
                         SizedBox(height: 30.0),
                         PrimaryTextField(
                           controller: urlController,
                           title: 'Admin URL',
-                          hintText: 'http://192.168.0.0',
+                          hintText: 'http://127.0.0.1:1337',
                           inputType: TextInputType.url,
-                          icon: 'assets/icons/uid.svg',
+                          // icon: 'assets/icons/uid.svg',
                         ),
                         SizedBox(height: 30.0),
                         PrimaryTextField(
@@ -243,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           title: 'Email',
                           hintText: 'Enter your Email',
                           inputType: TextInputType.emailAddress,
-                          icon: 'assets/icons/email.svg',
+                          //  icon: 'assets/icons/email.svg',
                         ),
                         SizedBox(
                           height: 30.0,
@@ -254,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintText: 'Enter your password',
                           inputType: TextInputType.visiblePassword,
                           isObscure: true,
-                          icon: 'assets/icons/password.svg',
+                          // icon: 'assets/icons/password.svg',
                         ),
                         _buildForgotPasswordBtn(),
                         _buildRememberMeCheckbox(),
@@ -277,6 +314,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await GlobalConfig.prefs.setString('user', json.encode(user));
 
     if (_rememberMe) {
+      await GlobalConfig.prefs.setString("isRememberMe", "true");
       await GlobalConfig.prefs.setString('email', emailController.text);
       await GlobalConfig.prefs.setString('password', passwordController.text);
     }

@@ -98,7 +98,7 @@ class _AdvancedSettingsScreenState extends State<AdvancedSettingsScreen> {
                   ),
                   32.heightBox,
                   PrimarySquareButton(
-                    color: success500,
+                    color: primary600,
                     text: 'Save',
                     onPressed: () {},
                   ),

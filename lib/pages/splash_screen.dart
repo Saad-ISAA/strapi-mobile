@@ -70,7 +70,7 @@ class _SplashScreenState extends State<SplashScreen>
         child: Opacity(
           opacity: _animation.value,
           child: Image.asset(
-            'assets/images/logo.png',
+            'assets/images/strapi_new.png',
             height: context.percentWidth * 30,
           ),
         ),

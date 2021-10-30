@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/controllers/collectionTypeController.dart';
 import 'package:strapi_flutter_cms/models/content_type.dart';
 import 'package:strapi_flutter_cms/pages/IntroductryPage.dart';
+import 'package:strapi_flutter_cms/pages/dashboard_v4.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/drawer.dart';
 
@@ -57,7 +58,7 @@ class _HomePageState extends State<HomePage> {
       drawer: CustomDrawer(
         contentTypes: contentTypes,
       ),
-      body: IntroductoryPage(),
+      body: Dashboard(),
     );
   }
 }

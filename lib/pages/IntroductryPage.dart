@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'package:strapi_flutter_cms/pages/blogs.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:http/http.dart' as http;
@@ -122,7 +123,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                 width: 4,
               ))),
               child: Text(
-                '',
+                'Hi ${GlobalConfig.data.user["firstname"]}',
                 style: TextStyle(
                   fontWeight: FontWeight.normal,
                   fontSize: 20,

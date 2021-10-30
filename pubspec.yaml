@@ -17,6 +17,7 @@ dependencies:
   shared_preferences: ^2.0.5
   velocity_x: ^3.3.0
   video_player: ^2.1.1
+  font_awesome_flutter: ^9.1.0
 
 dev_dependencies:
   flutter_test:
@@ -28,6 +29,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/icons/providers/
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/assets-and-images/#resolution-aware.
     # For details regarding adding assets from package dependencies, see

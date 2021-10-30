@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/Customwidgets/settings_end_drawer.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/application_settings.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/email_templates.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/media_library_settings.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/providers.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/roles.dart';
+import 'package:strapi_flutter_cms/shared/settings_drawer_items.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -16,12 +18,20 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   GlobalKey<_SettingsPageState> _scaffoldKey = GlobalKey();
 
-  Widget selectedPage = RolesPage();
+  Widget selectedPage = ApplicationSettingsPage();
+
+  SettingsDrawerItem activatedTab = SettingsDrawerItem.APPLICATION;
 
   void _setSelectedPage(Widget page) {
     setState(() {
       selectedPage = page;
       Navigator.pop(context);
+    });
+  }
+
+  void _setActivatedTab(SettingsDrawerItem newValue) {
+    setState(() {
+      activatedTab = newValue;
     });
   }
 
@@ -41,7 +51,8 @@ class _SettingsPageState extends State<SettingsPage> {
               ).px(16),
             ),
           ]),
-      endDrawer: buildSettingsDrawer(_setSelectedPage),
+      endDrawer:
+          buildSettingsDrawer(_setSelectedPage, activatedTab, _setActivatedTab),
       body: selectedPage,
     );
   }
