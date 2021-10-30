@@ -10,6 +10,8 @@ Future<Map<String, dynamic>> getAdminInfo() async {
         '${GlobalConfig.data.adminURL}/content-manager/admin/information');
     var response = await http.get(url,
         headers: {HttpHeaders.authorizationHeader: GlobalConfig.data.token});
+
+    print(response);
     Map<String, dynamic> decoded = jsonDecode(response.body);
 
     if (response.statusCode == 200) {

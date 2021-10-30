@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key key}) : super(key: key);
@@ -12,6 +14,36 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  List blogs = [];
+  bool loading = true;
+
+  void initState() {
+    super.initState();
+
+    _getCurrentBlogs();
+  }
+
+  void _getCurrentBlogs() async {
+    var url = Uri.parse(
+        'https://strapi.io/api/blog-posts?_limit=2&_sort=publishedAt:desc');
+    var response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      List responseBody = jsonDecode(response.body);
+      setState(() {
+        blogs = responseBody;
+      });
+
+      print(blogs);
+    } else {
+      print('blogs fetch failed');
+    }
+
+    setState(() {
+      loading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

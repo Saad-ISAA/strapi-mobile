@@ -9,11 +9,15 @@ import 'package:strapi_flutter_cms/pages/settings_pages/providers.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/roles.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/messages.dart';
+import 'package:strapi_flutter_cms/shared/settings_drawer_items.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
+Drawer buildSettingsDrawer(
+    Function(Widget) setSelectedPage,
+    SettingsDrawerItem activatedTab,
+    Function(SettingsDrawerItem) setActivatedTab) {
   return Drawer(
-    backgroundColor: neutral150,
+    // backgroundColor: neutral150,
     child: SafeArea(
       child: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -22,8 +26,11 @@ Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
           children: [
             'Settings'.text.xl3.bold.make().p(10),
             buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
+                itemKey: SettingsDrawerItem.APPLICATION,
                 title: 'Application',
                 onTap: () {
+                  setActivatedTab(SettingsDrawerItem.APPLICATION);
                   setSelectedPage(ApplicationSettingsPage());
                 }),
             16.heightBox,
@@ -32,18 +39,27 @@ Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
               style: _drawerTitleText,
             ).py(16),
             buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
                 title: 'Internationalization',
+                itemKey: SettingsDrawerItem.INTERNATIONLIZATION,
                 onTap: () {
+                  setActivatedTab(SettingsDrawerItem.INTERNATIONLIZATION);
                   setSelectedPage(Internationalization());
                 }),
             buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
                 title: 'Media Library',
+                itemKey: SettingsDrawerItem.MEDIALIBRARY,
                 onTap: () {
+                  setActivatedTab(SettingsDrawerItem.MEDIALIBRARY);
                   setSelectedPage(MediaLibrarySettingsPage());
                 }),
             buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
                 title: 'Webhooks',
+                itemKey: SettingsDrawerItem.WEBHOOKS,
                 onTap: () {
+                  setActivatedTab(SettingsDrawerItem.WEBHOOKS);
                   setSelectedPage(CommingSoonPage(
                     message: contentInDevelopmentMessage,
                   ));
@@ -54,15 +70,21 @@ Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
               style: _drawerTitleText,
             ).py(16),
             buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
+                itemKey: SettingsDrawerItem.ADMIN_ROLES,
                 title: 'Roles',
                 onTap: () {
+                  setActivatedTab(SettingsDrawerItem.ADMIN_ROLES);
                   setSelectedPage(CommingSoonPage(
                     message: contentInDevelopmentMessage,
                   ));
                 }),
             buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
                 title: 'Users',
+                itemKey: SettingsDrawerItem.USERS,
                 onTap: () {
+                  setActivatedTab(SettingsDrawerItem.USERS);
                   setSelectedPage(CommingSoonPage(
                     message: contentInDevelopmentMessage,
                   ));
@@ -73,25 +95,37 @@ Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
               style: _drawerTitleText,
             ).py(16),
             buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
                 title: 'Roles',
+                itemKey: SettingsDrawerItem.ROLES,
                 onTap: () {
+                  setActivatedTab(SettingsDrawerItem.ROLES);
                   setSelectedPage(RolesPage(
                     isAdmin: false,
                   ));
                 }),
             buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
                 title: 'Providers',
+                itemKey: SettingsDrawerItem.PROVIDERS,
                 onTap: () {
+                  setActivatedTab(SettingsDrawerItem.PROVIDERS);
                   setSelectedPage(ProvidersSettings());
                 }),
             buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
+                itemKey: SettingsDrawerItem.EMAILTEMPLATES,
                 title: 'Email Templates',
                 onTap: () {
+                  setActivatedTab(SettingsDrawerItem.EMAILTEMPLATES);
                   setSelectedPage(EmailTemplateSettingsPage());
                 }),
             buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
+                itemKey: SettingsDrawerItem.ADVANCEDSETTINGS,
                 title: 'Advanced Settings',
                 onTap: () {
+                  setActivatedTab(SettingsDrawerItem.ADVANCEDSETTINGS);
                   setSelectedPage(AdvancedSettingsScreen());
                 }),
             16.heightBox,
@@ -100,8 +134,11 @@ Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
               style: _drawerTitleText,
             ).py(16),
             buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
                 title: 'Email Settings',
+                itemKey: SettingsDrawerItem.EMAILSETTINGS,
                 onTap: () {
+                  setActivatedTab(SettingsDrawerItem.EMAILSETTINGS);
                   setSelectedPage(CommingSoonPage(
                     message: contentInDevelopmentMessage,
                   ));
@@ -116,7 +153,11 @@ Drawer buildSettingsDrawer(Function(Widget) setSelectedPage) {
 TextStyle _drawerTitleText =
     TextStyle(color: neutral600, fontSize: 15, fontWeight: FontWeight.bold);
 
-Widget buildDrawerRowEntryWithoutIcon({String title, Function onTap}) {
+Widget buildDrawerRowEntryWithoutIcon(
+    {String title,
+    Function onTap,
+    SettingsDrawerItem activeItem,
+    SettingsDrawerItem itemKey}) {
   return InkWell(
     splashColor: primary200,
     borderRadius: BorderRadius.circular(8),
@@ -135,7 +176,9 @@ Widget buildDrawerRowEntryWithoutIcon({String title, Function onTap}) {
           ),
           Text(
             title,
-            style: TextStyle(fontSize: 15, color: drawerRowsColor),
+            style: TextStyle(
+                fontSize: 15,
+                color: activeItem == itemKey ? strapiColor : drawerRowsColor),
           )
         ],
       ),

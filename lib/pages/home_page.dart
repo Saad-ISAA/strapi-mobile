@@ -3,6 +3,7 @@ import 'package:strapi_flutter_cms/Customwidgets/custom_fab.dart';
 import 'package:strapi_flutter_cms/controllers/collectionTypeController.dart';
 import 'package:strapi_flutter_cms/models/content_type.dart';
 import 'package:strapi_flutter_cms/pages/IntroductryPage.dart';
+import 'package:strapi_flutter_cms/pages/dashboard_v4.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/drawer.dart';
 

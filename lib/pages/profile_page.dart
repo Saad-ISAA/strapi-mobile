@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dropdown.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
+import 'package:strapi_flutter_cms/controllers/authController.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -14,6 +15,13 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // void initState() {
+  //   getAdminInfo().then((value) {
+  //     print(value);
+  //   });
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,6 +75,8 @@ class _ProfileCardState extends State<ProfileCard> {
         TextEditingController(text: GlobalConfig.data.user['firstname']);
     _lNameController =
         TextEditingController(text: GlobalConfig.data.user['lastname']);
+    _emailController =
+        TextEditingController(text: GlobalConfig.data.user['email']);
     super.initState();
   }
 
