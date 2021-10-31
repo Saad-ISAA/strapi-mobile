@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
+import 'package:strapi_flutter_cms/Customwidgets/dropdown.dart';
 import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'package:strapi_flutter_cms/controllers/mediaLibraryController.dart';
@@ -50,8 +51,8 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
           Row(
             children: [
               SizedBox(
-                width: 30,
-                height: 30,
+                width: 35,
+                height: 35,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor:
@@ -66,10 +67,79 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
                     )),
               ),
               8.widthBox,
+              SizedBox(
+                height: 35,
+                child: OutlinedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      side: MaterialStateProperty.all(
+                          BorderSide(color: neutral300)),
+                      padding: MaterialStateProperty.all(EdgeInsets.all(0))),
+                  onPressed: () {},
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        height: 35,
+                        width: 80,
+                        child: DropdownButton(
+                          onChanged: (v) {},
+                          isExpanded: true,
+                          underline: SizedBox(),
+                          hint: Text('Sort by'),
+                          value: null,
+                          items: [
+                            DropdownMenuItem(value: 1, child: Text('Name'))
+                          ],
+                        ),
+                      )
+                    ],
+                  ).px(8),
+                ),
+              ),
+              8.widthBox,
+              SizedBox(
+                height: 35,
+                child: OutlinedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      side: MaterialStateProperty.all(
+                          BorderSide(color: neutral300)),
+                      padding: MaterialStateProperty.all(EdgeInsets.all(0))),
+                  onPressed: () {},
+                  child: Row(
+                    children: [
+                      Icon(Icons.filter_list_rounded,
+                              color: neutral500, size: 18)
+                          .px(8),
+                      SizedBox(
+                        height: 35,
+                        width: 55,
+                        child: DropdownButton(
+                          onChanged: (v) {},
+                          isExpanded: true,
+                          icon: SizedBox(),
+                          underline: SizedBox(),
+                          hint: Text('Filters'),
+                          items: [
+                            DropdownMenuItem(
+                              value: 1,
+                              child: Text('Name'),
+                            ),
+                            DropdownMenuItem(
+                              value: 1,
+                              child: Text('Type'),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ).px(8),
+                ),
+              ),
               Spacer(),
               SizedBox(
-                width: 30,
-                height: 30,
+                width: 35,
+                height: 35,
                 child: OutlinedButton(
                     style: ButtonStyle(
                         backgroundColor:
@@ -86,7 +156,7 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
               ),
             ],
           ),
-          16.heightBox,
+          24.heightBox,
           Expanded(
               child: loading
                   ? CustomSpinner()
