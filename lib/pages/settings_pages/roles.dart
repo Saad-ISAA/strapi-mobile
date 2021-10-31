@@ -51,50 +51,57 @@ class _RolesPageState extends State<RolesPage> {
         children: loading
             ? [CustomSpinner()]
             : [
-                Card(
-                    margin: EdgeInsets.all(0),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        '${roles.length} roles'
-                            .text
-                            .xl3
-                            .semiBold
-                            .overflow(TextOverflow.clip)
-                            .make()
-                            .px(16),
-                        24.heightBox,
-                        ...roles.map((role) {
-                          return Column(
+                Expanded(
+                  child: Card(
+                      margin: EdgeInsets.all(0),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(2)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          '${roles.length} roles'
+                              .text
+                              .xl3
+                              .semiBold
+                              .overflow(TextOverflow.clip)
+                              .make()
+                              .px(16),
+                          24.heightBox,
+                          Expanded(
+                              child: ListView(
                             children: [
-                              RoleRow(
-                                  status: '${role.name}',
-                                  name: '${role.description}',
-                                  user:
-                                      '${widget.isAdmin ? role.usersCount : role.nbUsers} user'),
-                              Divider(height: 4),
-                              16.heightBox,
+                              ...roles.map((role) {
+                                return Column(
+                                  children: [
+                                    RoleRow(
+                                        status: '${role.name}',
+                                        name: '${role.description}',
+                                        user:
+                                            '${widget.isAdmin ? role.usersCount : role.nbUsers} user'),
+                                    Divider(height: 4),
+                                    16.heightBox,
+                                  ],
+                                );
+                              }).toList(),
                             ],
-                          );
-                        }).toList(),
-                        // RoleRow(
-                        //   status: 'Authenticated',
-                        //   name: 'Default role given to authenticated user',
-                        //   user: '0 user',
-                        // ),
-                        // Divider(height: 4),
-                        // 16.heightBox,
-                        // RoleRow(
-                        //   status: 'Public',
-                        //   name: 'Default role given to authenticated user',
-                        //   user: '0 user',
-                        // ),
-                        // Divider(height: 4)
-                      ],
-                    ).pOnly(top: 16)),
-                Spacer(),
+                          ))
+                          // RoleRow(
+                          //   status: 'Authenticated',
+                          //   name: 'Default role given to authenticated user',
+                          //   user: '0 user',
+                          // ),
+                          // Divider(height: 4),
+                          // 16.heightBox,
+                          // RoleRow(
+                          //   status: 'Public',
+                          //   name: 'Default role given to authenticated user',
+                          //   user: '0 user',
+                          // ),
+                          // Divider(height: 4)
+                        ],
+                      ).pOnly(top: 16)),
+                ),
+                8.heightBox,
                 PrimarySquareButton(
                   onPressed: () {},
                   color: primary600,
