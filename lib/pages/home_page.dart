@@ -67,6 +67,13 @@ class _HomePageState extends State<HomePage> {
           ActionButton(
             onPressed: () {},
             icon: Icon(
+              Icons.star,
+              color: neutral600,
+            ),
+          ),
+          ActionButton(
+            onPressed: () {},
+            icon: Icon(
               Icons.file_copy_sharp,
               color: neutral600,
             ),
