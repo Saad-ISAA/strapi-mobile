@@ -211,7 +211,7 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
                                               '${item.name}',
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
-                                                  fontSize: 14,
+                                                  fontSize: 12,
                                                   fontWeight: FontWeight.bold),
                                             ).py(8),
                                           ),
@@ -222,13 +222,22 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
                                                 borderRadius:
                                                     BorderRadius.circular(3)),
                                             height: 16,
-                                            child: Text(
-                                              parsedDetails.type,
-                                              style: TextStyle(
-                                                  color: neutral700,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold),
-                                            ).px(3),
+                                            child: (parsedDetails.type !=
+                                                        'IMAGE' ||
+                                                    parsedDetails.type != 'VID')
+                                                ? Text(
+                                                    parsedDetails.type,
+                                                    style: TextStyle(
+                                                        color: neutral700,
+                                                        fontSize: 11,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ).px(3)
+                                                : SvgPicture.asset(
+                                                    'assets/icons/documentation.svg',
+                                                    height: 11,
+                                                    color: neutral500,
+                                                  ),
                                           )
                                         ],
                                       ).px(8),
@@ -236,7 +245,7 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
                                         '${parsedDetails.extension} - ${parsedDetails.dimension} - ${parsedDetails.size}',
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                            fontSize: 13, color: neutral500),
+                                            fontSize: 11, color: neutral500),
                                       ).px(8),
                                     ],
                                   ),
