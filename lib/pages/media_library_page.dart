@@ -167,6 +167,7 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
                       itemBuilder: (context, index) {
                         var item = media[index];
                         var parsedDetails = parseMediaDetails(item);
+
                         return GestureDetector(
                           onTap: () =>
                               showMediaLibraryInfoDialog(context, item),
@@ -188,11 +189,21 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
                                               topLeft: Radius.circular(4),
                                               topRight: Radius.circular(4)),
                                           child: Container(
-                                            color: Colors.grey[800],
-                                            child: Image.network(
-                                                GlobalConfig.data.adminURL +
-                                                    item.url,
-                                                fit: BoxFit.cover),
+                                            color: neutral150,
+                                            child: (parsedDetails.type
+                                                        .contains('IMAGE') ||
+                                                    parsedDetails.type
+                                                        .contains('VID'))
+                                                ? Image.network(
+                                                    GlobalConfig.data.adminURL +
+                                                        item.url,
+                                                    fit: BoxFit.cover)
+                                                : Center(
+                                                    child: SvgPicture.asset(
+                                                      'assets/icons/book.svg',
+                                                      height: 40,
+                                                    ),
+                                                  ),
                                           ),
                                         ),
                                       ),
@@ -216,29 +227,20 @@ class _MediaLibraryPageState extends State<MediaLibraryPage> {
                                             ).py(8),
                                           ),
                                           Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.grey[300]
-                                                    .withOpacity(0.5),
-                                                borderRadius:
-                                                    BorderRadius.circular(3)),
-                                            height: 16,
-                                            child: (parsedDetails.type !=
-                                                        'IMAGE' ||
-                                                    parsedDetails.type != 'VID')
-                                                ? Text(
-                                                    parsedDetails.type,
-                                                    style: TextStyle(
-                                                        color: neutral700,
-                                                        fontSize: 11,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ).px(3)
-                                                : SvgPicture.asset(
-                                                    'assets/icons/documentation.svg',
-                                                    height: 11,
-                                                    color: neutral500,
-                                                  ),
-                                          )
+                                              decoration: BoxDecoration(
+                                                  color: Colors.grey[300]
+                                                      .withOpacity(0.5),
+                                                  borderRadius:
+                                                      BorderRadius.circular(3)),
+                                              height: 16,
+                                              child: Text(
+                                                parsedDetails.type,
+                                                style: TextStyle(
+                                                    color: neutral700,
+                                                    fontSize: 11,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ).px(3))
                                         ],
                                       ).px(8),
                                       Text(
