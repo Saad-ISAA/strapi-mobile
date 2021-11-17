@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
-import 'package:strapi_flutter_cms/Customwidgets/dropdown.dart';
 import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'package:strapi_flutter_cms/controllers/mediaLibraryController.dart';
@@ -20,6 +19,7 @@ class MediaLibraryPage extends StatefulWidget {
 
 class _MediaLibraryPageState extends State<MediaLibraryPage> {
   bool loading = true;
+
   List<Media> media = [];
   void initState() {
     loading = true;
