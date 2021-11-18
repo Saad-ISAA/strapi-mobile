@@ -12,7 +12,23 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          accentColor: strapiColor,
+          colorScheme: ColorScheme(
+            background: neutral100,
+            onBackground: neutral800,
+            // primary color is set to default Strapi color.
+            primary: primary500,
+            brightness: Brightness.light,
+            error: danger500,
+            onError: danger500,
+            onPrimary: neutral0,
+            surface: neutral0,
+            primaryVariant: primary700,
+            onSurface: neutral0,
+            // for buttons
+            secondary: primary600,
+            secondaryVariant: primary700,
+            onSecondary: neutral0,
+          ),
           appBarTheme: AppBarTheme(
             color: strapiColor,
           )),
