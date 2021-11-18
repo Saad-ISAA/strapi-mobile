@@ -12,6 +12,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+          hintColor: neutral600,
           colorScheme: ColorScheme(
             background: neutral100,
             onBackground: neutral800,
