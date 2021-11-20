@@ -83,7 +83,7 @@ class PrimaryTextField extends StatelessWidget {
                     focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: primary700)),
                     contentPadding:
-                        EdgeInsets.only(left: 16, right: 16, bottom: 32),
+                        EdgeInsets.only(left: 16, right: 16, top: 10),
                     hintText: hintText,
                     hintStyle: hintTextStyle,
                   )
