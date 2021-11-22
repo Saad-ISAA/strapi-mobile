@@ -195,13 +195,22 @@ Container buildHeader(BuildContext context, String title) {
       children: [
         Text(title, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold))
             .pOnly(left: 12),
-        IconButton(
-            splashRadius: 20,
-            padding: EdgeInsets.all(0),
-            onPressed: () {
-              context.pop();
-            },
-            icon: Icon(Icons.close, size: 20, color: neutral500)),
+        Container(
+          width: 35,
+          height: 35,
+          decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(width: 1, color: neutral300)),
+          margin: EdgeInsets.only(right: 12),
+          child: IconButton(
+              splashRadius: 20,
+              padding: EdgeInsets.all(0),
+              onPressed: () {
+                context.pop();
+              },
+              icon: Icon(Icons.close, size: 20, color: neutral500)),
+        ),
       ],
     ),
   );
@@ -294,16 +303,12 @@ dynamic showAddLocaleDialog(context, SelectedLocale locale) {
                               )),
                               24.widthBox,
                               Expanded(
-                                child: MaterialButton(
-                                  elevation: 0,
+                                child: PrimarySettingsButton(
                                   onPressed: () {},
-                                  color: success500,
-                                  child: Text(
-                                    'Finish',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  ),
+                                  icon: Icons.check,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  text: 'Save',
                                 ),
                               ),
                             ],
