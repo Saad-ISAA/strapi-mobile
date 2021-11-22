@@ -61,7 +61,7 @@ class _MediaLibrarySettingsPageState extends State<MediaLibrarySettingsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      'IMAGE'.text.color(neutral500).make(),
+                      'IMAGE'.text.color(neutral900).semiBold.size(16).make(),
                       24.heightBox,
                       Text('Enable responsive friendly upload',
                           style: TextStyle(
@@ -127,8 +127,9 @@ class _MediaLibrarySettingsPageState extends State<MediaLibrarySettingsPage> {
                   ).p(16),
                 ),
                 Spacer(),
-                PrimarySquareButton(
-                  color: success500,
+                PrimarySettingsButton(
+                  icon: Icons.check,
+                  color: Theme.of(context).colorScheme.secondary,
                   text: 'Save',
                 ),
                 PrimaryCancelGreySquareButton(

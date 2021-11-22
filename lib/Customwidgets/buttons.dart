@@ -53,6 +53,45 @@ class PrimarySquareButton extends StatelessWidget {
   }
 }
 
+class PrimarySettingsButton extends StatelessWidget {
+  const PrimarySettingsButton(
+      {Key key, this.text, this.color, this.onPressed, this.icon})
+      : super(key: key);
+
+  final String text;
+  final Color color;
+  final IconData icon;
+  final Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+      disabledColor: neutral300,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      minWidth: double.infinity,
+      height: 45,
+      elevation: 0,
+      onPressed: onPressed,
+      color: color,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          (icon == null)
+              ? SizedBox()
+              : Icon(
+                  icon,
+                  color: Colors.white,
+                ),
+          Text(
+            text,
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class PrimaryCancelGreySquareButton extends StatelessWidget {
   const PrimaryCancelGreySquareButton({Key key, this.onPressed, this.text})
       : super(key: key);
