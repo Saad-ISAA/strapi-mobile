@@ -223,6 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  bool _showPassword = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -288,8 +289,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           title: 'Password',
                           hintText: 'Enter your password',
                           inputType: TextInputType.visiblePassword,
-                          isObscure: true,
-                          // icon: 'assets/icons/password.svg',
+                          isObscure: _showPassword,
+                          suffixIcon: 'assets/icons/password.svg',
+                          onSuffixPressed: () {
+                            setState(() {
+                              _showPassword = !_showPassword;
+                              print(_showPassword);
+                            });
+                          },
                         ),
                         _buildForgotPasswordBtn(),
                         _buildRememberMeCheckbox(),

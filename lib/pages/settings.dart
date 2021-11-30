@@ -37,6 +37,12 @@ class _SettingsPageState extends State<SettingsPage> {
       key: _scaffoldKey,
       appBar: AppBar(
           elevation: 2,
+          leading: IconButton(
+            icon: Icon(Icons.keyboard_arrow_left_sharp),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
           centerTitle: true,
           title: Text('Settings'),
           actions: [

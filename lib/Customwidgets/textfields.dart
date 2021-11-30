@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
@@ -13,14 +14,16 @@ class PrimaryTextField extends StatelessWidget {
       this.hintText = '',
       this.inputType = TextInputType.text,
       this.isObscure = false,
-      this.icon})
+      this.onSuffixPressed,
+      this.suffixIcon})
       : super(key: key);
 
   final TextEditingController controller;
   final String title;
   final String descriptionText;
   final String hintText;
-  final String icon;
+  final String suffixIcon;
+  final Function() onSuffixPressed;
   final bool isObscure;
   final TextInputType inputType;
 
@@ -53,13 +56,34 @@ class PrimaryTextField extends StatelessWidget {
               fontFamily: 'OpenSans',
             ),
             controller: controller,
-            decoration: (icon != null)
-                ? InputDecoration(
+            decoration: (suffixIcon != null)
+                ?
+                //for prefix icon
+                // ? InputDecoration(
+                //     border: InputBorder.none,
+                //     focusedBorder: OutlineInputBorder(
+                //         borderSide: BorderSide(color: primary700, width: 3)),
+                //     contentPadding: EdgeInsets.only(top: 10, bottom: 8),
+                //     prefixIcon: SvgPicture.asset(icon).px(12),
+                //     hintText: hintText,
+                //     hintStyle: hintTextStyle,
+                //   )
+                InputDecoration(
+                    suffixIcon: IconButton(
+                      padding: EdgeInsets.only(top: 0),
+                      icon: Icon(
+                        (isObscure)
+                            ? CupertinoIcons.eye_slash_fill
+                            : CupertinoIcons.eye_fill,
+                        color: Theme.of(context).hintColor,
+                      ),
+                      onPressed: onSuffixPressed,
+                    ),
                     border: InputBorder.none,
                     focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primary700, width: 3)),
-                    contentPadding: EdgeInsets.only(top: 10, bottom: 8),
-                    prefixIcon: SvgPicture.asset(icon).px(12),
+                        borderSide: BorderSide(color: primary700)),
+                    contentPadding:
+                        EdgeInsets.only(left: 16, right: 16, top: 10),
                     hintText: hintText,
                     hintStyle: hintTextStyle,
                   )
