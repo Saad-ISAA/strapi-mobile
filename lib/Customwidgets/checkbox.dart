@@ -11,6 +11,10 @@ class StrapiCheckBox extends StatelessWidget {
   final bool value;
   final Function onChanged;
 
+
+
+  //new ca
+
   @override
   Widget build(BuildContext context) {
     return Theme(
