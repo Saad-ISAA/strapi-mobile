@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/api_details_screen.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -132,7 +133,10 @@ class APITokensRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => APITokenDetailsScreen()));
+      },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

@@ -346,7 +346,7 @@ dynamic showAddAPITokenDialog(context) {
                   SingleChildScrollView(
                     physics: BouncingScrollPhysics(),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         55.heightBox,
@@ -358,6 +358,11 @@ dynamic showAddAPITokenDialog(context) {
                           controller: descriptionController,
                           title: 'Description',
                         ).p(16).py(8),
+                        Text(
+                          'Token type',
+                          style: labelStyle,
+                        ).px(16),
+                        12.heightBox,
                         StrapiDropdown(
                           value: 0,
                           onChanged: (v) {},
