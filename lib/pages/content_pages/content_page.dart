@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/Customwidgets/content_page_end_drawer.dart';
 import 'package:strapi_flutter_cms/controllers/collectionTypeController.dart';
 import 'package:strapi_flutter_cms/models/content_type.dart';
+import 'package:strapi_flutter_cms/pages/content_pages/content_settings_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/messages.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -94,17 +95,23 @@ class _ContentPageState extends State<ContentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: neutral100,
       key: _scaffoldKey,
       appBar: AppBar(
           elevation: 2,
           centerTitle: true,
           title: Text('Content'),
           actions: [
+            IconButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ContentPageSettings())),
+              icon: Icon(Icons.settings),
+            ),
             Builder(
               builder: (context) => IconButton(
                 onPressed: () => Scaffold.of(context).openEndDrawer(),
                 icon: Icon(Icons.menu),
-              ).px(16),
+              ).px(8),
             ),
           ]),
       endDrawer: buildContentDrawer(context,
@@ -116,15 +123,22 @@ class _ContentPageState extends State<ContentPage> {
             ? CustomSpinner()
             : data.length > 0
                 ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       '${selectedContentType.info.label}'
                           .text
                           .xl3
                           .bold
                           .make()
-                          .pOnly(top: 10),
-                      Divider(),
-                      Expanded(
+                          .pOnly(top: 8),
+                      '${data.length} entries found'
+                          .text
+                          .lg
+                          .color(neutral600)
+                          .make(),
+                      16.heightBox,
+                      Card(
+                        margin: EdgeInsets.all(0),
                         child: renderCollectionType(
                             selectedContentType, data, displayFields),
                       )
@@ -135,7 +149,7 @@ class _ContentPageState extends State<ContentPage> {
                       noContentAvailableMessage,
                     ),
                   ),
-      ),
+      ).p(16),
     );
   }
 }
