@@ -1,3 +1,5 @@
+import 'package:flutter_svg/svg.dart';
+import 'package:strapi_flutter_cms/Customwidgets/dropdown.dart';
 import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/Customwidgets/content_page_end_drawer.dart';
@@ -8,6 +10,8 @@ import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/messages.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+enum ContentListVew { LISTVIEW, GRIDVIEW }
+
 class ContentPage extends StatefulWidget {
   const ContentPage({Key key}) : super(key: key);
 
@@ -17,6 +21,8 @@ class ContentPage extends StatefulWidget {
 
 class _ContentPageState extends State<ContentPage> {
   GlobalKey<_ContentPageState> _scaffoldKey = GlobalKey();
+
+  int _viewType = 0;
 
   List<ContentType> collectionTypes = [];
   List<ContentType> singleTypes = [];
@@ -136,7 +142,65 @@ class _ContentPageState extends State<ContentPage> {
                           .lg
                           .color(neutral600)
                           .make(),
-                      16.heightBox,
+                      Row(
+                        children: [
+                          MaterialButton(
+                            onPressed: () {},
+                            elevation: 0,
+                            padding: EdgeInsets.all(0),
+                            height: 35,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              side: BorderSide(width: 0.3, color: neutral400),
+                            ),
+                            color: Colors.white,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/filter.svg',
+                                  height: 14,
+                                ),
+                                8.widthBox,
+                                'Filters'.text.size(15).make()
+                              ],
+                            ).px(12),
+                          ),
+                          16.widthBox,
+                          // MaterialButton(
+                          //   onPressed: () {},
+                          //   elevation: 0,
+                          //   padding: EdgeInsets.all(0),
+                          //   height: 35,
+                          //   shape: RoundedRectangleBorder(
+                          //     borderRadius: BorderRadius.circular(4),
+                          //     side: BorderSide(width: 0.3, color: neutral400),
+                          //   ),
+                          //   color: Colors.white,
+                          //   child: Flexible(child: StrapiDropdown()).px(12),
+                          // ),
+                          Flexible(
+                              child: StrapiDropdown(
+                            onChanged: (v) {
+                              setState(() {
+                                _viewType = v;
+                              });
+                            },
+                            value: _viewType,
+                            items: [
+                              DropdownMenuItem(
+                                child: Text('View type: List'),
+                                value: 0,
+                              ),
+                              DropdownMenuItem(
+                                child: Text('View type: Grid'),
+                                value: 1,
+                              )
+                            ],
+                          )),
+                        ],
+                      ),
+                      12.heightBox,
                       Card(
                         margin: EdgeInsets.all(0),
                         child: renderCollectionType(
@@ -189,21 +253,67 @@ Widget renderCollectionType(ContentType contentType,
     dataRows.add(DataRow(cells: dataCells));
   });
 
-  return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
-      scrollDirection: Axis.horizontal,
-      child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          physics: BouncingScrollPhysics(),
-          child: DataTable(
-              columns: displayFields
-                  .map((e) => DataColumn(
-                          label: Text(
-                        e,
-                        style: dialogText,
-                      )))
-                  .toList(),
-              rows: dataRows)));
+  // return SingleChildScrollView(
+  //     physics: BouncingScrollPhysics(),
+  //     scrollDirection: Axis.horizontal,
+  //     child: SingleChildScrollView(
+  //         scrollDirection: Axis.vertical,
+  //         physics: BouncingScrollPhysics(),
+  //         child: DataTable(
+  //             columns: displayFields
+  //                 .map((e) => DataColumn(
+  //                         label: Text(
+  //                       e,
+  //                       style: dialogText,
+  //                     )))
+  //                 .toList(),
+  //             rows: dataRows)));
+
+  return Column(
+    children: [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: displayFields
+            .map((e) => Expanded(
+                  flex: (e == 'id') ? 1 : 3,
+                  child: e
+                      .toUpperCase()
+                      .text
+                      .semiBold
+                      .medium
+                      .color(neutral700)
+                      .make()
+                      .p(8),
+                ))
+            .toList(),
+      ),
+      ListView(
+          shrinkWrap: true,
+          children: collectionTypeData
+              .map(
+                (e) => Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: displayFields
+                      .map((displayField) => Expanded(
+                            flex: (displayField == 'id') ? 1 : 3,
+                            child: e[displayField]
+                                .toString()
+                                .text
+                                .semiBold
+                                .size(9)
+                                .maxLines(3)
+                                .ellipsis
+                                .make()
+                                .p(8),
+                          ))
+                      .toList(),
+                ),
+              )
+              .toList()),
+    ],
+  );
 }
 
 TextStyle legendStyle = TextStyle(color: neutral900, fontSize: 16);
