@@ -167,45 +167,38 @@ class _ContentPageState extends State<ContentPage> {
                             ).px(12),
                           ),
                           16.widthBox,
-                          // MaterialButton(
-                          //   onPressed: () {},
-                          //   elevation: 0,
-                          //   padding: EdgeInsets.all(0),
-                          //   height: 35,
-                          //   shape: RoundedRectangleBorder(
-                          //     borderRadius: BorderRadius.circular(4),
-                          //     side: BorderSide(width: 0.3, color: neutral400),
-                          //   ),
-                          //   color: Colors.white,
-                          //   child: Flexible(child: StrapiDropdown()).px(12),
-                          // ),
-                          Flexible(
-                              child: StrapiDropdown(
-                            onChanged: (v) {
+                          MaterialButton(
+                            onPressed: () {
                               setState(() {
-                                _viewType = v;
+                                (_viewType == 0)
+                                    ? _viewType = 1
+                                    : _viewType = 0;
                               });
                             },
-                            value: _viewType,
-                            items: [
-                              DropdownMenuItem(
-                                child: Text('View type: List'),
-                                value: 0,
-                              ),
-                              DropdownMenuItem(
-                                child: Text('View type: Grid'),
-                                value: 1,
-                              )
-                            ],
-                          )),
+                            elevation: 0,
+                            padding: EdgeInsets.all(0),
+                            height: 35,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              side: BorderSide(width: 0.3, color: neutral400),
+                            ),
+                            color: Colors.white,
+                            child: Text((_viewType == 0)
+                                    ? 'View type: List'
+                                    : 'View type: Grid')
+                                .px(12),
+                          ),
                         ],
                       ),
                       12.heightBox,
-                      Card(
-                        margin: EdgeInsets.all(0),
-                        child: renderCollectionType(
-                            selectedContentType, data, displayFields),
-                      )
+                      Expanded(
+                        child: Card(
+                          margin: EdgeInsets.all(0),
+                          child: renderCollectionType(selectedContentType, data,
+                              displayFields, _viewType),
+                        ),
+                      ),
+                      16.heightBox,
                     ],
                   )
                 : Center(
@@ -218,8 +211,11 @@ class _ContentPageState extends State<ContentPage> {
   }
 }
 
-Widget renderCollectionType(ContentType contentType,
-    List<dynamic> collectionTypeData, List<String> displayFields) {
+Widget renderCollectionType(
+    ContentType contentType,
+    List<dynamic> collectionTypeData,
+    List<String> displayFields,
+    int viewType) {
   List<DataRow> dataRows = [];
 
   collectionTypeData.forEach((collection) {
@@ -269,51 +265,83 @@ Widget renderCollectionType(ContentType contentType,
   //                 .toList(),
   //             rows: dataRows)));
 
-  return Column(
-    children: [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: displayFields
-            .map((e) => Expanded(
-                  flex: (e == 'id') ? 1 : 3,
-                  child: e
-                      .toUpperCase()
-                      .text
-                      .semiBold
-                      .medium
-                      .color(neutral700)
-                      .make()
-                      .p(8),
-                ))
-            .toList(),
-      ),
-      ListView(
+  return (viewType == 0)
+      ? ListView(
           shrinkWrap: true,
           children: collectionTypeData
               .map(
-                (e) => Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: displayFields
-                      .map((displayField) => Expanded(
-                            flex: (displayField == 'id') ? 1 : 3,
-                            child: e[displayField]
-                                .toString()
-                                .text
-                                .semiBold
-                                .size(9)
-                                .maxLines(3)
-                                .ellipsis
-                                .make()
-                                .p(8),
-                          ))
-                      .toList(),
+                (e) => Card(
+                  elevation: 2,
+                  child: ListTile(
+                    onTap: () {},
+                    isThreeLine: true,
+                    title: Text(
+                      "${e['id']}: ${e['name']}",
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    subtitle: Text(
+                        'Created at: ${e['created_at']}\nUpdated at: ${e['updated_at']}'),
+
+                    // children: displayFields
+                    //     .map((displayField) => e[displayField]
+                    //         .toString()
+                    //         .text
+                    //         .semiBold
+                    //         .size(9)
+                    //         .maxLines(3)
+                    //         .ellipsis
+                    //         .make()
+                    //         .p(8))
+                    //     .toList(),
+                  ),
                 ),
               )
-              .toList()),
-    ],
-  );
+              .toList())
+      : Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: displayFields
+                  .map((e) => Expanded(
+                        flex: (e == 'id') ? 1 : 3,
+                        child: e
+                            .toUpperCase()
+                            .text
+                            .semiBold
+                            .medium
+                            .color(neutral700)
+                            .make()
+                            .p(8),
+                      ))
+                  .toList(),
+            ),
+            ListView(
+                shrinkWrap: true,
+                children: collectionTypeData
+                    .map(
+                      (e) => Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: displayFields
+                            .map((displayField) => Expanded(
+                                  flex: (displayField == 'id') ? 1 : 3,
+                                  child: e[displayField]
+                                      .toString()
+                                      .text
+                                      .semiBold
+                                      .size(9)
+                                      .maxLines(3)
+                                      .ellipsis
+                                      .make()
+                                      .p(8),
+                                ))
+                            .toList(),
+                      ),
+                    )
+                    .toList()),
+          ],
+        );
 }
 
 TextStyle legendStyle = TextStyle(color: neutral900, fontSize: 16);
