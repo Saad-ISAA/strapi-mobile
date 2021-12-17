@@ -273,6 +273,15 @@ Widget renderCollectionType(
                 (e) => Card(
                   elevation: 2,
                   child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: primary500,
+                      child: Center(
+                        child: Icon(
+                          Icons.image,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                     onTap: () {},
                     isThreeLine: true,
                     title: Text(
@@ -280,7 +289,9 @@ Widget renderCollectionType(
                       style: TextStyle(fontWeight: FontWeight.w500),
                     ),
                     subtitle: Text(
-                        'Created at: ${e['created_at']}\nUpdated at: ${e['updated_at']}'),
+                      'Created at: ${e['created_at']}\nUpdated at: ${e['updated_at']}',
+                      style: TextStyle(fontSize: 12),
+                    ),
 
                     // children: displayFields
                     //     .map((displayField) => e[displayField]
