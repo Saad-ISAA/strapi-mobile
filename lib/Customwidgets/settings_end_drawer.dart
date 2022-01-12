@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 import 'package:strapi_flutter_cms/pages/comming_soon_page.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/advanced_settings.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/api_tokens.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/application_settings.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/email_templates.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/internationalization.dart';
@@ -17,14 +20,19 @@ Drawer buildSettingsDrawer(
     SettingsDrawerItem activatedTab,
     Function(SettingsDrawerItem) setActivatedTab) {
   return Drawer(
-    // backgroundColor: neutral150,
+    backgroundColor: neutral150,
     child: SafeArea(
       child: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            'Settings'.text.xl3.bold.make().p(10),
+            'Settings'.text.xl3.bold.make().py(10).px(16),
+            16.heightBox,
+            Text(
+              'GLOBAL SETTINGS',
+              style: _drawerTitleText,
+            ).py(8).px(16),
             buildDrawerRowEntryWithoutIcon(
                 activeItem: activatedTab,
                 itemKey: SettingsDrawerItem.APPLICATION,
@@ -33,11 +41,14 @@ Drawer buildSettingsDrawer(
                   setActivatedTab(SettingsDrawerItem.APPLICATION);
                   setSelectedPage(ApplicationSettingsPage());
                 }),
-            16.heightBox,
-            Text(
-              'GLOBAL SETTINGS',
-              style: _drawerTitleText,
-            ).py(16),
+            buildDrawerRowEntryWithoutIcon(
+                activeItem: activatedTab,
+                itemKey: SettingsDrawerItem.APITOKENS,
+                title: 'API Tokens',
+                onTap: () {
+                  setActivatedTab(SettingsDrawerItem.APITOKENS);
+                  setSelectedPage(APITokensScreen());
+                }),
             buildDrawerRowEntryWithoutIcon(
                 activeItem: activatedTab,
                 title: 'Internationalization',
@@ -68,7 +79,7 @@ Drawer buildSettingsDrawer(
             Text(
               'ADMINISTRATION PANEL',
               style: _drawerTitleText,
-            ).py(16),
+            ).py(8).px(16),
             buildDrawerRowEntryWithoutIcon(
                 activeItem: activatedTab,
                 itemKey: SettingsDrawerItem.ADMIN_ROLES,
@@ -93,7 +104,7 @@ Drawer buildSettingsDrawer(
             Text(
               'USERS & PERMISSONS PLUGIN',
               style: _drawerTitleText,
-            ).py(16),
+            ).py(8).px(16),
             buildDrawerRowEntryWithoutIcon(
                 activeItem: activatedTab,
                 title: 'Roles',
@@ -132,7 +143,7 @@ Drawer buildSettingsDrawer(
             Text(
               'EMAIL PLUGIN',
               style: _drawerTitleText,
-            ).py(16),
+            ).py(8).px(16),
             buildDrawerRowEntryWithoutIcon(
                 activeItem: activatedTab,
                 title: 'Email Settings',
@@ -144,14 +155,14 @@ Drawer buildSettingsDrawer(
                   ));
                 }),
           ],
-        ).p(16),
+        ),
       ),
     ),
   );
 }
 
 TextStyle _drawerTitleText =
-    TextStyle(color: neutral600, fontSize: 15, fontWeight: FontWeight.bold);
+    TextStyle(color: neutral600, fontSize: 14, fontWeight: FontWeight.bold);
 
 Widget buildDrawerRowEntryWithoutIcon(
     {String title,
@@ -160,26 +171,39 @@ Widget buildDrawerRowEntryWithoutIcon(
     SettingsDrawerItem itemKey}) {
   return InkWell(
     splashColor: primary200,
-    borderRadius: BorderRadius.circular(8),
+    borderRadius: BorderRadius.circular(0),
     onTap: onTap,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16),
+    child: Container(
+      color: activeItem == itemKey
+          ? primary200.withOpacity(0.5)
+          : Colors.transparent,
       child: Row(
         children: [
+          32.widthBox,
           Container(
-              height: 9,
-              width: 9,
-              decoration:
-                  BoxDecoration(color: neutral700, shape: BoxShape.circle)),
+              height: 6,
+              width: 6,
+              decoration: BoxDecoration(
+                  color: activeItem == itemKey ? primary700 : drawerRowsColor,
+                  shape: BoxShape.circle)),
           SizedBox(
-            width: 16,
+            width: 12,
           ),
           Text(
             title,
             style: TextStyle(
                 fontSize: 15,
-                color: activeItem == itemKey ? strapiColor : drawerRowsColor),
-          )
+                color: activeItem == itemKey ? primary700 : drawerRowsColor,
+                fontWeight: activeItem == itemKey
+                    ? FontWeight.w600
+                    : FontWeight.normal),
+          ),
+          Spacer(),
+          Container(
+            height: 40,
+            width: 4,
+            color: activeItem == itemKey ? primary700 : Colors.transparent,
+          ),
         ],
       ),
     ),
