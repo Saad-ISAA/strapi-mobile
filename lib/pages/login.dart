@@ -2,31 +2,38 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
+import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
+import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
 import 'package:strapi_flutter_cms/models/drawer_data_model.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'dart:convert';
+import 'package:velocity_x/velocity_x.dart';
 
 class LoginScreen extends StatefulWidget {
-  final String adminURL;
-
-  const LoginScreen({Key key, this.adminURL}) : super(key: key);
+  const LoginScreen({Key key}) : super(key: key);
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
-  TextEditingController urlController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  bool _loading = false;
+
+  // initializing with pre written credentials just to avoid loigns on every hot restart
+
+  TextEditingController urlController = TextEditingController(text: '');
+  TextEditingController emailController = TextEditingController(text: '');
+  TextEditingController passwordController = TextEditingController(text: '');
   String strapiVersion;
 
   void initState() {
     super.initState();
-    urlController.text = widget.adminURL;
     _getEmailAndPassword();
   }
 
@@ -55,55 +62,84 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _loginUser() async {
     var url = Uri.parse('${urlController.text}/admin/login');
     print(url);
-    var response = await http.post(url, body: {
-      'email': emailController.text,
-      'password': passwordController.text
+    setState(() {
+      _loading = true;
     });
+    try {
+      var response = await http.post(url, body: {
+        'email': emailController.text,
+        'password': passwordController.text
+      }, headers: {
+        'Accept': 'application/json'
+      });
 
-    if (response.statusCode == 200) {
-      Map jsonResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        setState(() {
+          _loading = false;
+        });
+        Map jsonResponse = jsonDecode(response.body);
 
-      String token = jsonResponse['data']['token'];
-      bool checkVersion =
-          await _checkStrapiVersion(jsonResponse['data']['token']);
+        String token = jsonResponse['data']['token'];
+        bool checkVersion =
+            await _checkStrapiVersion(jsonResponse['data']['token']);
 
-      if (checkVersion) {
-        await saveStringsToPrefs(token, jsonResponse['data']['user']);
+        if (checkVersion) {
+          await saveStringsToPrefs(token, jsonResponse['data']['user']);
+          await GlobalConfig.prefs.setString("baseURL", urlController.text);
 
-        List<dynamic> drawerData = await _getDrawerData(token);
-        if (drawerData != null) {
+          await GlobalConfig.initializePrefs();
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomePage(
-                drawerData: drawerData,
-                user: jsonResponse['data']['user'],
-              ),
+              builder: (context) => HomePage(),
             ),
           );
         } else {
-          print('drawer data is null');
+          return showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  content: Text(
+                      "Sorry your version v$strapiVersion is not supported"),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.forward),
+                    )
+                  ],
+                );
+              });
         }
       } else {
-        return showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                content:
-                    Text("Sorry your version v$strapiVersion is not supported"),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.forward),
-                  )
-                ],
-              );
-            });
+        setState(() {
+          _loading = false;
+        });
+        print('Login failed');
       }
-    } else {
-      print('Login failed');
+    } catch (err) {
+      print(err);
+      setState(() {
+        _loading = false;
+      });
+
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content:
+                  Text("Failed to login , Make Sure your server is running."),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.forward),
+                )
+              ],
+            );
+          });
     }
   }
 
@@ -126,9 +162,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildForgotPasswordBtn() {
     return Container(
       alignment: Alignment.centerRight,
-      child: FlatButton(
+      child: TextButton(
         onPressed: () => print('Forgot Password Button Pressed'),
-        padding: EdgeInsets.only(right: 0.0),
         child: Text(
           'Forgot Password?',
           style: labelStyle,
@@ -142,18 +177,13 @@ class _LoginScreenState extends State<LoginScreen> {
       height: 20.0,
       child: Row(
         children: <Widget>[
-          Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
-            child: Checkbox(
-              value: _rememberMe,
-              checkColor: Colors.green,
-              activeColor: Colors.white,
-              onChanged: (value) {
-                setState(() {
-                  _rememberMe = value;
-                });
-              },
-            ),
+          StrapiCheckBox(
+            value: _rememberMe,
+            onChanged: (value) {
+              setState(() {
+                _rememberMe = value;
+              });
+            },
           ),
           Text(
             'Remember me',
@@ -164,30 +194,33 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginBtn() {
+  Widget _buildLoginBtn(bool isLoading) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
+      child: MaterialButton(
+        elevation: 0,
+        highlightElevation: 0,
         onPressed: () {
           _loginUser();
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
-        color: darkNavyBlue,
-        child: Text(
-          'LOGIN',
-          style: TextStyle(
-            color: Color(0xFF527DAA),
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-          ),
-        ),
+        color: primary600,
+        child: isLoading
+            ? CustomSpinner(color: Colors.white)
+            : Text(
+                'LOGIN',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.5,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
       ),
     );
   }
@@ -204,131 +237,67 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 height: double.infinity,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF1C1B7E), Color(0xFF8A67F3)],
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                  ),
-                ),
+                color: Colors.white,
               ),
-              Container(
-                height: double.infinity,
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 40.0,
-                    vertical: 70,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset('assets/images/logo.png', height: 100),
-                      SizedBox(height: 30.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text('Admin URL', style: labelStyle),
-                          SizedBox(height: 10.0),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            decoration: boxDecorationStyle,
-                            height: 60.0,
-                            child: TextField(
-                              keyboardType: TextInputType.emailAddress,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'OpenSans',
-                              ),
-                              controller: urlController,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(top: 14.0),
-                                prefixIcon: Icon(
-                                  Icons.link,
-                                  color: Colors.white,
-                                ),
-                                hintText: 'http://192.168.0.0',
-                                hintStyle: hintTextStyle,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 30.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Email',
-                            style: labelStyle,
-                          ),
-                          SizedBox(height: 10.0),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            decoration: boxDecorationStyle,
-                            height: 60.0,
-                            child: TextField(
-                              keyboardType: TextInputType.emailAddress,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'OpenSans',
-                              ),
-                              controller: emailController,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(top: 14.0),
-                                prefixIcon: Icon(
-                                  Icons.email,
-                                  color: Colors.white,
-                                ),
-                                hintText: 'Enter your Email',
-                                hintStyle: hintTextStyle,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30.0,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Password',
-                            style: labelStyle,
-                          ),
-                          SizedBox(height: 10.0),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            decoration: boxDecorationStyle,
-                            height: 60.0,
-                            child: TextField(
-                              obscureText: true,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'OpenSans',
-                              ),
-                              controller: passwordController,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(top: 14.0),
-                                prefixIcon: Icon(
-                                  Icons.lock,
-                                  color: Colors.white,
-                                ),
-                                hintText: 'Enter your Password',
-                                hintStyle: hintTextStyle,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      _buildForgotPasswordBtn(),
-                      _buildRememberMeCheckbox(),
-                      _buildLoginBtn(),
-                    ],
+              SafeArea(
+                child: Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.0,
+                      vertical: 70,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image.asset('assets/images/strapi_new.png',
+                            height: 100),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        Text(
+                          'Welcome!',
+                          style: TextStyle(
+                              fontFamily: 'OpenSans',
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        12.heightBox,
+                        Text('Log in to your Strapi account',
+                            style: TextStyle(fontSize: 15, color: neutral500)),
+                        SizedBox(height: 30.0),
+                        PrimaryTextField(
+                          controller: urlController,
+                          title: 'Admin URL',
+                          hintText: 'http://127.0.0.1:1337',
+                          inputType: TextInputType.url,
+                          // icon: 'assets/icons/uid.svg',
+                        ),
+                        SizedBox(height: 30.0),
+                        PrimaryTextField(
+                          controller: emailController,
+                          title: 'Email',
+                          hintText: 'Enter your Email',
+                          inputType: TextInputType.emailAddress,
+                          //  icon: 'assets/icons/email.svg',
+                        ),
+                        SizedBox(
+                          height: 30.0,
+                        ),
+                        PrimaryTextField(
+                          controller: passwordController,
+                          title: 'Password',
+                          hintText: 'Enter your password',
+                          inputType: TextInputType.visiblePassword,
+                          isObscure: true,
+                          // icon: 'assets/icons/password.svg',
+                        ),
+                        _buildForgotPasswordBtn(),
+                        _buildRememberMeCheckbox(),
+                        _buildLoginBtn(_loading),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -340,31 +309,20 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   saveStringsToPrefs(String token, Map user) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('token', token);
-    prefs.setString('adminURL', urlController.text);
-    prefs.setString('user', json.encode(user));
+    await GlobalConfig.prefs.setString('token', 'Bearer $token');
+    await GlobalConfig.prefs.setString('adminURL', urlController.text);
+    await GlobalConfig.prefs.setString('user', json.encode(user));
 
     if (_rememberMe) {
-      prefs.setString('email', emailController.text);
-      prefs.setString('password', passwordController.text);
+      await GlobalConfig.prefs.setString("isRememberMe", "true");
+      await GlobalConfig.prefs.setString('email', emailController.text);
+      await GlobalConfig.prefs.setString('password', passwordController.text);
     }
   }
 }
 
-final hintTextStyle = TextStyle(
-  color: Colors.white54,
-  fontFamily: 'OpenSans',
-);
-
-final labelStyle = TextStyle(
-  color: Colors.white,
-  fontWeight: FontWeight.bold,
-  fontFamily: 'OpenSans',
-);
-
 final boxDecorationStyle = BoxDecoration(
-  color: strapiColor,
+  color: primary500,
   borderRadius: BorderRadius.circular(10.0),
   boxShadow: [
     BoxShadow(

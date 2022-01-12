@@ -1,87 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
 import 'package:strapi_flutter_cms/pages/login.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:velocity_x/velocity_x.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  Animation _animation;
+
+  _animateLogo() {
+    _controller = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1500));
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _controller.forward();
+    _controller.addListener(() {
+      setState(() {});
+    });
+  }
+
   String adminURL;
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.initState();
+    _animateLogo();
 
-    _checkUserIsLoggedIn();
+    Future.delayed(const Duration(milliseconds: 2500), () {
+      _checkUserIsLoggedIn();
+    });
   }
 
-  void _checkUserIsLoggedIn() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('token');
-    if (prefs.containsKey('adminURL')) {
-      adminURL = prefs.getString('adminURL');
-    }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.dispose();
 
-    if (prefs.containsKey("token")) {
-      Map user = json.decode(prefs.getString('user'));
-
-      List<dynamic> drawerData = await _getDrawerData(token, adminURL);
-
-      if (drawerData != null) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomePage(
-                      drawerData: drawerData,
-                      user: user,
-                    )));
-      } else {
-        print('login failed');
-      }
-    } else {
-      Future.delayed(const Duration(milliseconds: 2500), () {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => LoginScreen(adminURL: adminURL)));
-      });
-    }
+    super.dispose();
   }
 
-  Future<List> _getDrawerData(String token, String adminURL) async {
-    var url = Uri.parse('https://$adminURL/content-manager/content-types');
-    var response = await http.get(
-      url,
-      headers: {"Authorization": 'Bearer $token'},
-    );
+  void _checkUserIsLoggedIn() {
+    String user = GlobalConfig.prefs.getString("user");
 
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      return jsonResponse['data'];
+    if (user != null) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
     } else {
-      return null;
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF8A67F3), Color(0xFF1C1B7E)],
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-          ),
-        ),
-        child: Center(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+      ),
+      child: Center(
+        child: Opacity(
+          opacity: _animation.value,
           child: Image.asset(
-            'assets/images/logo.png',
-            height: 135,
+            'assets/images/strapi_new.png',
+            height: context.percentWidth * 30,
           ),
         ),
       ),

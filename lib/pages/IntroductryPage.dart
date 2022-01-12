@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'package:strapi_flutter_cms/pages/blogs.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class IntroductoryPage extends StatefulWidget {
-  IntroductoryPage({this.user});
-  final Map user;
   @override
   _IntroductoryPageState createState() => _IntroductoryPageState();
 }
@@ -124,7 +123,7 @@ class _IntroductoryPageState extends State<IntroductoryPage> {
                 width: 4,
               ))),
               child: Text(
-                'Hi ${widget.user['firstname'].toString()}!',
+                'Hi ${GlobalConfig.data.user["firstname"]}',
                 style: TextStyle(
                   fontWeight: FontWeight.normal,
                   fontSize: 20,
