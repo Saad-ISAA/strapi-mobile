@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:strapi_flutter_cms/Customwidgets/ComingSoonSnackbar.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
+import 'package:strapi_flutter_cms/Customwidgets/dropdown.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
 import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'package:strapi_flutter_cms/controllers/mediaLibraryController.dart';
@@ -195,13 +196,22 @@ Container buildHeader(BuildContext context, String title) {
       children: [
         Text(title, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold))
             .pOnly(left: 12),
-        IconButton(
-            splashRadius: 20,
-            padding: EdgeInsets.all(0),
-            onPressed: () {
-              context.pop();
-            },
-            icon: Icon(Icons.close, size: 20, color: neutral500)),
+        Container(
+          width: 35,
+          height: 35,
+          decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(width: 1, color: neutral300)),
+          margin: EdgeInsets.only(right: 12),
+          child: IconButton(
+              splashRadius: 20,
+              padding: EdgeInsets.all(0),
+              onPressed: () {
+                context.pop();
+              },
+              icon: Icon(Icons.close, size: 20, color: neutral500)),
+        ),
       ],
     ),
   );
@@ -294,16 +304,12 @@ dynamic showAddLocaleDialog(context, SelectedLocale locale) {
                               )),
                               24.widthBox,
                               Expanded(
-                                child: MaterialButton(
-                                  elevation: 0,
+                                child: PrimarySettingsButton(
                                   onPressed: () {},
-                                  color: success500,
-                                  child: Text(
-                                    'Finish',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  ),
+                                  icon: Icons.check,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  text: 'Save',
                                 ),
                               ),
                             ],
@@ -313,6 +319,93 @@ dynamic showAddLocaleDialog(context, SelectedLocale locale) {
                     ).pOnly(top: 24),
                   ),
                   buildHeader(context, 'Edit a locale'),
+                ],
+              ),
+            ),
+          ],
+        );
+      });
+}
+
+dynamic showAddAPITokenDialog(context) {
+  var nameController = TextEditingController();
+  var descriptionController = TextEditingController();
+
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          contentPadding: EdgeInsets.all(0),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          children: [
+            Container(
+              color: Colors.transparent,
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        55.heightBox,
+                        PrimaryTextField(
+                          controller: nameController,
+                          title: 'Name',
+                        ).px(16),
+                        PrimaryTextField(
+                          controller: descriptionController,
+                          title: 'Description',
+                        ).p(16).py(8),
+                        Text(
+                          'Token type',
+                          style: labelStyle,
+                        ).px(16),
+                        12.heightBox,
+                        StrapiDropdown(
+                          value: 0,
+                          onChanged: (v) {},
+                          items: [
+                            DropdownMenuItem(
+                              child: Text('Read-Only'),
+                              value: 0,
+                            ),
+                            DropdownMenuItem(
+                              child: Text('Full Access'),
+                              value: 1,
+                            ),
+                          ],
+                        ).px(16),
+                        16.heightBox,
+                        Container(
+                          decoration: BoxDecoration(
+                              color: neutral100,
+                              borderRadius: BorderRadius.circular(3)),
+                          child: Row(
+                            children: [
+                              Expanded(child: PrimaryCancelGreySquareButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              )),
+                              24.widthBox,
+                              Expanded(
+                                child: PrimarySettingsButton(
+                                  onPressed: () {},
+                                  icon: Icons.check,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  text: 'Save',
+                                ),
+                              ),
+                            ],
+                          ).p(16),
+                        ),
+                      ],
+                    ).pOnly(top: 24),
+                  ),
+                  buildHeader(context, 'Create API Token'),
                 ],
               ),
             ),

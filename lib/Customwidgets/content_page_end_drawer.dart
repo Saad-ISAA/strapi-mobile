@@ -88,6 +88,8 @@ TextStyle _drawerTitleText =
 
 Widget buildDrawerRowEntryWithoutIcon({String title, Function onTap}) {
   return InkWell(
+    splashColor: primary200,
+    highlightColor: primary200,
     borderRadius: BorderRadius.circular(8),
     onTap: onTap,
     child: Padding(
@@ -95,8 +97,8 @@ Widget buildDrawerRowEntryWithoutIcon({String title, Function onTap}) {
       child: Row(
         children: [
           Container(
-              height: 9,
-              width: 9,
+              height: 7,
+              width: 7,
               decoration:
                   BoxDecoration(color: neutral500, shape: BoxShape.circle)),
           SizedBox(

@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:strapi_flutter_cms/Customwidgets/custom_fab.dart';
 import 'package:strapi_flutter_cms/controllers/collectionTypeController.dart';
 import 'package:strapi_flutter_cms/models/content_type.dart';
 import 'package:strapi_flutter_cms/pages/IntroductryPage.dart';
@@ -57,6 +60,32 @@ class _HomePageState extends State<HomePage> {
       ),
       drawer: CustomDrawer(
         contentTypes: contentTypes,
+      ),
+      floatingActionButton: ExpandableFab(
+        distance: 112.0,
+        children: [
+          ActionButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.star,
+              color: neutral600,
+            ),
+          ),
+          ActionButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.file_copy_sharp,
+              color: neutral600,
+            ),
+          ),
+          ActionButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.book,
+              color: neutral600,
+            ),
+          ),
+        ],
       ),
       body: Dashboard(),
     );

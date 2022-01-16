@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 class StrapiCheckBox extends StatelessWidget {
   StrapiCheckBox({
@@ -9,8 +8,12 @@ class StrapiCheckBox extends StatelessWidget {
     @required this.value,
   }) : super(key: key);
 
-  bool value;
+  final bool value;
   final Function onChanged;
+
+
+
+  //new ca
 
   @override
   Widget build(BuildContext context) {

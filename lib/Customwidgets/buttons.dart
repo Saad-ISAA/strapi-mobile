@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:strapi_flutter_cms/shared/colors.dart';
 
 class StrapiIconButton extends StatelessWidget {
   const StrapiIconButton(
@@ -54,6 +54,46 @@ class PrimarySquareButton extends StatelessWidget {
   }
 }
 
+class PrimarySettingsButton extends StatelessWidget {
+  const PrimarySettingsButton(
+      {Key key, this.text, this.color, this.onPressed, this.icon})
+      : super(key: key);
+
+  final String text;
+  final Color color;
+  final IconData icon;
+  final Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+      disabledColor: neutral300,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      minWidth: double.infinity,
+      height: 40,
+      elevation: 0,
+      onPressed: onPressed,
+      color: color,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          (icon == null)
+              ? SizedBox()
+              : Icon(
+                  icon,
+                  size: 20,
+                  color: Colors.white,
+                ).p(4),
+          Text(
+            text,
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class PrimaryCancelGreySquareButton extends StatelessWidget {
   const PrimaryCancelGreySquareButton({Key key, this.onPressed, this.text})
       : super(key: key);
@@ -64,10 +104,10 @@ class PrimaryCancelGreySquareButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialButton(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(3),
+          borderRadius: BorderRadius.circular(8),
           side: BorderSide(color: neutral500, width: 1)),
       minWidth: double.infinity,
-      height: 37,
+      height: 40,
       elevation: 0,
       onPressed: onPressed,
       color: Colors.white,

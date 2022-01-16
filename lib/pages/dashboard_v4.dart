@@ -47,6 +47,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -67,7 +68,7 @@ class _DashboardState extends State<Dashboard> {
               PrimarySquareButton(
                 text: 'Create your first content type ->',
                 onPressed: () {},
-                color: primary600,
+                color: Theme.of(context).colorScheme.secondary,
               ),
               24.heightBox,
               DashboardCard(

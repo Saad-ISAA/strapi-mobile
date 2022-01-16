@@ -1,12 +1,16 @@
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:strapi_flutter_cms/Customwidgets/dropdown.dart';
 import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/Customwidgets/content_page_end_drawer.dart';
 import 'package:strapi_flutter_cms/controllers/collectionTypeController.dart';
 import 'package:strapi_flutter_cms/models/content_type.dart';
+import 'package:strapi_flutter_cms/pages/content_pages/content_settings_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/messages.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+enum ContentListVew { LISTVIEW, GRIDVIEW }
 
 class ContentPage extends StatefulWidget {
   const ContentPage({Key key}) : super(key: key);
@@ -17,6 +21,8 @@ class ContentPage extends StatefulWidget {
 
 class _ContentPageState extends State<ContentPage> {
   GlobalKey<_ContentPageState> _scaffoldKey = GlobalKey();
+
+  int _viewType = 0;
 
   List<ContentType> collectionTypes = [];
   List<ContentType> singleTypes = [];
@@ -99,17 +105,23 @@ class _ContentPageState extends State<ContentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: neutral100,
       key: _scaffoldKey,
       appBar: AppBar(
           elevation: 2,
           centerTitle: true,
           title: Text('Content'),
           actions: [
+            IconButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ContentPageSettings())),
+              icon: Icon(Icons.settings),
+            ),
             Builder(
               builder: (context) => IconButton(
                 onPressed: () => Scaffold.of(context).openEndDrawer(),
                 icon: Icon(Icons.menu),
-              ).px(16),
+              ).px(8),
             ),
           ]),
       endDrawer: buildContentDrawer(context,
@@ -121,18 +133,76 @@ class _ContentPageState extends State<ContentPage> {
             ? CustomSpinner()
             : data.length > 0
                 ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       '${selectedContentType.info.label}'
                           .text
                           .xl3
                           .bold
                           .make()
-                          .pOnly(top: 10),
-                      Divider(),
+                          .pOnly(top: 8),
+                      '${data.length} entries found'
+                          .text
+                          .lg
+                          .color(neutral600)
+                          .make(),
+                      Row(
+                        children: [
+                          MaterialButton(
+                            onPressed: () {},
+                            elevation: 0,
+                            padding: EdgeInsets.all(0),
+                            height: 35,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              side: BorderSide(width: 0.3, color: neutral400),
+                            ),
+                            color: Colors.white,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/filter.svg',
+                                  height: 14,
+                                ),
+                                8.widthBox,
+                                'Filters'.text.size(15).make()
+                              ],
+                            ).px(12),
+                          ),
+                          16.widthBox,
+                          MaterialButton(
+                            onPressed: () {
+                              setState(() {
+                                (_viewType == 0)
+                                    ? _viewType = 1
+                                    : _viewType = 0;
+                              });
+                            },
+                            elevation: 0,
+                            padding: EdgeInsets.all(0),
+                            height: 35,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              side: BorderSide(width: 0.3, color: neutral400),
+                            ),
+                            color: Colors.white,
+                            child: Text((_viewType == 0)
+                                    ? 'View type: List'
+                                    : 'View type: Grid')
+                                .px(12),
+                          ),
+                        ],
+                      ),
+                      12.heightBox,
                       Expanded(
-                        child: renderCollectionType(
-                            selectedContentType, data, displayFields),
-                      )
+                        child: Card(
+                          margin: EdgeInsets.all(0),
+                          child: renderCollectionType(selectedContentType, data,
+                              displayFields, _viewType),
+                        ),
+                      ),
+                      16.heightBox,
                     ],
                   )
                 : Center(
@@ -140,13 +210,16 @@ class _ContentPageState extends State<ContentPage> {
                       noContentAvailableMessage,
                     ),
                   ),
-      ),
+      ).p(16),
     );
   }
 }
 
-Widget renderCollectionType(ContentType contentType,
-    List<dynamic> collectionTypeData, List<String> displayFields) {
+Widget renderCollectionType(
+    ContentType contentType,
+    List<dynamic> collectionTypeData,
+    List<String> displayFields,
+    int viewType) {
   List<DataRow> dataRows = [];
 
   collectionTypeData.forEach((collection) {
@@ -180,21 +253,110 @@ Widget renderCollectionType(ContentType contentType,
     dataRows.add(DataRow(cells: dataCells));
   });
 
-  return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
-      scrollDirection: Axis.horizontal,
-      child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          physics: BouncingScrollPhysics(),
-          child: DataTable(
-              columns: displayFields
-                  .map((e) => DataColumn(
-                          label: Text(
-                        e,
-                        style: dialogText,
-                      )))
+  // return SingleChildScrollView(
+  //     physics: BouncingScrollPhysics(),
+  //     scrollDirection: Axis.horizontal,
+  //     child: SingleChildScrollView(
+  //         scrollDirection: Axis.vertical,
+  //         physics: BouncingScrollPhysics(),
+  //         child: DataTable(
+  //             columns: displayFields
+  //                 .map((e) => DataColumn(
+  //                         label: Text(
+  //                       e,
+  //                       style: dialogText,
+  //                     )))
+  //                 .toList(),
+  //             rows: dataRows)));
+
+  return (viewType == 0)
+      ? ListView(
+          shrinkWrap: true,
+          children: collectionTypeData
+              .map(
+                (e) => Card(
+                  elevation: 2,
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: primary500,
+                      child: Center(
+                        child: Icon(
+                          Icons.image,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    onTap: () {},
+                    isThreeLine: true,
+                    title: Text(
+                      "${e['id']}: ${e['name']}",
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    subtitle: Text(
+                      'Created at: ${e['created_at']}\nUpdated at: ${e['updated_at']}',
+                      style: TextStyle(fontSize: 12),
+                    ),
+
+                    // children: displayFields
+                    //     .map((displayField) => e[displayField]
+                    //         .toString()
+                    //         .text
+                    //         .semiBold
+                    //         .size(9)
+                    //         .maxLines(3)
+                    //         .ellipsis
+                    //         .make()
+                    //         .p(8))
+                    //     .toList(),
+                  ),
+                ),
+              )
+              .toList())
+      : Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: displayFields
+                  .map((e) => Expanded(
+                        flex: (e == 'id') ? 1 : 3,
+                        child: e
+                            .toUpperCase()
+                            .text
+                            .semiBold
+                            .medium
+                            .color(neutral700)
+                            .make()
+                            .p(8),
+                      ))
                   .toList(),
-              rows: dataRows)));
+            ),
+            ListView(
+                shrinkWrap: true,
+                children: collectionTypeData
+                    .map(
+                      (e) => Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: displayFields
+                            .map((displayField) => Expanded(
+                                  flex: (displayField == 'id') ? 1 : 3,
+                                  child: e[displayField]
+                                      .toString()
+                                      .text
+                                      .semiBold
+                                      .size(9)
+                                      .maxLines(3)
+                                      .ellipsis
+                                      .make()
+                                      .p(8),
+                                ))
+                            .toList(),
+                      ),
+                    )
+                    .toList()),
+          ],
+        );
 }
 
 TextStyle legendStyle = TextStyle(color: neutral900, fontSize: 16);

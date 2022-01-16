@@ -2,11 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/checkbox.dart';
 import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
-import 'package:strapi_flutter_cms/models/drawer_data_model.dart';
 import 'package:strapi_flutter_cms/pages/home_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -222,6 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  bool _showPassword = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -287,8 +286,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           title: 'Password',
                           hintText: 'Enter your password',
                           inputType: TextInputType.visiblePassword,
-                          isObscure: true,
-                          // icon: 'assets/icons/password.svg',
+                          isObscure: _showPassword,
+                          suffixIcon: 'assets/icons/password.svg',
+                          onSuffixPressed: () {
+                            setState(() {
+                              _showPassword = !_showPassword;
+                              print(_showPassword);
+                            });
+                          },
                         ),
                         _buildForgotPasswordBtn(),
                         _buildRememberMeCheckbox(),
