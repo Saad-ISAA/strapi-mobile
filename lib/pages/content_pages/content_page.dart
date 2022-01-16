@@ -70,7 +70,11 @@ class _ContentPageState extends State<ContentPage> {
     }).catchError((err) {
       print(err);
       print("caught errorrr");
-    }).whenComplete(() {});
+    }).whenComplete(() {
+      setState(() {
+        loading = false;
+      });
+    });
     super.initState();
   }
 

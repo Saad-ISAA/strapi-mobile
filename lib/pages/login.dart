@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
       var response = await http.get(url,
           headers: {HttpHeaders.authorizationHeader: "Bearer " + token});
       strapiVersion = jsonDecode(response.body)["data"]["strapiVersion"];
-      return int.parse(strapiVersion.split(".")[1]) <= 3 ? false : true;
+      return int.parse(strapiVersion.split(".")[0]) < 4 ? false : true;
     } catch (e) {
       throw e;
     }
@@ -113,10 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
               });
         }
       } else {
-        setState(() {
-          _loading = false;
-        });
-        print('Login failed');
+        throw ErrorDescription('Login Failed');
       }
     } catch (err) {
       print(err);
@@ -128,8 +125,8 @@ class _LoginScreenState extends State<LoginScreen> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              content:
-                  Text("Failed to login , Make Sure your server is running."),
+              content: Text(
+                  "Failed to login , check your credentials or make Sure your server is running."),
               actions: [
                 IconButton(
                   onPressed: () {
