@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dialogs.dart';
+import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
+import 'package:strapi_flutter_cms/controllers/settingsControllers/apiTokensController.dart';
+import 'package:strapi_flutter_cms/models/apiToken.dart';
+import 'package:strapi_flutter_cms/pages/comming_soon_page.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/api_details_screen.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -13,6 +17,25 @@ class APITokensScreen extends StatefulWidget {
 }
 
 class _APITokensScreenState extends State<APITokensScreen> {
+  List<ApiToken> apiTokens = [];
+  bool loading = false;
+  void initState() {
+    super.initState();
+
+    setState(() {
+      loading = true;
+    });
+    fetchApiTokens().then((value) {
+      setState(() {
+        apiTokens = value;
+      });
+    }).whenComplete(() {
+      setState(() {
+        loading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,7 +50,17 @@ class _APITokensScreenState extends State<APITokensScreen> {
               .semiBold
               .make(),
           16.heightBox,
-          Expanded(child: TokensCard()),
+          Expanded(
+              child: loading
+                  ? CustomSpinner()
+                  : apiTokens.length > 0
+                      ? TokensCard(
+                          apiTokens: apiTokens,
+                        )
+                      : CommingSoonPage(
+                          message: 'No Tokens found',
+                          showAppBar: false,
+                        )),
           24.heightBox,
           PrimarySquareButton(
             color: primary600,
@@ -44,8 +77,10 @@ class _APITokensScreenState extends State<APITokensScreen> {
 }
 
 class TokensCard extends StatelessWidget {
+  final List<ApiToken> apiTokens;
   const TokensCard({
     Key key,
+    this.apiTokens,
   }) : super(key: key);
 
   @override
@@ -83,16 +118,14 @@ class TokensCard extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: 20,
+                itemCount: apiTokens.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   return SizedBox(
                     height: 40,
                     child: APITokensRow(
-                        name: 'API',
-                        description: 'Not Available',
-                        tokenType: 'Read-Only',
-                        createdAt: '2 minutes ago'),
+                      token: apiTokens[index],
+                    ),
                   );
                 }),
           ),
@@ -118,39 +151,36 @@ class APITokensCustomText extends StatelessWidget {
 }
 
 class APITokensRow extends StatelessWidget {
-  const APITokensRow(
-      {Key key,
-      @required this.name,
-      @required this.description,
-      @required this.tokenType,
-      @required this.createdAt})
-      : super(key: key);
-  final String name;
-  final String description;
-  final String tokenType;
-  final String createdAt;
+  const APITokensRow({
+    Key key,
+    @required this.token,
+  }) : super(key: key);
+
+  final ApiToken token;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => APITokenDetailsScreen()));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => APITokenDetailsScreen(
+                  apiTokenId: token.id,
+                )));
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           APITokensCustomText(
-            text: name,
+            text: token.name,
           ),
           APITokensCustomText(
-            text: description,
+            text: token.description,
           ),
           APITokensCustomText(
-            text: tokenType,
+            text: token.type,
           ),
           APITokensCustomText(
-            text: createdAt,
+            text: '${token.createdAt.toString()}',
           ),
         ],
       ),

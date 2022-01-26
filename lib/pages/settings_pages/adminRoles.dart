@@ -4,22 +4,23 @@ import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:strapi_flutter_cms/controllers/settingsControllers/roleController.dart';
 import 'package:strapi_flutter_cms/models/role.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/roles.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class RolesPage extends StatefulWidget {
-  const RolesPage({Key key, this.isAdmin = false}) : super(key: key);
-  final bool isAdmin;
+class AdminRolesPage extends StatefulWidget {
+  const AdminRolesPage({ Key key }) : super(key: key);
+
   @override
-  _RolesPageState createState() => _RolesPageState();
+  _AdminRolesPageState createState() => _AdminRolesPageState();
 }
 
-class _RolesPageState extends State<RolesPage> {
+class _AdminRolesPageState extends State<AdminRolesPage> {
   bool loading = true;
-  var roles = [];
-  void initState() {
-  
-      fetchRoles().then((value) {
+  List<AdminRole> roles = [];
+
+    void initState() {
+      fetchAdminRoles().then((value) {
         setState(() {
           print(value);
           roles = value;
@@ -29,12 +30,11 @@ class _RolesPageState extends State<RolesPage> {
           loading = false;
         });
       });
-    
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
+    Widget build(BuildContext context) {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +67,7 @@ class _RolesPageState extends State<RolesPage> {
                                         status: '${role.name}',
                                         name: '${role.description}',
                                         user:
-                                            '${role.nbUsers} user'),
+                                            '${role.usersCount} user'),
                                     Divider(height: 4),
                                     16.heightBox,
                                   ],
@@ -102,45 +102,4 @@ class _RolesPageState extends State<RolesPage> {
     );
   }
 
-}
-
-class RoleRow extends StatelessWidget {
-  const RoleRow({Key key, this.status, this.name, this.user}) : super(key: key);
-
-  final String status;
-  final String name;
-  final String user;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(child: status.text.lg.make()),
-              user.text.lg.make(),
-            ],
-          ),
-          16.heightBox,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              name.text.medium.make(),
-              GestureDetector(
-                onTap: () {},
-                child: SvgPicture.asset(
-                  'assets/icons/edit.svg',
-                  height: 10,
-                ),
-              )
-            ],
-          ),
-        ],
-      ).p(16),
-    );
-  }
 }

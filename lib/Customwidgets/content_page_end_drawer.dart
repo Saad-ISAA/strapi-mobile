@@ -45,7 +45,7 @@ Drawer buildContentDrawer(context,
             ).py(8),
             ...collectionTypes
                 .map(((type) => buildDrawerRowEntryWithoutIcon(
-                    title: '${type.info.label}',
+                    title: '${type.info.displayName}',
                     onTap: () {
                       setContentType(type);
                       Navigator.pop(context);
@@ -69,7 +69,7 @@ Drawer buildContentDrawer(context,
             ).py(8),
             ...singleTypes
                 .map(((type) => buildDrawerRowEntryWithoutIcon(
-                    title: '${type.info.label}',
+                    title: '${type.info.displayName}',
                     onTap: () {
                       setContentType(type);
                       Navigator.pop(context);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:strapi_flutter_cms/pages/comming_soon_page.dart';
+import 'package:strapi_flutter_cms/pages/settings_pages/adminRoles.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/advanced_settings.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/api_tokens.dart';
 import 'package:strapi_flutter_cms/pages/settings_pages/application_settings.dart';
@@ -73,6 +74,7 @@ Drawer buildSettingsDrawer(
                   setActivatedTab(SettingsDrawerItem.WEBHOOKS);
                   setSelectedPage(CommingSoonPage(
                     message: contentInDevelopmentMessage,
+                    showAppBar: false,
                   ));
                 }),
             16.heightBox,
@@ -85,10 +87,14 @@ Drawer buildSettingsDrawer(
                 itemKey: SettingsDrawerItem.ADMIN_ROLES,
                 title: 'Roles',
                 onTap: () {
+                  // setActivatedTab(SettingsDrawerItem.ADMIN_ROLES);
+                  // setSelectedPage(CommingSoonPage(
+                  //   message: contentInDevelopmentMessage,
+                  //   showAppBar: false,
+                  // ));
+
                   setActivatedTab(SettingsDrawerItem.ADMIN_ROLES);
-                  setSelectedPage(CommingSoonPage(
-                    message: contentInDevelopmentMessage,
-                  ));
+                  setSelectedPage(AdminRolesPage());
                 }),
             buildDrawerRowEntryWithoutIcon(
                 activeItem: activatedTab,
@@ -98,6 +104,7 @@ Drawer buildSettingsDrawer(
                   setActivatedTab(SettingsDrawerItem.USERS);
                   setSelectedPage(CommingSoonPage(
                     message: contentInDevelopmentMessage,
+                    showAppBar: false,
                   ));
                 }),
             16.heightBox,
@@ -152,6 +159,7 @@ Drawer buildSettingsDrawer(
                   setActivatedTab(SettingsDrawerItem.EMAILSETTINGS);
                   setSelectedPage(CommingSoonPage(
                     message: contentInDevelopmentMessage,
+                    showAppBar: false,
                   ));
                 }),
           ],

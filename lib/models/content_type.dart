@@ -50,15 +50,18 @@ class ContentType {
 }
 
 class Info {
-  Info({
-    this.name,
-    this.description,
-    this.label,
-  });
+  Info(
+      {this.name,
+      this.description,
+      this.displayName,
+      this.pluralName,
+      this.singularName});
 
   String name;
   String description;
-  String label;
+  String singularName;
+  String pluralName;
+  String displayName;
 
   factory Info.fromJson(String str) => Info.fromMap(json.decode(str));
 
@@ -67,12 +70,17 @@ class Info {
   factory Info.fromMap(Map<String, dynamic> json) => Info(
         name: json["name"] == null ? null : json["name"],
         description: json["description"] == null ? null : json["description"],
-        label: json["label"] == null ? null : json["label"],
+        singularName:
+            json["singularName"] == null ? null : json["singularName"],
+        pluralName: json["pluralName"] == null ? null : json["pluralName"],
+        displayName: json["displayName"] == null ? null : json["displayName"],
       );
 
   Map<String, dynamic> toMap() => {
         "name": name == null ? null : name,
         "description": description == null ? null : description,
-        "label": label == null ? null : label,
+        "singularName": singularName == null ? null : singularName,
+        "pluralName": pluralName == null ? null : pluralName,
+        "displayName": displayName == null ? null : displayName,
       };
 }

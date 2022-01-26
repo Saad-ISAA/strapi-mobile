@@ -5,6 +5,7 @@ import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'dart:convert';
 
 import 'package:strapi_flutter_cms/models/content_type.dart';
+import 'package:strapi_flutter_cms/models/content_type_configuration.dart' as ContentTypeConfiguration;
 
 Future<List<ContentType>> fetchContentTypes() async {
   try {
@@ -19,6 +20,26 @@ Future<List<ContentType>> fetchContentTypes() async {
       var responseToSend = List.generate(
           parsedBody.length, (index) => ContentType.fromMap(parsedBody[index]));
       return responseToSend;
+    } else {
+      print("failed fetch content");
+      throw decoded;
+    }
+  } catch (err) {
+    throw err;
+  }
+}
+
+Future<ContentTypeConfiguration.ContentTypeConfiguration> fetchContentTypeConfiguration(String uid) async {
+  try {
+    var url = Uri.parse(
+        '${GlobalConfig.data.adminURL}/content-manager/content-types/$uid/configuration');
+    var response = await http.get(url,
+        headers: {HttpHeaders.authorizationHeader: GlobalConfig.data.token});
+    var decoded = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      var parsedBody = decoded["data"];
+      return ContentTypeConfiguration.ContentTypeConfiguration.fromMap(parsedBody);
     } else {
       print("failed fetch content");
       throw decoded;

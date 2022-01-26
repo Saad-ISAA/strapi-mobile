@@ -4,12 +4,14 @@ import 'package:velocity_x/velocity_x.dart';
 
 class CommingSoonPage extends StatelessWidget {
   final String message;
-  const CommingSoonPage({Key key, this.message}) : super(key: key);
+  final bool showAppBar;
+  const CommingSoonPage({Key key, this.message, this.showAppBar = true})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: showAppBar ? AppBar() : null,
         body: Container(
             padding: EdgeInsets.all(20),
             child: Column(

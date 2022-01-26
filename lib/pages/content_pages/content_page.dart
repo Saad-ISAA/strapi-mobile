@@ -3,12 +3,17 @@ import 'package:strapi_flutter_cms/Customwidgets/dropdown.dart';
 import 'package:strapi_flutter_cms/Customwidgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:strapi_flutter_cms/Customwidgets/content_page_end_drawer.dart';
+import 'package:strapi_flutter_cms/GlobalConfig.dart';
 import 'package:strapi_flutter_cms/controllers/collectionTypeController.dart';
 import 'package:strapi_flutter_cms/models/content_type.dart';
+import 'package:strapi_flutter_cms/models/content_type_configuration.dart'
+    as CTC;
+import 'package:strapi_flutter_cms/pages/comming_soon_page.dart';
 import 'package:strapi_flutter_cms/pages/content_pages/content_settings_page.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:strapi_flutter_cms/shared/messages.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:intl/intl.dart';
 
 enum ContentListVew { LISTVIEW, GRIDVIEW }
 
@@ -22,14 +27,16 @@ class ContentPage extends StatefulWidget {
 class _ContentPageState extends State<ContentPage> {
   GlobalKey<_ContentPageState> _scaffoldKey = GlobalKey();
 
-  int _viewType = 0;
+  int _viewType = 1;
 
   List<ContentType> collectionTypes = [];
   List<ContentType> singleTypes = [];
 
   List<String> displayFields = [];
   ContentType selectedContentType;
+
   List<dynamic> data = [];
+  CTC.ContentTypeConfiguration selectedContentTypeConfiguration;
 
   bool loading = true;
 
@@ -49,6 +56,10 @@ class _ContentPageState extends State<ContentPage> {
         .whenComplete(() => setState(() {
               loading = false;
             }));
+
+    fetchContentTypeConfiguration(newType.uid).then((value) {
+      selectedContentTypeConfiguration = value;
+    });
   }
 
   void initState() {
@@ -129,186 +140,184 @@ class _ContentPageState extends State<ContentPage> {
           singleTypes: singleTypes,
           setContentType: setContentType),
       body: Container(
-        child: loading
-            ? CustomSpinner()
-            : data.length > 0
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      '${selectedContentType.info.label}'
-                          .text
-                          .xl3
-                          .bold
-                          .make()
-                          .pOnly(top: 8),
-                      '${data.length} entries found'
-                          .text
-                          .lg
-                          .color(neutral600)
-                          .make(),
-                      Row(
-                        children: [
-                          MaterialButton(
-                            onPressed: () {},
-                            elevation: 0,
-                            padding: EdgeInsets.all(0),
-                            height: 35,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                              side: BorderSide(width: 0.3, color: neutral400),
+              child: loading
+                  ? CustomSpinner()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        '${selectedContentType.info.displayName}'
+                            .text
+                            .xl3
+                            .bold
+                            .make()
+                            .pOnly(top: 8),
+                        '${data.length} entries found'
+                            .text
+                            .lg
+                            .color(neutral600)
+                            .make(),
+                        Row(
+                          children: [
+                            MaterialButton(
+                              onPressed: () {},
+                              elevation: 0,
+                              padding: EdgeInsets.all(0),
+                              height: 35,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                                side: BorderSide(width: 0.3, color: neutral400),
+                              ),
+                              color: Colors.white,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/icons/filter.svg',
+                                    height: 14,
+                                  ),
+                                  8.widthBox,
+                                  'Filters'.text.size(15).make()
+                                ],
+                              ).px(12),
                             ),
-                            color: Colors.white,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/icons/filter.svg',
-                                  height: 14,
-                                ),
-                                8.widthBox,
-                                'Filters'.text.size(15).make()
-                              ],
-                            ).px(12),
-                          ),
-                          16.widthBox,
-                          MaterialButton(
-                            onPressed: () {
-                              setState(() {
-                                (_viewType == 0)
-                                    ? _viewType = 1
-                                    : _viewType = 0;
-                              });
-                            },
-                            elevation: 0,
-                            padding: EdgeInsets.all(0),
-                            height: 35,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                              side: BorderSide(width: 0.3, color: neutral400),
+                            16.widthBox,
+                            MaterialButton(
+                              onPressed: () {
+                                setState(() {
+                                  (_viewType == 0)
+                                      ? _viewType = 1
+                                      : _viewType = 0;
+                                });
+                              },
+                              elevation: 0,
+                              padding: EdgeInsets.all(0),
+                              height: 35,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                                side: BorderSide(width: 0.3, color: neutral400),
+                              ),
+                              color: Colors.white,
+                              child: Text((_viewType == 0)
+                                      ? 'View type: List'
+                                      : 'View type: Grid')
+                                  .px(12),
                             ),
-                            color: Colors.white,
-                            child: Text((_viewType == 0)
-                                    ? 'View type: List'
-                                    : 'View type: Grid')
-                                .px(12),
-                          ),
-                        ],
-                      ),
-                      12.heightBox,
-                      Expanded(
-                        child: Card(
-                          margin: EdgeInsets.all(0),
-                          child: renderCollectionType(selectedContentType, data,
-                              displayFields, _viewType),
+                          ],
                         ),
-                      ),
-                      16.heightBox,
-                    ],
-                  )
-                : Center(
-                    child: Text(
-                      noContentAvailableMessage,
-                    ),
-                  ),
-      ).p(16),
+                        12.heightBox,
+                        Expanded(
+                            child: data.length > 0
+                                ? Card(
+                                    margin: EdgeInsets.all(0),
+                                    child: renderCollectionType(
+                                        selectedContentType,
+                                        data,
+                                        List<String>.from(
+                                            selectedContentTypeConfiguration
+                                                ?.contentType?.layouts != null ? selectedContentTypeConfiguration?.contentType?.layouts['list']:[]),
+                                        _viewType,
+                                        selectedContentTypeConfiguration),
+                                  )
+                                : CommingSoonPage(
+                                    message: 'No content found',
+                                    showAppBar: false,
+                                  )),
+                        16.heightBox,
+                      ],
+                    ))
+          .p(16),
     );
   }
 }
 
 Widget renderCollectionType(
-    ContentType contentType,
-    List<dynamic> collectionTypeData,
-    List<String> displayFields,
-    int viewType) {
-  List<DataRow> dataRows = [];
+  ContentType contentType,
+  List<dynamic> collectionTypeData,
+  List<String> displayFields,
+  int viewType,
+  CTC.ContentTypeConfiguration contentTypeConfiguration,
+) {
+  List<Map<String, dynamic>> data = [];
 
   collectionTypeData.forEach((collection) {
-    List<DataCell> dataCells = [];
+    Map<String, dynamic> row = {};
     displayFields.forEach((field) {
       var attribute = contentType.attributes[field];
       String value = "";
+      String type = "string";
       if (attribute["type"] == "relation") {
         // if type == "relation"
         if (attribute["relationType"] == "oneToMany" ||
             attribute["relationType"] == "manyWay") {
           value = '${collection[field]["count"]} items';
         } else if (attribute["relationType"] == "manyToOne" ||
-            attribute["relationType"] == "oneWay") {
-          print(collection);
-          print(field);
-          value = '${collection[field] != null ? collection[field]["id"] : ""}';
+            attribute["relationType"] == "oneWay" ||
+            attribute["relationType"] == "oneToOne") {
+          var relationKey = contentTypeConfiguration
+              .contentType.metadatas[field]['edit']['mainField'];
+          value =
+              '${collection[field] != null ? collection[field][relationKey] : ""}';
         } else {
           value = '';
         }
       } else if (attribute["type"] == "media") {
-        value = '';
+        value = collection[field] != null
+            ? '${GlobalConfig.data.adminURL}${collection[field]['url']}'
+            : null;
+        type = "media";
       } else {
         value = '${collection[field]}';
       }
-      dataCells.add(DataCell(Text(
-        value,
-        style: legendStyle,
-      )));
+      row[field] = {
+        "value": value,
+        "type": type,
+      };
     });
-    dataRows.add(DataRow(cells: dataCells));
+    data.add(row);
   });
-
-  // return SingleChildScrollView(
-  //     physics: BouncingScrollPhysics(),
-  //     scrollDirection: Axis.horizontal,
-  //     child: SingleChildScrollView(
-  //         scrollDirection: Axis.vertical,
-  //         physics: BouncingScrollPhysics(),
-  //         child: DataTable(
-  //             columns: displayFields
-  //                 .map((e) => DataColumn(
-  //                         label: Text(
-  //                       e,
-  //                       style: dialogText,
-  //                     )))
-  //                 .toList(),
-  //             rows: dataRows)));
 
   return (viewType == 0)
       ? ListView(
           shrinkWrap: true,
           children: collectionTypeData
               .map(
-                (e) => Card(
-                  elevation: 2,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: primary500,
-                      child: Center(
-                        child: Icon(
-                          Icons.image,
-                          color: Colors.white,
+                (e) => Column(
+                  children: [
+                    ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: primary500,
+                        child: Center(
+                          child: Icon(
+                            Icons.image,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                    onTap: () {},
-                    isThreeLine: true,
-                    title: Text(
-                      "${e['id']}: ${e['name']}",
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    subtitle: Text(
-                      'Created at: ${e['created_at']}\nUpdated at: ${e['updated_at']}',
-                      style: TextStyle(fontSize: 12),
-                    ),
+                      onTap: () {},
+                      isThreeLine: true,
+                      title: Text(
+                        "${e['id']}",
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      subtitle: Text(
+                        'Created at: ${DateFormat.yMd().add_jm().format(DateTime.parse(e['createdAt']))}\nUpdated at: ${DateFormat.yMd().add_jm().format(DateTime.parse(e['updatedAt']))}',
+                        style: TextStyle(fontSize: 12),
+                      ),
 
-                    // children: displayFields
-                    //     .map((displayField) => e[displayField]
-                    //         .toString()
-                    //         .text
-                    //         .semiBold
-                    //         .size(9)
-                    //         .maxLines(3)
-                    //         .ellipsis
-                    //         .make()
-                    //         .p(8))
-                    //     .toList(),
-                  ),
+                      // children: displayFields
+                      //     .map((displayField) => e[displayField]
+                      //         .toString()
+                      //         .text
+                      //         .semiBold
+                      //         .size(9)
+                      //         .maxLines(3)
+                      //         .ellipsis
+                      //         .make()
+                      //         .p(8))
+                      //     .toList(),
+                    ),
+                    Divider()
+                  ],
                 ),
               )
               .toList())
@@ -331,30 +340,37 @@ Widget renderCollectionType(
                       ))
                   .toList(),
             ),
-            ListView(
-                shrinkWrap: true,
-                children: collectionTypeData
-                    .map(
-                      (e) => Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: displayFields
-                            .map((displayField) => Expanded(
-                                  flex: (displayField == 'id') ? 1 : 3,
-                                  child: e[displayField]
-                                      .toString()
-                                      .text
-                                      .semiBold
-                                      .size(9)
-                                      .maxLines(3)
-                                      .ellipsis
-                                      .make()
-                                      .p(8),
-                                ))
-                            .toList(),
-                      ),
-                    )
-                    .toList()),
+            Expanded(
+              child: ListView(
+                  shrinkWrap: true,
+                  children: data
+                      .map(
+                        (e) => Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: e.entries
+                                .map((value) => Expanded(
+                                    flex: (value.key == 'id') ? 1 : 3,
+                                    child: value.value["type"] == "string"
+                                        ? value.value["value"]
+                                            .toString()
+                                            .text
+                                            .semiBold
+                                            .size(9)
+                                            .maxLines(3)
+                                            .ellipsis
+                                            .make()
+                                            .p(8)
+                                        : CircleAvatar(
+                                            backgroundColor: primary500,
+                                            backgroundImage: NetworkImage(
+                                              value.value["value"],
+                                            ),
+                                          )))
+                                .toList()),
+                      )
+                      .toList()),
+            ),
           ],
         );
 }

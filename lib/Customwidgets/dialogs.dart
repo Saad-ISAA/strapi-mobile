@@ -167,7 +167,7 @@ Container _buildInfoSection(context, Media item) {
           children: [
             _mediaLibraryItemInfoEntry(key: 'Size', val: parsedDetails.size),
             _mediaLibraryItemInfoEntry(
-                key: 'Date', val: item.createdAt?.toString())
+                key: 'Date', val: '${item.createdAt?.toString()}')
           ],
         ),
         16.heightBox,

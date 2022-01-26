@@ -141,7 +141,7 @@ class _CollectionState extends State<Collection> {
           // leading: _isSearching ? const BackButton() : Container(),
           title: _isSearching
               ? _buildSearchField()
-              : _buildTitle(widget.contentType.info.label),
+              : _buildTitle(widget.contentType.info.displayName),
           actions: _buildActions(),
         ),
         floatingActionButton: FloatingActionButton(

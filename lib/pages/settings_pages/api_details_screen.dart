@@ -3,19 +3,52 @@ import 'package:flutter_svg/svg.dart';
 import 'package:strapi_flutter_cms/Customwidgets/buttons.dart';
 import 'package:strapi_flutter_cms/Customwidgets/dropdown.dart';
 import 'package:strapi_flutter_cms/Customwidgets/textfields.dart';
+import 'package:strapi_flutter_cms/controllers/settingsControllers/apiTokensController.dart';
+import 'package:strapi_flutter_cms/models/apiToken.dart';
 import 'package:strapi_flutter_cms/shared/colors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class APITokenDetailsScreen extends StatefulWidget {
-  const APITokenDetailsScreen({Key key}) : super(key: key);
+  const APITokenDetailsScreen({Key key, this.apiTokenId}) : super(key: key);
+  final int apiTokenId;
 
   @override
   _APITokenDetailsScreenState createState() => _APITokenDetailsScreenState();
 }
 
+var tokenTypes = {'read-only': 0, 'full-access': 1};
+
 class _APITokenDetailsScreenState extends State<APITokenDetailsScreen> {
   var nameController = TextEditingController();
   var descriptionController = TextEditingController();
+
+  int selectedTokenType = 0;
+
+  ApiToken apiToken;
+  bool loading = false;
+
+  void initState() {
+    super.initState();
+
+    setState(() {
+      loading = true;
+    });
+
+    fetchApiTokenDetails(widget.apiTokenId).then((value) {
+      setState(() {
+        apiToken = value;
+      });
+
+      nameController.text = value.name;
+      descriptionController.text = value.description;
+      selectedTokenType = tokenTypes[value.type];
+    }).whenComplete(() {
+      setState(() {
+        loading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,8 +108,14 @@ class _APITokenDetailsScreenState extends State<APITokenDetailsScreen> {
           ),
           12.heightBox,
           StrapiDropdown(
-            value: 0,
-            onChanged: (v) {},
+            value: selectedTokenType,
+            onChanged: (v) {
+              setState(() {
+                setState(() {
+                  selectedTokenType = v;
+                });
+              });
+            },
             items: [
               DropdownMenuItem(
                 child: Text('Read-Only'),

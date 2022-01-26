@@ -8,13 +8,13 @@ import 'package:strapi_flutter_cms/GlobalConfig.dart';
 Future<List<Media>> fetchMediaLibarary() async {
   try {
     var baseURL = GlobalConfig.data.adminURL;
-    var url = Uri.parse('$baseURL/upload/files?_sort=updated_at:DESC');
+    var url = Uri.parse('$baseURL/upload/files?sort=updatedAt:DESC');
     return await http.get(url, headers: {
       HttpHeaders.authorizationHeader: GlobalConfig.data.token
     }).then((response) {
       var parsedBody = jsonDecode(response.body);
       var responseToSend = List.generate(
-          parsedBody.length, (index) => Media.fromMap(parsedBody[index]));
+          parsedBody['results'].length, (index) => Media.fromMap(parsedBody['results'][index]));
       return responseToSend;
     }).catchError((err) {
       throw err;
